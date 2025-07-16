@@ -1,1 +1,3 @@
-# comparative-bem-pinns
+# Comparative Analysis of Wave Scattering Numerical Modeling Using the Boundary Element Method and Physics-Informed Neural Networks
+
+Classical numerical approaches, such as the Boundary Element Method (BEM), have been extensively used to simulate wave phenomena. In recent years, Physics-Informed Neural Networks (PINNs) have emerged as a promising alternative by combining machine learning techniques with physical constraints to solve partial differential equations. However, their performance is often evaluated in isolation, without direct comparisons to established numerical methods. In this work, we present a comparative study between PINNs and BEM for solving the two-dimensional Helmholtz equation, focusing on the problem of wave scattering. We evaluate both methods in terms of accuracy, computational efficiency, and generalization, highlighting their respective strengths and limitations.
