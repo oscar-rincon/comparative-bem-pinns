@@ -534,7 +534,7 @@ def plot_edges_and_field(vertices, elementos, centros, f, cmap="magma"):
     ax.set_ylim(- 1.0, 1.0)
     #ax.grid(True)
  
-    plt.savefig("edges_and_field.svg", dpi=150, bbox_inches='tight')
+    plt.savefig("figs/edges_and_field.svg", dpi=150, bbox_inches='tight')
     plt.show()
     
 
@@ -667,7 +667,7 @@ def plot_exact_displacement(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_sc
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("displacement_exact.svg", dpi=300, bbox_inches='tight')
+    plt.savefig("figs/displacement_exact.svg", dpi=300, bbox_inches='tight')
 
 
 def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
@@ -751,4 +751,4 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("displacement_bem.svg", dpi=150, bbox_inches='tight')
+    plt.savefig("figs/displacement_bem.svg", dpi=150, bbox_inches='tight')
