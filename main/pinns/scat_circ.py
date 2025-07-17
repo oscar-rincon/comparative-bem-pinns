@@ -20,6 +20,9 @@ import matplotlib.pyplot as plt
 #import meshio
 import matplotlib as mpl
 from scipy.interpolate import griddata
+import matplotlib.patches as patches
+from matplotlib.patches import Rectangle
+
 
 # Configuración de LaTeX para matplotlib
 pgf_with_latex = {                      # setup matplotlib to use latex for output
@@ -283,6 +286,15 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     u_scn (numpy.ndarray): Scattered displacement field.
     u (numpy.ndarray): Total displacement field.
     """
+ 
+
+    # Coordenadas de la esquina inferior izquierda del cuadrado (ajusta según sea necesario)
+ 
+    # Definiciones generales
+    square_size = 2*np.pi
+    square_xy = (-square_size/2, -square_size/2)  # centrado en el origen
+    square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
+
 
     fig, axs = plt.subplots(2, 3, figsize=(6.5, 3.5))
     decimales = 1e+4  # Number of decimals for the color bar
@@ -294,6 +306,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb1.set_label(r"$u_{\rm{sct}}$")
     cb1.set_ticks([-1.5, 1.5])
     cb1.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
+    axs[0, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))   
     axs[0, 0].axis("off")
     axs[0, 0].set_aspect("equal")
 
@@ -303,6 +316,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb2.set_label(r"$u$")
     cb2.set_ticks([-1.5, 1.5])
     cb2.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
+    axs[0, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))   
     axs[0, 1].axis("off")
     axs[0, 1].set_aspect("equal")
 
@@ -312,6 +326,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb3.set_label(r"|Error| / max($u$)")
     cb3.set_ticks([0, np.max(np.abs(u_amp)/np.abs(u_scn_amp).max())])
     cb3.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_amp)/np.abs(u_scn_amp).max()):.4f}'], fontsize=7)
+    axs[0, 2].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[0, 2].axis("off")
     axs[0, 2].set_aspect("equal")
 
@@ -321,6 +336,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb4.set_label(r"$u_{\rm{sct}}$")
     cb4.set_ticks([-(np.pi),(np.pi)])
     cb4.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+    axs[1, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[1, 0].axis("off")
     axs[1, 0].set_aspect("equal")
 
@@ -330,6 +346,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb5.set_label(r"$u$")
     cb5.set_ticks([-(np.pi),(np.pi)])
     cb5.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+    axs[1, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[1, 1].axis("off")
     axs[1, 1].set_aspect("equal")
 
@@ -339,6 +356,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     cb6.set_label(r"|Error| / max($u$)")
     cb6.set_ticks([0, np.max(np.abs(u_phase))/(np.abs(u_scn_phase).max())])
     cb6.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_phase)/np.abs(u_scn_phase).max()):.4f}'], fontsize=7)
+    axs[1, 2].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[1, 2].axis("off")
     axs[1, 2].set_aspect("equal")
 

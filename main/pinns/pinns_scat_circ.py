@@ -494,6 +494,55 @@ def predict_displacement_pinns(model, l_e, r_i, k, dom_samples=500):
     u_phase_pred = np.imag(us_inc + u_sc_phase_pred)
     return u_sc_amp_pred, u_sc_phase_pred, u_amp_pred, u_phase_pred
 
+
+def predict_displacement_pinns_generalization(model, l_e, r_i, k, dom_samples=500):
+    """
+    Calculate the real part of the scattered field for a given model.
+
+    Parameters:
+    model (torch.nn.Module): The neural network model.
+    r_e (float): Outer radius.
+    r_i (float): Inner radius.
+    k (float): Wave number.
+    dom_samples (int): Number of samples in the domain.
+
+    Returns:
+    numpy.ma.core.MaskedArray: The masked scattered field.
+    numpy.ma.core.MaskedArray: The total field.
+    """
+    # Set the device
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # x and y coordinates
+    x = np.linspace(-2*l_e, 2*l_e, dom_samples)
+    y = np.linspace(-2*l_e, 2*l_e, dom_samples)
+
+    # Meshgrid of the domain
+    X, Y = np.meshgrid(x, y)
+
+    R_exact = np.sqrt(X**2 + Y**2)
+
+    # Convert X and Y data to PyTorch tensors and reshape
+    X_ten = torch.tensor(X).float().reshape(-1, 1).to(device)
+    Y_ten = torch.tensor(Y).float().reshape(-1, 1).to(device)
+
+    # Concatenate X and Y tensors into a single tensor
+    domain_ten = torch.cat([X_ten, Y_ten], dim=1)
+    u_sc_pred = model(domain_ten)
+    u_sc_amp_pred = u_sc_pred[:, 0].detach().cpu().numpy().reshape(X.shape)
+    u_sc_phase_pred = u_sc_pred[:, 1].detach().cpu().numpy().reshape(X.shape)
+
+    #u_sc_pred = np.ma.masked_where(R_exact < r_i, u_sc_pred)
+
+    us_inc = np.exp(1j * k * X)
+    u_amp_pred = np.real(us_inc + u_sc_amp_pred)
+    u_phase_pred = np.imag(us_inc + u_sc_phase_pred)
+    return u_sc_amp_pred, u_sc_phase_pred, u_amp_pred, u_phase_pred
+
+
+
+
+
 def measure_model_time_pinns(model, l_e, r_i, k, n_grid, num_runs=10):
     """
     Measure the time required to use the model.
@@ -539,17 +588,17 @@ def mask_displacement(R_exact, r_i, r_e, u):
 
 def process_displacement_pinns(model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact):
     # Predict the displacement
-    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)
+    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns_generalization(model, l_e, r_i, k, n_grid)
     
     # Calculate the incident field
     u_inc_amp_pinns = np.real(np.exp(1j * k * X))
     u_inc_phase_pinns = np.imag(np.exp(1j * k * X))
     
     # Mask the displacement
-    u_inc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_amp_pinns)
-    u_inc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_phase_pinns)
-    u_sc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_amp_pinns)
-    u_sc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_phase_pinns)
+    u_inc_amp_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_inc_amp_pinns)
+    u_inc_phase_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_inc_phase_pinns)
+    u_sc_amp_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_sc_amp_pinns)
+    u_sc_phase_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_sc_phase_pinns)
     
     # Calculate the total field
     u_amp_pinns = u_inc_amp_pinns + u_sc_amp_pinns
