@@ -752,3 +752,48 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
 
     # Save the figure
     plt.savefig("figs/displacement_bem.svg", dpi=150, bbox_inches='tight')
+
+
+def plot_bem_displacement_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
+    """
+    Plot the normalized error of the amplitude and phase (last column only).
+
+    Parameters:
+    X (numpy.ndarray): X-coordinates of the grid.
+    Y (numpy.ndarray): Y-coordinates of the grid.
+    u_amp (numpy.ndarray): Total displacement field (complex).
+    u_scn_amp (numpy.ndarray): Scattered displacement field (complex).
+    u_phase (numpy.ndarray): Phase of the total displacement.
+    u_scn_phase (numpy.ndarray): Phase of the scattered displacement.
+    """
+
+    fig, axs = plt.subplots(2, 1, figsize=(2.5, 3.5))
+    shrink = 0.5
+
+    # Normalized error in amplitude
+    c1 = axs[0].pcolormesh(X, Y, np.abs(u_amp) / np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
+    cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1.set_label(r"|Error| / max($u$)")
+    max_amp = np.max(np.abs(u_amp) / np.abs(u_scn_amp).max())
+    cb1.set_ticks([0, max_amp])
+    cb1.set_ticklabels([f'{0:.1f}', f'{max_amp:.4f}'], fontsize=7)
+    axs[0].axis("off")
+    axs[0].set_aspect("equal")
+
+    # Normalized error in phase
+    c2 = axs[1].pcolormesh(X, Y, u_phase / np.abs(u_scn_phase).max(), cmap="magma", rasterized=True)
+    cb2 = fig.colorbar(c2, ax=axs[1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2.set_label(r"|Error| / max($u$)")
+    max_phase = np.max(u_phase / np.abs(u_scn_phase).max())
+    cb2.set_ticks([0, max_phase])
+    cb2.set_ticklabels([f'{0:.1f}', f'{max_phase:.4f}'], fontsize=7)
+    axs[1].axis("off")
+    axs[1].set_aspect("equal")
+
+    # Add rotated labels
+    fig.text(0.05, 0.80, r'BEM - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.05, 0.30, r'BEM - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    plt.tight_layout()
+    plt.subplots_adjust(hspace=0.3)
+    plt.savefig("figs/displacement_bem_error.svg", dpi=150, bbox_inches='tight')    

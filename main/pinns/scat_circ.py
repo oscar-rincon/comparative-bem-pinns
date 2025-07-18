@@ -374,6 +374,60 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     plt.savefig("figs/displacement_pinns.svg", dpi=150, bbox_inches='tight')
 
 
+def plot_pinns_displacements_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
+    """
+    Plot only the error column (normalized amplitude and phase errors) for PINNs.
+    
+    Parameters:
+    X (numpy.ndarray): X-coordinates of the grid.
+    Y (numpy.ndarray): Y-coordinates of the grid.
+    u_inc_amp (numpy.ndarray): (Unused here) Incident amplitude field.
+    u_scn_amp (numpy.ndarray): Scattered amplitude field.
+    u_amp (numpy.ndarray): Total amplitude field.
+    u_inc_phase (numpy.ndarray): (Unused here) Incident phase field.
+    u_scn_phase (numpy.ndarray): Scattered phase field.
+    u_phase (numpy.ndarray): Total phase field.
+    """
+
+    fig, axs = plt.subplots(2, 1, figsize=(2.2, 3.5))
+    shrink = 0.5
+
+    # Square patch properties
+    square_size = 2 * np.pi
+    square_xy = (-square_size / 2, -square_size / 2)
+    square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
+
+    # Normalized error in amplitude
+    norm_amp_error = np.abs(u_amp) / np.abs(u_scn_amp).max()
+    c1 = axs[0].pcolormesh(X, Y, norm_amp_error, cmap="magma", rasterized=True)
+    cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1.set_label(r"|Error| / max($u$)")
+    cb1.set_ticks([0, np.max(norm_amp_error)])
+    cb1.set_ticklabels([f'{0:.1f}', f'{np.max(norm_amp_error):.4f}'], fontsize=7)
+    axs[0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[0].axis("off")
+    axs[0].set_aspect("equal")
+
+    # Normalized error in phase
+    norm_phase_error = np.abs(u_phase) / np.abs(u_scn_phase).max()
+    c2 = axs[1].pcolormesh(X, Y, norm_phase_error, cmap="magma", rasterized=True)
+    cb2 = fig.colorbar(c2, ax=axs[1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2.set_label(r"|Error| / max($u$)")
+    cb2.set_ticks([0, np.max(norm_phase_error)])
+    cb2.set_ticklabels([f'{0:.1f}', f'{np.max(norm_phase_error):.4f}'], fontsize=7)
+    axs[1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[1].axis("off")
+    axs[1].set_aspect("equal")
+
+    # Add rotated labels
+    fig.text(0.05, 0.80, r'PINNs - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.05, 0.30, r'PINNs - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    plt.tight_layout()
+    plt.subplots_adjust(hspace=0.3)
+    plt.savefig("figs/displacement_pinns_error.svg", dpi=150, bbox_inches='tight')
+
+
 def plot_mesh_from_file(file_path_msh):
     """
     Reads a mesh file using meshio, extracts the points and cells, and plots the mesh.
