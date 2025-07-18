@@ -773,7 +773,7 @@ def plot_bem_displacement_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, 
     square_xy = (-square_size / 2, -square_size / 2)
     square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
 
-    fig, axs = plt.subplots(2, 1, figsize=(2.5, 3.5))
+    fig, axs = plt.subplots(2, 1, figsize=(2.2, 3.5))
     shrink = 0.5
 
     # Normalized error in amplitude
