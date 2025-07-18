@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.special import hankel1,jv
 import matplotlib as mpl
 from scipy.interpolate import griddata
+from matplotlib.patches import Rectangle
 
 # Configuración de LaTeX para matplotlib
 pgf_with_latex = {                      # setup matplotlib to use latex for output
@@ -767,6 +768,11 @@ def plot_bem_displacement_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, 
     u_scn_phase (numpy.ndarray): Phase of the scattered displacement.
     """
 
+    # Square patch properties
+    square_size = 2 * np.pi
+    square_xy = (-square_size / 2, -square_size / 2)
+    square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
+
     fig, axs = plt.subplots(2, 1, figsize=(2.5, 3.5))
     shrink = 0.5
 
@@ -777,6 +783,7 @@ def plot_bem_displacement_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, 
     max_amp = np.max(np.abs(u_amp) / np.abs(u_scn_amp).max())
     cb1.set_ticks([0, max_amp])
     cb1.set_ticklabels([f'{0:.1f}', f'{max_amp:.4f}'], fontsize=7)
+    axs[0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[0].axis("off")
     axs[0].set_aspect("equal")
 
@@ -787,6 +794,7 @@ def plot_bem_displacement_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, 
     max_phase = np.max(u_phase / np.abs(u_scn_phase).max())
     cb2.set_ticks([0, max_phase])
     cb2.set_ticklabels([f'{0:.1f}', f'{max_phase:.4f}'], fontsize=7)
+    axs[1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
