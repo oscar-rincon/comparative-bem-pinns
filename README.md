@@ -17,4 +17,4 @@ To verify the packages installed in your `comparative-pinns-bem-env` conda envir
 conda list -n comparative-pinns-bem-env
  ```
 
- 
+ ## Running Scripts
