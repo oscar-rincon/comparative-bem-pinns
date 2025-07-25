@@ -2,7 +2,7 @@
 
 Here, we present a comparative study between PINNs and BEM for solving the two-dimensional Helmholtz equation, focusing on the problem of wave scattering. We evaluate both methods in terms of accuracy, computational efficiency, and generalization, highlighting their respective strengths and limitations.
 
-## Installation
+## Installation or required Python packages
 
 We recommend setting up a new Python environment with conda. You can do this by running the following commands:
 
@@ -17,4 +17,8 @@ To verify the packages installed in your `comparative-pinns-bem-env` conda envir
 conda list -n comparative-pinns-bem-env
  ```
 
- ## Running Scripts
+## Repository Organisation
+
+`main/`:
+
+ ## Scripts execution order
