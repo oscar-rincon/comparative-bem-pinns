@@ -14,7 +14,7 @@ conda activate comparative-pinns-bem-env
 To verify the packages installed in your `comparative-pinns-bem-env` conda environment, you can use the following command:
 
  ```
-conda list -n ReScience-PINNs-env
+conda list -n comparative-pinns-bem-env
  ```
 
  
