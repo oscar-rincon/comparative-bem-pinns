@@ -19,9 +19,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Import Functions
-from scat_circ import sound_hard_circle_calc 
-from scat_circ import mask_displacement
-from scat_circ import plot_exact_displacement
+from analytical_solution_functions import sound_hard_circle_calc 
+from analytical_solution_functions import mask_displacement
+from analytical_solution_functions import plot_exact_displacement
 
 r_i = np.pi/4 # Inner radius
 l_se = np.pi # Outer semi-length
