@@ -1,5 +1,10 @@
+# utf-8
+
+# Standard library imports
 import sys
 import os
+import numpy as np
+from scipy.interpolate import griddata
 
 # Set the current directory and utilities path
 current_dir = os.getcwd()
@@ -11,18 +16,15 @@ os.chdir(current_dir)
 # Modify the module search path to include utilities directory
 sys.path.insert(0, utilities_dir)
 
-
+# Import necessary functions from utility modules
 from analytical_solution_functions import sound_hard_circle_calc 
 from analytical_solution_functions import mask_displacement
-
 from bem_solution_functions import Circle_n
 from bem_solution_functions import solveExteriorBoundary
 from bem_solution_functions import solveExterior
 from bem_solution_functions import generateInteriorPoints_excluding_circle
 from bem_solution_functions import plot_bem_error
 
-import numpy as np
-from scipy.interpolate import griddata
 
 """
 Problem setup

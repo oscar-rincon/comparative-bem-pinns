@@ -13,12 +13,12 @@ conda activate comparative-pinns-bem-env
 
 To verify the packages installed in your `comparative-pinns-bem-env` conda environment, you can use the following command:
 
- ```
+```
 conda list -n comparative-pinns-bem-env
- ```
+```
 
 ## Repository Organisation
 
 `main/`:
 
- ## Scripts execution order
+## Scripts execution order
