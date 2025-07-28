@@ -3,7 +3,6 @@ from numpy.linalg import norm
 import matplotlib.pyplot as plt
 from scipy.special import hankel1,jv
 import matplotlib as mpl
-from scipy.interpolate import griddata
 from matplotlib.patches import Rectangle
 
 # Configuración de LaTeX para matplotlib
@@ -838,6 +837,46 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
 
     # Save the figure
     plt.savefig("figs/displacement_bem.svg", dpi=150, bbox_inches='tight')
+
+def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
+    """
+    Plot only the scattered amplitude and phase as a row of two figures.
+
+    Parameters:
+    X, Y : 2D ndarrays - Grid coordinates.
+    u_scn_amp : 2D ndarray - Amplitude of the scattered field.
+    u_scn_phase : 2D ndarray - Phase of the scattered field.
+    """
+    fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.9))
+    shrink = 0.6  
+  
+    c1 = axs[0].pcolormesh(X, Y, u_amp/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
+    cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1.set_label(r"|Error| / max($u$)", fontsize=8)
+    cb1.set_ticks([0, np.max(np.abs(u_amp)/np.abs(u_scn_amp).max())])
+    cb1.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_amp)/np.abs(u_scn_amp).max()):.4f}'], fontsize=7)
+    axs[0].set_title("Amplitude", fontsize=8, pad=6)  
+    axs[0].axis("off")
+    axs[0].set_aspect("equal")
+
+     
+    c2 = axs[1].pcolormesh(X, Y, u_phase/np.abs(u_scn_phase).max(), cmap="magma", rasterized=True)
+    cb2 = fig.colorbar(c2, ax=axs[1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2.set_label(r"|Error| / max($u$)", fontsize=8)
+    
+    cb2.set_ticks([0, np.max(u_phase)/np.abs(u_scn_phase).max()])
+    cb2.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_phase)/np.abs(u_scn_phase).max()):.4f}'], fontsize=7)
+    axs[1].set_title("Phase", fontsize=8, pad=6)  
+    axs[1].axis("off")
+    axs[1].set_aspect("equal")
+
+    fig.text(0.01, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
+
+
+    plt.tight_layout()
+    plt.savefig("figs/bem_scn_amp_phase.svg", dpi=150, bbox_inches='tight')
+    plt.show()
+
 
 def plot_bem_displacements_generalization(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
     """
