@@ -494,55 +494,6 @@ def predict_displacement_pinns(model, l_e, r_i, k, dom_samples=500):
     u_phase_pred = np.imag(us_inc + u_sc_phase_pred)
     return u_sc_amp_pred, u_sc_phase_pred, u_amp_pred, u_phase_pred
 
-
-def predict_displacement_pinns_generalization(model, l_e, r_i, k, dom_samples=500):
-    """
-    Calculate the real part of the scattered field for a given model.
-
-    Parameters:
-    model (torch.nn.Module): The neural network model.
-    r_e (float): Outer radius.
-    r_i (float): Inner radius.
-    k (float): Wave number.
-    dom_samples (int): Number of samples in the domain.
-
-    Returns:
-    numpy.ma.core.MaskedArray: The masked scattered field.
-    numpy.ma.core.MaskedArray: The total field.
-    """
-    # Set the device
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    # x and y coordinates
-    x = np.linspace(-2*l_e, 2*l_e, dom_samples)
-    y = np.linspace(-2*l_e, 2*l_e, dom_samples)
-
-    # Meshgrid of the domain
-    X, Y = np.meshgrid(x, y)
-
-    R_exact = np.sqrt(X**2 + Y**2)
-
-    # Convert X and Y data to PyTorch tensors and reshape
-    X_ten = torch.tensor(X).float().reshape(-1, 1).to(device)
-    Y_ten = torch.tensor(Y).float().reshape(-1, 1).to(device)
-
-    # Concatenate X and Y tensors into a single tensor
-    domain_ten = torch.cat([X_ten, Y_ten], dim=1)
-    u_sc_pred = model(domain_ten)
-    u_sc_amp_pred = u_sc_pred[:, 0].detach().cpu().numpy().reshape(X.shape)
-    u_sc_phase_pred = u_sc_pred[:, 1].detach().cpu().numpy().reshape(X.shape)
-
-    #u_sc_pred = np.ma.masked_where(R_exact < r_i, u_sc_pred)
-
-    us_inc = np.exp(1j * k * X)
-    u_amp_pred = np.real(us_inc + u_sc_amp_pred)
-    u_phase_pred = np.imag(us_inc + u_sc_phase_pred)
-    return u_sc_amp_pred, u_sc_phase_pred, u_amp_pred, u_phase_pred
-
-
-
-
-
 def measure_model_time_pinns(model, l_e, r_i, k, n_grid, num_runs=10):
     """
     Measure the time required to use the model.
@@ -588,17 +539,17 @@ def mask_displacement(R_exact, r_i, r_e, u):
 
 def process_displacement_pinns(model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact):
     # Predict the displacement
-    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns_generalization(model, l_e, r_i, k, n_grid)
+    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)
     
     # Calculate the incident field
     u_inc_amp_pinns = np.real(np.exp(1j * k * X))
     u_inc_phase_pinns = np.imag(np.exp(1j * k * X))
     
     # Mask the displacement
-    u_inc_amp_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_inc_amp_pinns)
-    u_inc_phase_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_inc_phase_pinns)
-    u_sc_amp_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_sc_amp_pinns)
-    u_sc_phase_pinns = mask_displacement(R_exact, r_i, 2*l_e, u_sc_phase_pinns)
+    u_inc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_amp_pinns)
+    u_inc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_phase_pinns)
+    u_sc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_amp_pinns)
+    u_sc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_phase_pinns)
     
     # Calculate the total field
     u_amp_pinns = u_inc_amp_pinns + u_sc_amp_pinns
@@ -610,61 +561,103 @@ def process_displacement_pinns(model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_
     
     return u_sc_amp_pinns,u_sc_phase_pinns,u_amp_pinns, u_phase_pinns, diff_uscn_amp, diff_u_scn_phase 
 
-if __name__== "__main__":
 
-    # Parameters
-    r_i = np.pi / 4  # Inner radius
-    l_e = np.pi  # Outer radius
-    k = 3.0  # Wave number
-    n_Omega_P = 10_000  # Number of points inside the annular region
-    n_Gamma_I = 100  # Number of points on the inner boundary (r = r_i)
-    n_Gamma_E = 250  # Number of points on the outer boundary (r = r_e)
 
-    # Default to CUDA if available, otherwise CPU
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-    if not os.path.exists('datos'):
-        os.makedirs('datos')
-    results = []
-    # Initialize the iteration counter
-    iter = 0
-    side_length = 2 * l_e  # Side length of the square
+# def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
+#     """
+#     Plot the amplitude and phase of the incident, scattered, and total displacement.
 
-    # Generate points for the annular region and boundaries
-    x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top = generate_points(n_Omega_P, side_length, r_i, n_Gamma_I, n_Gamma_E)
+#     Parameters:
+#     X (numpy.ndarray): X-coordinates of the grid.
+#     Y (numpy.ndarray): Y-coordinates of the grid.
+#     u_inc (numpy.ndarray): Incident displacement field.
+#     u_scn (numpy.ndarray): Scattered displacement field.
+#     u (numpy.ndarray): Total displacement field.
+#     """
+ 
 
-    # Initialize the model
-    model = MLP(input_size=2, output_size=2, hidden_layers=2, hidden_units=75, activation_function=nn.Tanh()).to(device)
-    model.apply(init_weights)
+#     # Coordenadas de la esquina inferior izquierda del cuadrado (ajusta según sea necesario)
+ 
+#     # Definiciones generales
+#     square_size = 2*np.pi
+#     square_xy = (-square_size/2, -square_size/2)  # centrado en el origen
+#     square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
 
-    # Training with Adam optimizer
-    start_time_adam = time.time()
-    train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, num_iter=5_000)
-    end_time_adam = time.time()
-    adam_training_time = end_time_adam - start_time_adam
-    print(f"Adam training time: {adam_training_time:.6e} seconds")
 
-    # Training with L-BFGS optimizer
-    start_time_lbfgs = time.time()
-    train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, num_iter=5_000)
-    end_time_lbfgs = time.time()
-    lbfgs_training_time = end_time_lbfgs - start_time_lbfgs
-    print(f"LBFGS training time: {lbfgs_training_time:.6e} seconds")
+#     fig, axs = plt.subplots(2, 3, figsize=(6.5, 3.5))
+#     decimales = 1e+4  # Number of decimals for the color bar
+#     shrink = 0.5  # Shrink factor for the color bar
 
-    # Total training time
-    total_training_time = adam_training_time + lbfgs_training_time
-    print(f"Total training time: {total_training_time:.6e} seconds")
+#     # Amplitude of the incident wave
+#     c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
+#     cb1 = fig.colorbar(c1, ax=axs[0, 0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb1.set_label(r"$u_{\rm{sct}}$")
+#     cb1.set_ticks([-1.5, 1.5])
+#     cb1.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
+#     #axs[0, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))   
+#     axs[0, 0].axis("off")
+#     axs[0, 0].set_aspect("equal")
 
-    # Save the model
-    torch.save(model.state_dict(), f'Scattering_1_25.pt')
+#     # Amplitude of the scattered wave
+#     c2 = axs[0, 1].pcolormesh(X, Y, u_scn_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
+#     cb2 = fig.colorbar(c2, ax=axs[0, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb2.set_label(r"$u$")
+#     cb2.set_ticks([-1.5, 1.5])
+#     cb2.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
+#     #axs[0, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))   
+#     axs[0, 1].axis("off")
+#     axs[0, 1].set_aspect("equal")
 
-    # Save training summary to a text file
-    with open('datos_comparativos/1_25_scattering_problem_training_times.txt', 'w') as file:
-        file.write(f"Adam training time: {adam_training_time:.6e} seconds\n")
-        file.write(f"LBFGS training time: {lbfgs_training_time:.6e} seconds\n")
-        file.write(f"Total training time: {total_training_time:.6e} seconds\n")
-        file.write(f"Total iterations: {iter}\n")   
+#     # Amplitude of the total wave
+#     c3 = axs[0, 2].pcolormesh(X, Y, np.abs(u_amp)/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
+#     cb3 = fig.colorbar(c3, ax=axs[0, 2], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb3.set_label(r"|Error| / max($u$)")
+#     cb3.set_ticks([0, np.max(np.abs(u_amp)/np.abs(u_scn_amp).max())])
+#     cb3.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_amp)/np.abs(u_scn_amp).max()):.4f}'], fontsize=7)
+#     #axs[0, 2].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+#     axs[0, 2].axis("off")
+#     axs[0, 2].set_aspect("equal")
 
-    # Convert results to numpy array, save training data to CSV, and save model state
-    results = np.array(results)
-    np.savetxt("datos/scattering_training_loss.csv", results, delimiter=",", header="Iter,Loss", comments="")
+#     # Phase of the incident wave
+#     c4 = axs[1, 0].pcolormesh(X, Y, u_inc_phase, cmap="twilight_shifted", rasterized=True, vmin=-(np.pi), vmax=(np.pi))
+#     cb4 = fig.colorbar(c4, ax=axs[1, 0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb4.set_label(r"$u_{\rm{sct}}$")
+#     cb4.set_ticks([-(np.pi),(np.pi)])
+#     cb4.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+#     #axs[1, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+#     axs[1, 0].axis("off")
+#     axs[1, 0].set_aspect("equal")
+
+#     # Phase of the scattered wave
+#     c5 = axs[1, 1].pcolormesh(X, Y, u_scn_phase, cmap="twilight_shifted", rasterized=True, vmin=-(np.pi), vmax=(np.pi))
+#     cb5 = fig.colorbar(c5, ax=axs[1, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb5.set_label(r"$u$")
+#     cb5.set_ticks([-(np.pi),(np.pi)])
+#     cb5.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+#     #axs[1, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+#     axs[1, 1].axis("off")
+#     axs[1, 1].set_aspect("equal")
+
+#     # Phase of the total wave
+#     c6 = axs[1, 2].pcolormesh(X, Y, np.abs(u_phase)/np.abs(u_scn_phase).max(), cmap="magma", rasterized=True)
+#     cb6 = fig.colorbar(c6, ax=axs[1, 2], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+#     cb6.set_label(r"|Error| / max($u$)")
+#     cb6.set_ticks([0, np.max(np.abs(u_phase))/(np.abs(u_scn_phase).max())])
+#     cb6.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_phase)/np.abs(u_scn_phase).max()):.4f}'], fontsize=7)
+#     #axs[1, 2].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+#     axs[1, 2].axis("off")
+#     axs[1, 2].set_aspect("equal")
+
+#     # Add rotated labels "Amplitude" and "Phase"
+#     fig.text(0.05, 0.80, r'PINNs - Amplitude', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+#     fig.text(0.05, 0.30, r'PINNs - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+
+#     # Adjust space between rows (increase 'hspace' for more space between rows)
+#     plt.subplots_adjust(hspace=1.1)  # You can tweak this value (e.g., 0.5, 0.6) as needed
+
+#     # Tight layout
+#     plt.tight_layout()
+
+#     # Save the figure
+#     plt.savefig("figs/displacement_pinns.svg", dpi=150, bbox_inches='tight')
