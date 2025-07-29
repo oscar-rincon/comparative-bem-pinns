@@ -60,8 +60,6 @@ model = initialize_and_load_model(model_path)
 
 # Predict the displacement
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)
-
-# Example usage
 u_sc_amp_pinns,u_sc_phase_pinns,u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
     model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
 )
@@ -70,17 +68,17 @@ u_sc_amp_pinns,u_sc_phase_pinns,u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns,
 Compute relative L2 error (real part of scattered field)
 """
 
-# Create masked copies to zero-out interior region
-R_grid = np.sqrt(X**2 + Y**2)
-u_scn_exact_masked = np.copy(u_scn_exact)
-u_scn_amp_masked   = np.copy(u_sc_amp_pinns)
-u_scn_exact_masked[R_grid < r_i] = 0
-u_scn_amp_masked[R_grid < r_i] = 0
+R_grid = np.sqrt(X**2 + Y**2) # Radial distance from the origin
+u_scn_exact_masked = np.copy(u_scn_exact) # copy the exact scattered field
+u_scn_amp_masked   = np.copy(u_sc_amp_pinns) # copy the amplitude of the scattered field
+u_scn_exact_masked[R_grid < r_i] = 0 # Mask the exact scattered field inside the inner radius
+u_scn_amp_masked[R_grid < r_i] = 0 # Mask the amplitude of the scattered field inside the inner radius
 
 relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real, 2) / \
-                 np.linalg.norm(u_scn_exact_masked.real, 2)
-print(f"Relative L2 error: {relative_error:.4e}")
+                 np.linalg.norm(u_scn_exact_masked.real, 2) # Relative L2 error calculation
+print(f"Relative L2 error: {relative_error:.4e}") # Print the relative error
 
+# Plot the error
 plot_pinns_error(
     X, Y,
     u_sc_amp_pinns,
