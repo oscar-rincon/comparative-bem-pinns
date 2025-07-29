@@ -264,7 +264,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("figs/displacement_pinns.svg", dpi=150, bbox_inches='tight')
+    plt.savefig("analytical_sol.svg", dpi=150, bbox_inches='tight')
 
 
 def calculate_relative_errors(u_scn_exact, u_exact, diff_uscn_amp, diff_u_scn_phase, R_exact, r_i):
