@@ -522,5 +522,5 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     fig.text(0.01, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
 
     plt.tight_layout()
-    plt.savefig("figs/bem_erro.svg", dpi=150, bbox_inches='tight')
+    plt.savefig("figs/bem_error.svg", dpi=150, bbox_inches='tight')
     plt.show()

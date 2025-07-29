@@ -597,5 +597,5 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     fig.text(0.01, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
 
     plt.tight_layout()
-    plt.savefig("figs/bem_erro.svg", dpi=150, bbox_inches='tight')
+    plt.savefig("figs/pinns_error.svg", dpi=150, bbox_inches='tight')
     plt.show()
