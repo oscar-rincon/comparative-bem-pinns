@@ -487,7 +487,6 @@ def phi_test_problem_1_2(p1, p2, k):
     factor = k / np.sqrt(2)
     return np.sin(factor * p1) * np.sin(factor * p2)
 
-
 def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
     """
     Plot only the scattered amplitude and phase as a row of two figures.
@@ -557,15 +556,6 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     axs[0, 0].axis("off")
     axs[0, 0].set_aspect("equal")
 
-    # # Amplitude of the scattered wave
-    # c2 = axs[0, 1].pcolormesh(X, Y, u_scn_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
-    # cb2 = fig.colorbar(c2, ax=axs[0, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
-    # cb2.set_label(r"$u$")
-    # cb2.set_ticks([-1.5, 1.5])
-    # cb2.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
-    # axs[0, 1].axis("off")
-    # axs[0, 1].set_aspect("equal")
-
     # Amplitude of the total wave
     c3 = axs[0, 1].pcolormesh(X, Y, np.abs(u_amp)/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
     cb3 = fig.colorbar(c3, ax=axs[0, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
@@ -585,15 +575,6 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     axs[1, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[1, 0].axis("off")
     axs[1, 0].set_aspect("equal")
-
-    # # Phase of the scattered wave
-    # c5 = axs[1, 1].pcolormesh(X, Y, u_scn_phase, cmap="twilight_shifted", rasterized=True, vmin=-np.pi, vmax=(np.pi))
-    # cb5 = fig.colorbar(c5, ax=axs[1, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
-    # cb5.set_label(r"$u$")
-    # cb5.set_ticks([-(np.pi),(np.pi)])
-    # cb5.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
-    # axs[1, 1].axis("off")
-    # axs[1, 1].set_aspect("equal")
 
     # Phase of the total wave
     c6 = axs[1, 1].pcolormesh(X, Y, np.abs(u_phase)/np.abs(u_scn_phase).max(), cmap="magma", rasterized=True)
