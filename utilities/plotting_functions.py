@@ -127,7 +127,7 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
 
     fig, axs = plt.subplots(2, 2, figsize=(4.5, 3.5))
     decimales = 1e+4  # Number of decimals for the color bar
-    shrink = 0.5  # Shrink factor for the color bar
+    shrink = 0.4  # Shrink factor for the color bar
 
     # Amplitude of the incident wave
     c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
@@ -170,11 +170,11 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     axs[1, 1].set_aspect("equal")
 
     # Add rotated labels "Amplitude" and "Phase"
-    fig.text(0.05, 0.80, r'BEM - Amplitude', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
-    fig.text(0.05, 0.30, r'BEM - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+    fig.text(0.15, 0.80, r'BEM - Amplitude', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+    fig.text(0.15, 0.30, r'BEM - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
 
     # Adjust space between rows (increase 'hspace' for more space between rows)
-    plt.subplots_adjust(hspace=-0.5)  # You can tweak this value (e.g., 0.5, 0.6) as needed
+    fig.subplots_adjust(wspace=-0.7)  # Reduce horizontal spacing, optionally adjust vertical spacing
 
     # Tight layout
     plt.tight_layout()
@@ -201,7 +201,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
 
     fig, axs = plt.subplots(2, 2, figsize=(4.5, 3.5))
     decimales = 1e+4  # Number of decimals for the color bar
-    shrink = 0.5  # Shrink factor for the color bar
+    shrink = 0.4  # Shrink factor for the color bar
 
     # Amplitude of the incident wave
     c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
@@ -244,11 +244,11 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     axs[1, 1].set_aspect("equal")
 
     # Add rotated labels "Amplitude" and "Phase"
-    fig.text(0.05, 0.80, r'PINNs - Amplitude', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
-    fig.text(0.05, 0.30, r'PINNs - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+    fig.text(0.15, 0.80, r'PINNs - Amplitude', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
+    fig.text(0.15, 0.30, r'PINNs - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
 
     # Adjust space between rows (increase 'hspace' for more space between rows)
-    plt.subplots_adjust(hspace=-0.5)  # You can tweak this value (e.g., 0.5, 0.6) as needed
+    fig.subplots_adjust(wspace=-0.7)  # You can tweak this value (e.g., 0.5, 0.6) as needed
 
     # Tight layout
     plt.tight_layout()

@@ -6,8 +6,8 @@ svg2 = SVG("figures/generalization_pinns.svg")
 
 # Create a figure using known dimensions
 Figure(
-    586,  # total width (still no math if you avoid this by guessing)
-    257,  # height (or just use one of them)
+    638,  # total width (still no math if you avoid this by guessing)
+    337,  # height (or just use one of them)
     Panel(svg1),
-    Panel(svg2).move(295, 0)
-).scale(1.25).save("figures/generalization.svg")
+    Panel(svg2).move(250, 0)
+).scale(1.30).save("figures/generalization.svg")
