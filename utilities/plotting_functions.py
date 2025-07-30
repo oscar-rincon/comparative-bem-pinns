@@ -267,7 +267,7 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     u_scn_phase : 2D ndarray - Phase of the scattered field.
     """
     fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.9))
-    shrink = 0.6  
+    shrink = 0.5 
   
     c1 = axs[0].pcolormesh(X, Y, u_amp/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
     cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
@@ -289,7 +289,9 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.05, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.1, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    fig.subplots_adjust(wspace=-0.5)
 
     plt.tight_layout()
     plt.savefig("figures/bem_error.svg", dpi=150, bbox_inches='tight')
@@ -305,7 +307,7 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     u_scn_phase : 2D ndarray - Phase of the scattered field.
     """
     fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.9))
-    shrink = 0.6  
+    shrink = 0.5  
   
     c1 = axs[0].pcolormesh(X, Y, u_amp/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
     cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
@@ -327,7 +329,9 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.05, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.1, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    fig.subplots_adjust(wspace=-0.5)
 
     plt.tight_layout()
     plt.savefig("figures/pinns_error.svg", dpi=150, bbox_inches='tight')
