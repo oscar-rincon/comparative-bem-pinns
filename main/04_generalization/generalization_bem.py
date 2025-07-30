@@ -23,7 +23,7 @@ from bem_solution_functions import Circle_n
 from bem_solution_functions import solveExteriorBoundary
 from bem_solution_functions import solveExterior
 from bem_solution_functions import generateInteriorPoints_excluding_circle
-from bem_solution_functions import plot_bem_displacements
+from plotting_functions import plot_bem_displacements
 
 
 """

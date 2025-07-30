@@ -673,4 +673,4 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("generalization_pinns.svg", dpi=300, bbox_inches='tight')
+    plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')

@@ -2,28 +2,7 @@ import numpy as np
 from numpy.linalg import norm
 import matplotlib.pyplot as plt
 from scipy.special import hankel1
-import matplotlib as mpl
-from matplotlib.patches import Rectangle
-
-# Configuración de LaTeX para matplotlib
-pgf_with_latex = {                      # setup matplotlib to use latex for output
-    "pgf.texsystem": "xelatex",        # change this if using xetex or lautex
-    "text.usetex": False,                # use LaTeX to write all text
-    "font.family": "sans-serif",
-    # "font.serif": [],
-    "font.sans-serif": ["DejaVu Sans"], # specify the sans-serif font
-    "font.monospace": [],
-    "axes.labelsize": 8,               # LaTeX default is 10pt font.
-    "font.size": 0,
-    "legend.fontsize": 8,               # Make the legend/label fonts a little smaller
-    "xtick.labelsize": 8,
-    "ytick.labelsize": 8,
-    # "figure.figsize": (3.15, 2.17),     # default fig size of 0.9 textwidth
-    "pgf.preamble": r'\usepackage{amsmath},\usepackage{amsthm},\usepackage{amssymb},\usepackage{mathspec},\renewcommand{\familydefault}{\sfdefault},\usepackage[italic]{mathastext}'
-    }
-
-mpl.rcParams.update(pgf_with_latex)
-
+ 
 def wavenumberToFrequency(k, c = 344.0):
     return 0.5 * k * c / np.pi
 
