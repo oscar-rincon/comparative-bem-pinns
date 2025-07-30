@@ -1,10 +1,13 @@
 from svgutils.compose import *
 
-Figure("581cm", "257cm", 
-        Panel(
-              SVG("figures/generalization_bem.svg"),
-             ),
-        Panel(
-              SVG("figures/generalization_pinns.svg").scale(1.0),
-             ).move(290, 0)
-        ).save("figures/generalization.svg")
+# Load the SVGs
+svg1 = SVG("figures/generalization_bem.svg")
+svg2 = SVG("figures/generalization_pinns.svg")
+
+# Create a figure using known dimensions
+Figure(
+    586,  # total width (still no math if you avoid this by guessing)
+    257,  # height (or just use one of them)
+    Panel(svg1),
+    Panel(svg2).move(295, 0)
+).save("figures/generalization.svg")
