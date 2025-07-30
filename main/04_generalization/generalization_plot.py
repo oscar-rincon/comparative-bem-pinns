@@ -10,4 +10,4 @@ Figure(
     257,  # height (or just use one of them)
     Panel(svg1),
     Panel(svg2).move(295, 0)
-).save("figures/generalization.svg")
+).scale(1.25).save("figures/generalization.svg")

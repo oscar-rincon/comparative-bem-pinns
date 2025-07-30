@@ -174,7 +174,7 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     fig.text(0.05, 0.30, r'BEM - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
 
     # Adjust space between rows (increase 'hspace' for more space between rows)
-    plt.subplots_adjust(hspace=1.1)  # You can tweak this value (e.g., 0.5, 0.6) as needed
+    plt.subplots_adjust(hspace=-0.5)  # You can tweak this value (e.g., 0.5, 0.6) as needed
 
     # Tight layout
     plt.tight_layout()
@@ -248,7 +248,7 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
     fig.text(0.05, 0.30, r'PINNs - Phase', fontsize=8, fontweight='regular', va='center', ha='center', rotation='vertical')
 
     # Adjust space between rows (increase 'hspace' for more space between rows)
-    plt.subplots_adjust(hspace=1.1)  # You can tweak this value (e.g., 0.5, 0.6) as needed
+    plt.subplots_adjust(hspace=-0.5)  # You can tweak this value (e.g., 0.5, 0.6) as needed
 
     # Tight layout
     plt.tight_layout()
@@ -289,7 +289,7 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.01, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.05, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
 
     plt.tight_layout()
     plt.savefig("figures/bem_error.svg", dpi=150, bbox_inches='tight')
@@ -327,7 +327,7 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.01, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.05, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
 
     plt.tight_layout()
     plt.savefig("figures/pinns_error.svg", dpi=150, bbox_inches='tight')
