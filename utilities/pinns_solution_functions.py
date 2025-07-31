@@ -3,9 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch 
 import torch.nn as nn
-import timeit
+import time
 from matplotlib.patches import Rectangle
 from functools import partial   
+from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
 
 class MLP(nn.Module):
     def __init__(self, input_size, output_size, hidden_layers, hidden_units, activation_function):
@@ -419,7 +420,7 @@ def plot_points(x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_
     plt.show()
 
 
-def initialize_and_load_model(model_path):
+def initialize_and_load_model(model_path,hidden_layers, hidden_units):
     """
     Initializes an MLP model and loads pre-trained weights from the specified path.
     Args:
@@ -442,8 +443,8 @@ def initialize_and_load_model(model_path):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Initialize the model
-    model = MLP(input_size=2, output_size=2, hidden_layers=2, hidden_units=75, activation_function=nn.Tanh()).to(device)
-    
+    model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=nn.Tanh()).to(device)
+
     # Load the pre-trained model
     model.load_state_dict(torch.load(model_path))
     model.eval()
@@ -674,3 +675,57 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
 
     # Save the figure
     plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')
+
+
+def evaluate_pinn_accuracy(n_layers, n_neurons, model_dir='models', k=3.0, r_i=np.pi/4, l_e=np.pi, n_grid=501):
+    """
+    Evaluates the accuracy of a PINN model for wave scattering from a circular obstacle.
+    
+    Parameters:
+        n_layers (int): Number of hidden layers in the neural network.
+        n_neurons (int): Number of neurons per hidden layer.
+        model_dir (str): Directory where the model is stored.
+        k (float): Wave number.
+        r_i (float): Inner radius of the circular obstacle.
+        l_e (float): Semi-length of the square domain.
+        n_grid (int): Number of grid points per dimension for interpolation.
+
+    Returns:
+        float: Computation time in seconds.
+        float: Relative L2 error.
+    """
+
+    # Set model path assuming naming convention
+    model_name = f'Scattering_{n_layers}_{n_neurons}.pt'
+    model_path = f'{model_dir}/{model_name}'
+
+    # Create the grid
+    Y, X = np.mgrid[-l_e:l_e:n_grid*1j, -l_e:l_e:n_grid*1j]
+    R_exact = np.sqrt(X**2 + Y**2)
+
+    # Calculate analytical solution
+    u_inc_exact, u_scn_exact, u_exact = sound_hard_circle_calc(k, r_i, X, Y, n_terms=None)
+    u_inc_exact = mask_displacement(R_exact, r_i, l_e, u_inc_exact)
+    u_scn_exact = mask_displacement(R_exact, r_i, l_e, u_scn_exact)
+    u_exact     = mask_displacement(R_exact, r_i, l_e, u_exact)
+
+    # Load and evaluate model
+    start_time = time.time()
+    model = initialize_and_load_model(model_path, n_layers, n_neurons)
+    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, _, _ = process_displacement_pinns(
+        model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+    )
+    end_time = time.time()
+
+    # Compute relative L2 error (real part of scattered field)
+    u_scn_exact_masked = np.copy(u_scn_exact.real)
+    u_scn_amp_masked   = np.copy(u_sc_amp_pinns)
+    u_scn_exact_masked[R_exact < r_i] = 0
+    u_scn_amp_masked[R_exact < r_i] = 0
+
+    relative_error = np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) / \
+                     np.linalg.norm(u_scn_exact_masked, 2)
+
+    computation_time = end_time - start_time
+
+    return computation_time, relative_error

@@ -2,7 +2,14 @@ import numpy as np
 from numpy.linalg import norm
 import matplotlib.pyplot as plt
 from scipy.special import hankel1
- 
+import time
+import numpy as np
+from scipy.interpolate import griddata
+from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
+#from bem_solution_functions import Circle_n, solveExteriorBoundary, solveExterior, generateInteriorPoints_excluding_circle
+
+
+
 def wavenumberToFrequency(k, c = 344.0):
     return 0.5 * k * c / np.pi
 
@@ -578,3 +585,89 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     # Save the figure
     plt.savefig("generalization_bem.svg", dpi=300, bbox_inches='tight')
    
+
+def evaluate_bem_accuracy(n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_grid=501):
+    """
+    Solves the BEM problem for a circular obstacle with given boundary discretization `n`,
+    and returns the computational time and relative L2 error compared to the analytical solution.
+    
+    Parameters:
+        n (int): Number of boundary elements.
+        k (float): Wave number.
+        n_dom (int): Number of domain sampling points (per axis).
+        r_exclude (float): Radius of the circular obstacle.
+        l_se (float): Half-length of the computational domain.
+        n_grid (int): Number of grid points along each axis for interpolation.
+    
+    Returns:
+        float: Computational time in seconds.
+        float: Relative L2 error.
+    """
+
+    start_time = time.time()
+
+    # Generate circular boundary mesh
+    aVertex, aElement = Circle_n(n=n, radius=r_exclude)
+    num_elements = aElement.shape[0]
+    aCenters = 0.5 * (aVertex[aElement[:, 0]] + aVertex[aElement[:, 1]])
+    theta = np.arctan2(aCenters[:, 1], aCenters[:, 0])  # Normal angle at each element center
+
+    # Neumann boundary conditions
+    alpha = np.zeros(num_elements, dtype=complex)
+    beta  = np.ones(num_elements, dtype=complex)
+    phi   = np.zeros(num_elements, dtype=complex)
+    v     = np.zeros(num_elements, dtype=complex)
+    kx = k * aCenters[:, 0]
+    phi_inc = np.exp(1j * kx)
+    f = -1j * k * np.cos(theta) * phi_inc
+
+    # Generate interior points
+    points_outside, _ = generateInteriorPoints_excluding_circle(
+        Nx=n_dom, Ny=n_dom,
+        xmin=-l_se, xmax=l_se,
+        ymin=-l_se, ymax=l_se,
+        r_exclude=r_exclude
+    )
+    interiorIncidentPhi = np.zeros(points_outside.shape[0], dtype=complex)
+
+    # Solve BIE
+    _, density = None, None
+    v, phi = solveExteriorBoundary(
+        k, alpha, beta, f, phi, v,
+        aVertex, aElement,
+        _, density,
+        'exterior'
+    )
+
+    # Evaluate solution
+    interiorPhi = solveExterior(
+        k, v, phi,
+        interiorIncidentPhi,
+        points_outside,
+        aVertex, aElement,
+        'exterior'
+    )
+
+    # Interpolate on uniform grid
+    Y, X = np.mgrid[-l_se:l_se:n_grid*1j, -l_se:l_se:n_grid*1j]
+    grid_z = griddata(points_outside, interiorPhi, (X, Y), method='cubic')
+    grid_z = np.ma.masked_where(np.sqrt(X**2 + Y**2) < r_exclude, grid_z)
+
+    u_scn_amp = grid_z.real
+    R_exact = np.sqrt(X**2 + Y**2)
+    _, u_scn_exact, _ = sound_hard_circle_calc(k, r_exclude, X, Y, n_terms=None)
+    u_scn_exact = mask_displacement(R_exact, r_exclude, l_se, u_scn_exact)
+
+    # Compute relative L2 error
+    u_scn_exact_masked = np.copy(u_scn_exact.real)
+    u_scn_amp_masked   = np.copy(u_scn_amp)
+    u_scn_exact_masked[R_exact < r_exclude] = 0
+    u_scn_amp_masked[R_exact < r_exclude] = 0
+
+    relative_error = np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) / \
+                     np.linalg.norm(u_scn_exact_masked, 2)
+
+    end_time = time.time()
+    computation_time = end_time - start_time
+
+    return computation_time, relative_error   
