@@ -104,7 +104,7 @@ def plot_exact_displacement(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_sc
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("displacement_exact.svg", dpi=300, bbox_inches='tight')
+    plt.savefig("figures/displacement_exact.svg", dpi=300, bbox_inches='tight')
 
 
 
