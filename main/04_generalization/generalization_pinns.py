@@ -7,7 +7,7 @@ import numpy as np
 from scipy.interpolate import griddata
 
 # Set the current directory and utilities path
-current_dir = os.getcwd()
+current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
 
 # Change the working directory to the notebook's directory
