@@ -3,7 +3,7 @@ import sys
 import os
  
 # Set the current directory and utilities path
-current_dir = os.path.dirname(os.path.abspath(__file__))
+current_dir = os.getcwd()
 utilities_dir = os.path.join(current_dir, '../../utilities')
 
 # Change the working directory to the notebook's directory
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 # Import Functions
 from analytical_solution_functions import sound_hard_circle_calc 
 from analytical_solution_functions import mask_displacement
-from analytical_solution_functions import plot_exact_displacement
+from plotting_functions import plot_exact_displacement
 
 r_i = np.pi/4 # Inner radius
 l_se = np.pi # Outer semi-length
