@@ -7,7 +7,7 @@ import numpy as np
 from scipy.interpolate import griddata
 
 # Set the current directory and utilities path
-current_dir = os.getcwd()
+current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
 
 # Change the working directory to the notebook's directory
@@ -58,7 +58,7 @@ side_length = 2 * l_e    # Side length of the square
  
 # Initialize and load the model
 model_path = 'models/Scattering_2_75.pt'
-model = initialize_and_load_model(model_path)
+model = initialize_and_load_model(model_path, 2, 75)
 
 # Predict the displacement
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)

@@ -1,4 +1,19 @@
 #%%%
+
+# Standard library imports
+import sys
+import os
+ 
+# Set the current directory and utilities path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+utilities_dir = os.path.join(current_dir, '../../utilities')
+
+# Change the working directory to the notebook's directory
+os.chdir(current_dir)
+
+# Modify the module search path to include utilities directory
+sys.path.insert(0, utilities_dir)
+
 from svgutils.compose import *
 
 # Load the SVGs
