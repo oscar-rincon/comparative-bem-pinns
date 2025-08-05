@@ -1,6 +1,6 @@
 # Comparison of Accuracy and Computational Efficiency Between Methods
 
-![errors](figures/errors.svg)
+![comparison](figures/comparison.svg)
 
 
 ## 🚀 How to Run
