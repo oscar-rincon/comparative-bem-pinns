@@ -446,10 +446,10 @@ def initialize_and_load_model(model_path, hidden_layers, hidden_units):
     model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=nn.Tanh()).to(device)
 
     # Load the pre-trained model with device-aware mapping
-    if torch.cuda.is_available():
-        map_location = None  # Load normally to GPU
-    else:
-        map_location = torch.device('cpu')  # Force load to CPU
+    # if torch.cuda.is_available():
+    #     map_location = None  # Load normally to GPU
+    # else:
+    #     map_location = torch.device('cpu')  # Force load to CPU
     
     return model
 
