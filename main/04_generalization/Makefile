@@ -17,9 +17,14 @@ run_generalization_pinns:
 	@python generalization_pinns.py
 	@echo "Finished generalization_pinns.py..."
  
-# Target to run generalization_bem_pinns_plot.py
+# Target to run generalization_plot.py
 run_generalization_plot:
 	@echo "Running generalization_plot.py..."
 	@python generalization_plot.py
 	@echo "Finished generalization_plot.py..."
 
+# Clean up generated files
+clean:
+	@echo "Cleaning up..."
+	@rm -rf figures/*   
+	@echo "Clean up complete."	

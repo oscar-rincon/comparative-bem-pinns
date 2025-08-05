@@ -18,14 +18,19 @@ run_comparison_pinns:
 	@echo "Finished comparison_pinns.py..."	
 
 # Target to run comparison_plot_a.py
-run_comparison_bem_pinns:
+run_comparison_plot_a:
 	@echo "Running comparison_plot_a.py..."
 	@python comparison_plot_a.py
 	@echo "Finished comparison_plot_a.py..."	
 
 # Target to run comparison_plot_b.py
-run_comparison_plot:
+run_comparison_plot_b:
 	@echo "Running comparison_plot_b.py..."
 	@python comparison_plot_b.py
 	@echo "Finished comparison_plot_b.py..."	
 
+# Clean up generated files
+clean:
+	@echo "Cleaning up..."
+	@rm -rf figures/*  data/*
+	@echo "Clean up complete."	

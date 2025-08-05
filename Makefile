@@ -10,3 +10,9 @@ run_01_analytical_solution:
 	@echo "Running 01_analytical_solution.py..."
 	@python main/01_analytical_solution/analytical_solution.py
 	@echo "Finished 01_analytical_solution.py..."
+
+# Clean up generated files
+clean:
+	@echo "Cleaning up..."
+	@rm -rf figures/* 
+	@echo "Clean up complete."	

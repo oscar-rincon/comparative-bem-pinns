@@ -11,3 +11,4 @@ dependencies:
   - pytorch==2.3.0
   - pandas==2.2.2
   - imageio==2.34.1
+  - svgutils==0.3.4
