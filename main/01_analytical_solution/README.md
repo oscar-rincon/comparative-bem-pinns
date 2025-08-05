@@ -5,29 +5,14 @@
 
 ## 🚀 How to Run
 
-To execute the full workflow (**BEM → PINNs → Plot**), open a terminal in the project directory and run:
+To execute the analytical, open a terminal in the project directory and run:
 
+ 
 ```bash
-make all
+make run_analytical_solution
 ```
 
-Run only the BEM script:
-
-```bash
-make run_generalization_bem
-```
-
-Run only the PINNs script:
-
-```bash
-make run_generalization_pinns
-```
-
-Generate only the comparison plot:
-
-```bash
-make run_generalization_plot
-```
+ 
 
 ## 🧹 Cleaning Up
 
