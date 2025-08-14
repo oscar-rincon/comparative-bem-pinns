@@ -7,6 +7,8 @@ import time
 from matplotlib.patches import Rectangle
 from functools import partial   
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
+from matplotlib.gridspec import GridSpec
+
 
 class MLP(nn.Module):
     def __init__(self, input_size, output_size, hidden_layers, hidden_units, activation_function):

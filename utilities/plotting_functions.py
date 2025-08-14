@@ -3,7 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.patches import Rectangle
+from matplotlib.lines import Line2D
 from matplotlib.ticker import MultipleLocator, FuncFormatter
+import matplotlib.gridspec as gridspec
 
 
 # Configuración de LaTeX para matplotlib
@@ -375,6 +377,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     axs[0, 0].axis("off")
     axs[0, 0].set_aspect("equal")
 
+
     # Subplot 2: Amplitude of the total wave
     axs[0, 1] = fig.add_subplot(gs[0, 1])
     amp_ratio = np.abs(u_amp) / np.abs(u_scn_amp).max()
@@ -386,6 +389,10 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     axs[0, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     axs[0, 1].axis("off")
     axs[0, 1].set_aspect("equal")
+    # Add horizontal line from x = π to x = 10π at y = 0 (or center)
+    y_center = 0  # or e.g., y_center = Y.mean() or another value of interest
+    line1 = Line2D([np.pi, 10*np.pi], [y_center, y_center], color="#00a2ff", linewidth=1.0, linestyle='-')
+    axs[0, 1].add_line(line1)
 
     # Subplot 3: Phase of the incident wave
     axs[1, 0] = fig.add_subplot(gs[1, 0])
@@ -395,6 +402,8 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     cb3.set_ticks([-np.pi, np.pi])
     cb3.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
     axs[1, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+
+
     axs[1, 0].axis("off")
     axs[1, 0].set_aspect("equal")
 
@@ -410,9 +419,10 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     axs[1, 1].axis("off")
     axs[1, 1].set_aspect("equal")
 
+
     # Subplot 5: Relative error along y = 0 (full width)
     ax_err = fig.add_subplot(gs[2, :])
-    ax_err.plot(x_line, rel_error_line, label='Relative error', color='gray')
+    ax_err.plot(x_line, rel_error_line, label='Relative error', color="#00a2ff", linewidth=1.0)
     ax_err.set_xlabel(r'$x$')
     ax_err.set_ylabel(r"$|$Error$|$ / max($u$)")
     ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
@@ -447,7 +457,7 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
 
     # Create figure and GridSpec layout
     fig = plt.figure(figsize=(4.5, 6.5))
-    gs = GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
+    gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
 
     # Subplots for amplitude
     ax0 = fig.add_subplot(gs[0, 0])
@@ -469,6 +479,9 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
     ax1.add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
     ax1.axis("off")
     ax1.set_aspect("equal")
+    y_center = 0  # or e.g., y_center = Y.mean() or another value of interest
+    line2 = Line2D([np.pi, 10*np.pi], [y_center, y_center], color="#00ff0d", linewidth=1.0, linestyle='-')
+    ax1.add_line(line2)
 
     # Subplots for phase
     ax2 = fig.add_subplot(gs[1, 0])
@@ -493,7 +506,7 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
 
     # Subplot 5: Relative error line plot
     ax_err = fig.add_subplot(gs[2, :])
-    ax_err.plot(x_line, rel_error_line, label='Relative error', color='gray')
+    ax_err.plot(x_line, rel_error_line, label='Relative error', color="#00ff0d")
     ax_err.set_xlabel(r'$x$')
     ax_err.set_ylabel(r"$|$Error$|$ / max($u$)")
     ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)

@@ -104,26 +104,77 @@ from matplotlib.ticker import LogLocator
 bem_df = pd.read_csv("data/bem_accuracy_vs_n.csv")
 pinn_df = pd.read_csv("data/pinn_accuracy_vs_architecture.csv")
 
+# # --- Marker sizes ---
+# pinn_marker_sizes = 12 #* pinn_df["layers"]  # PINN: scaled by number of layers
+# bem_marker_sizes = 12 #* bem_df["n"]          # BEM: scaled by number of integration points
+
+# # --- Plot setup ---
+# plt.figure(figsize=(6.0, 2.5))
+
+# # --- Plot BEM (blue) ---
+# plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
+#             color="#0044c4", edgecolors="#0000a8",
+#             label='BEM (evaluation)', s=bem_marker_sizes, zorder=5)
+
+# # --- Plot PINN evaluation time (gray) ---
+# plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
+#             color="#bbbbbb", edgecolors="#5e5e5e",
+#             label='PINN (evaluation)', s=pinn_marker_sizes, zorder=4)
+
+# # --- Plot PINN training time (white with gray border) ---
+# plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
+#             color="#FFFFFF", edgecolors="#6E6E6E",
+#             label='PINN (training)', s=pinn_marker_sizes, zorder=3)
+
+# # --- Axes labels ---
+# plt.xlabel('Relative Error', fontsize=8)
+# plt.ylabel('Time (s)', fontsize=8)
+
+# # --- Log-log scale ---
+# plt.xscale('log')
+# plt.yscale('log')
+
+# # --- Ticks ---
+# ax = plt.gca()
+# ax.set_xticks([1e+0, 1e-1, 1e-2])
+# ax.set_xticklabels([r'$10^{0}$', r'$10^{-1}$', r'$10^{-2}$'], fontsize=8)
+# ax.yaxis.set_major_locator(LogLocator(base=10.0, subs=(1.0, 2.0, 5.0), numticks=10))
+# ax.set_yticks([1e+3,1e+2,1e+1,1e+0, 1e-1, 1e-2])
+# ax.set_yticklabels([r'$10^{3}$', r'$10^{2}$', r'$10^{1}$', r'$10^{0}$', r'$10^{-1}$', r'$10^{-2}$'], fontsize=8)
+
+
+# # --- Legend ---
+# plt.legend(loc='lower left', fontsize=7.5, frameon=False,
+#            handletextpad=0.5, markerscale=0.9, labelspacing=1.2)
+
+# # --- Final layout and save ---
+# plt.tight_layout()
+# plt.savefig("figures/rel_error_time.svg", dpi=150, bbox_inches='tight')
+# plt.show()
+
+
+#%%
+
 # --- Marker sizes ---
 pinn_marker_sizes = 12 #* pinn_df["layers"]  # PINN: scaled by number of layers
 bem_marker_sizes = 12 #* bem_df["n"]          # BEM: scaled by number of integration points
 
 # --- Plot setup ---
-plt.figure(figsize=(6.0, 2.5))
+plt.figure(figsize=(6.7, 2.0))
 
 # --- Plot BEM (blue) ---
 plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
-            color="#0044c4", edgecolors="#0000a8",
-            label='BEM (evaluation)', s=bem_marker_sizes, zorder=5)
+            color="#0000a8", edgecolors="#0000a8",
+            label='BEM (solution)', s=bem_marker_sizes, zorder=5)
 
 # --- Plot PINN evaluation time (gray) ---
 plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
-            color="#bbbbbb", edgecolors="#5e5e5e",
+            color="#5e5e5e", edgecolors="#5e5e5e",
             label='PINN (evaluation)', s=pinn_marker_sizes, zorder=4)
 
 # --- Plot PINN training time (white with gray border) ---
 plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
-            color="#FFFFFF", edgecolors="#6E6E6E",
+            color="#000000", edgecolors="#000000",
             label='PINN (training)', s=pinn_marker_sizes, zorder=3)
 
 # --- Axes labels ---
