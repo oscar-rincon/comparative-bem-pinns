@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib.patches import Rectangle
+from matplotlib.ticker import MultipleLocator, FuncFormatter
+
 
 # Configuración de LaTeX para matplotlib
 pgf_with_latex = {                      # setup matplotlib to use latex for output
@@ -182,6 +184,8 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     # Save the figure
     plt.savefig("figures/generalization_bem.svg", dpi=300, bbox_inches='tight')
 
+    return fig, axs  # Return the figure and axes for further customization if needed
+
 def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
     """
     Plot the amplitude and phase of the incident, scattered, and total displacement.
@@ -337,4 +341,182 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     plt.savefig("figures/pinns_error.svg", dpi=150, bbox_inches='tight')
     plt.show()
 
+def format_func(value, tick_number):
+    n = int(round(value / np.pi))
+    if n == 0:
+        return "0"
+    elif n == 1:
+        return r"$\pi$"
+    else:
+        return rf"${n}\pi$"
 
+def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase, x_line, rel_error_line):
+    """
+    Plot the amplitude and phase of the incident, scattered, and total displacement, plus relative error along y = 0.
+    """
+
+    square_size = 2 * np.pi
+    square_xy = (-square_size / 2, -square_size / 2)
+    square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
+
+    fig = plt.figure(figsize=(4.5, 6.5))
+    gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
+
+    axs = np.empty((3, 2), dtype=object)
+
+    # Subplot 1: Amplitude of the incident wave
+    axs[0, 0] = fig.add_subplot(gs[0, 0])
+    c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
+    cb1 = fig.colorbar(c1, ax=axs[0, 0], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1.set_label(r"$u_{\rm{sct}}$")
+    cb1.set_ticks([-1.5, 1.5])
+    cb1.set_ticklabels(['-1.5', '1.5'], fontsize=7)
+    axs[0, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[0, 0].axis("off")
+    axs[0, 0].set_aspect("equal")
+
+    # Subplot 2: Amplitude of the total wave
+    axs[0, 1] = fig.add_subplot(gs[0, 1])
+    amp_ratio = np.abs(u_amp) / np.abs(u_scn_amp).max()
+    c2 = axs[0, 1].pcolormesh(X, Y, amp_ratio, cmap="magma", rasterized=True)
+    cb2 = fig.colorbar(c2, ax=axs[0, 1], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2.set_label(r"|Error| / max($u$)")
+    cb2.set_ticks([0, np.max(amp_ratio)])
+    cb2.set_ticklabels([f'{0:.1f}', f'{np.max(amp_ratio):.4f}'], fontsize=7)
+    axs[0, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[0, 1].axis("off")
+    axs[0, 1].set_aspect("equal")
+
+    # Subplot 3: Phase of the incident wave
+    axs[1, 0] = fig.add_subplot(gs[1, 0])
+    c3 = axs[1, 0].pcolormesh(X, Y, u_inc_phase, cmap="twilight_shifted", rasterized=True, vmin=-np.pi, vmax=np.pi)
+    cb3 = fig.colorbar(c3, ax=axs[1, 0], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb3.set_label(r"$u_{\rm{sct}}$")
+    cb3.set_ticks([-np.pi, np.pi])
+    cb3.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+    axs[1, 0].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[1, 0].axis("off")
+    axs[1, 0].set_aspect("equal")
+
+    # Subplot 4: Phase of the total wave
+    axs[1, 1] = fig.add_subplot(gs[1, 1])
+    phase_ratio = np.abs(u_phase) / np.abs(u_scn_phase).max()
+    c4 = axs[1, 1].pcolormesh(X, Y, phase_ratio, cmap="magma", rasterized=True)
+    cb4 = fig.colorbar(c4, ax=axs[1, 1], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb4.set_label(r"|Error| / max($u$)")
+    cb4.set_ticks([0, np.max(phase_ratio)])
+    cb4.set_ticklabels([f'{0:.1f}', f'{np.max(phase_ratio):.4f}'], fontsize=7)
+    axs[1, 1].add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    axs[1, 1].axis("off")
+    axs[1, 1].set_aspect("equal")
+
+    # Subplot 5: Relative error along y = 0 (full width)
+    ax_err = fig.add_subplot(gs[2, :])
+    ax_err.plot(x_line, rel_error_line, label='Relative error', color='gray')
+    ax_err.set_xlabel(r'$x$')
+    ax_err.set_ylabel(r"$|$Error$|$ / max($u$)")
+    ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
+    ax_err.set_yticks([0, np.max(amp_ratio)])
+    ax_err.set_yticklabels([f'{0:.1f}', f'{np.max(amp_ratio):.4f}'], fontsize=7)
+    ax_err.xaxis.set_major_locator(MultipleLocator(base=np.pi))
+    ax_err.xaxis.set_major_formatter(FuncFormatter(format_func))
+    ax_err.set_title('BEM - Amplitude', fontsize=8)
+    #ax_err.grid(True)
+
+    # Add rotated labels on the left
+    fig.text(0.08, 0.76, r'BEM - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.08, 0.46, r'BEM - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    plt.tight_layout()
+    plt.savefig("figures/generalization_bem.svg", dpi=300, bbox_inches='tight')
+    plt.show()
+
+def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
+                                            u_inc_phase, u_scn_phase, u_phase,
+                                            x_line, rel_error_line):
+    """
+    Combina gráficos 2D y gráfico de error relativo 1D usando GridSpec.
+    """
+
+    # Square patch properties
+    square_size = 2 * np.pi
+    square_xy = (-square_size / 2, -square_size / 2)
+    square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
+    shrink = 0.7
+    decimales = 1e+4
+
+    # Create figure and GridSpec layout
+    fig = plt.figure(figsize=(4.5, 6.5))
+    gs = GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
+
+    # Subplots for amplitude
+    ax0 = fig.add_subplot(gs[0, 0])
+    c1 = ax0.pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
+    cb1 = fig.colorbar(c1, ax=ax0, shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1.set_label(r"$u_{\rm{sct}}$")
+    cb1.set_ticks([-1.5, 1.5])
+    cb1.set_ticklabels([f'{-1.5}', f'{1.5}'], fontsize=7)
+    ax0.add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    ax0.axis("off")
+    ax0.set_aspect("equal")
+
+    ax1 = fig.add_subplot(gs[0, 1])
+    c2 = ax1.pcolormesh(X, Y, np.abs(u_amp)/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
+    cb2 = fig.colorbar(c2, ax=ax1, shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2.set_label(r"|Error| / max($u$)")
+    cb2.set_ticks([0, np.max(np.abs(u_amp)/np.abs(u_scn_amp).max())])
+    cb2.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_amp)/np.abs(u_scn_amp).max()):.4f}'], fontsize=7)
+    ax1.add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    ax1.axis("off")
+    ax1.set_aspect("equal")
+
+    # Subplots for phase
+    ax2 = fig.add_subplot(gs[1, 0])
+    c3 = ax2.pcolormesh(X, Y, u_inc_phase, cmap="twilight_shifted", rasterized=True, vmin=-(np.pi), vmax=(np.pi))
+    cb3 = fig.colorbar(c3, ax=ax2, shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb3.set_label(r"$u_{\rm{sct}}$")
+    cb3.set_ticks([-(np.pi), (np.pi)])
+    cb3.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=7)
+    ax2.add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    ax2.axis("off")
+    ax2.set_aspect("equal")
+
+    ax3 = fig.add_subplot(gs[1, 1])
+    c4 = ax3.pcolormesh(X, Y, np.abs(u_phase)/np.abs(u_scn_phase).max(), cmap="magma", rasterized=True)
+    cb4 = fig.colorbar(c4, ax=ax3, shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
+    cb4.set_label(r"|Error| / max($u$)")
+    cb4.set_ticks([0, np.max(np.abs(u_phase)/np.abs(u_scn_phase).max())])
+    cb4.set_ticklabels([f'{0:.1f}', f'{np.max(np.abs(u_phase)/np.abs(u_scn_phase).max()):.4f}'], fontsize=7)
+    ax3.add_patch(Rectangle(square_xy, square_size, square_size, **square_props))
+    ax3.axis("off")
+    ax3.set_aspect("equal")
+
+    # Subplot 5: Relative error line plot
+    ax_err = fig.add_subplot(gs[2, :])
+    ax_err.plot(x_line, rel_error_line, label='Relative error', color='gray')
+    ax_err.set_xlabel(r'$x$')
+    ax_err.set_ylabel(r"$|$Error$|$ / max($u$)")
+    ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
+    ax_err.xaxis.set_major_locator(MultipleLocator(base=np.pi))
+
+    def format_func(value, tick_number):
+        N = int(np.round(value / np.pi))
+        if N == 0:
+            return "0"
+        elif N == 1:
+            return r"$\pi$"
+        elif N == -1:
+            return r"$-\pi$"
+        else:
+            return fr"${N}\pi$"
+
+    ax_err.xaxis.set_major_formatter(FuncFormatter(format_func))
+    ax_err.set_title('PINNs - Amplitude', fontsize=8)
+
+    # Add rotated labels
+    fig.text(0.08, 0.76, r'PINNs - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.08, 0.46, r'PINNs - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
+
+    # Save and show
+    plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')
+    plt.show()
