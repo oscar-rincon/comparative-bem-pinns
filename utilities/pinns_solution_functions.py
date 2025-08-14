@@ -420,6 +420,35 @@ def plot_points(x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_
     plt.show()
 
 
+# def initialize_and_load_model(model_path, hidden_layers, hidden_units):
+#     """
+#     Initializes an MLP model and loads pre-trained weights from the specified path.
+#     Args:
+#         model_path (str): The file path to the pre-trained model weights.
+#     Returns:
+#         torch.nn.Module: The initialized MLP model with loaded weights.
+#     The function performs the following steps:
+#     1. Sets the device to 'cuda' if a GPU is available, otherwise 'cpu'.
+#     2. Initializes an MLP model with the specified architecture:
+#        - Input size: 2
+#        - Output size: 2
+#        - Hidden layers: 3
+#        - Hidden units per layer: 350
+#        - Activation function: Tanh
+#     3. Loads the pre-trained model weights from the given model_path.
+#     4. Sets the model to evaluation mode.
+#     """
+
+#     # Set the device
+#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+#     # Initialize the model
+#     model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=nn.Tanh()).to(device)
+
+
+    
+#     return model
+
 def initialize_and_load_model(model_path, hidden_layers, hidden_units):
     """
     Initializes an MLP model and loads pre-trained weights from the specified path.
@@ -444,14 +473,13 @@ def initialize_and_load_model(model_path, hidden_layers, hidden_units):
 
     # Initialize the model
     model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=nn.Tanh()).to(device)
-
-    # Load the pre-trained model with device-aware mapping
-    # if torch.cuda.is_available():
-    #     map_location = None  # Load normally to GPU
-    # else:
-    #     map_location = torch.device('cpu')  # Force load to CPU
+    
+    # Load the pre-trained model
+    model.load_state_dict(torch.load(model_path))
+    model.eval()
     
     return model
+
 
 def predict_displacement_pinns(model, l_e, r_i, k, dom_samples=500):
     """

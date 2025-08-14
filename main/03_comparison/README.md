@@ -5,10 +5,18 @@
 
 ## 🚀 How to Run
 
-To execute the full workflow (**BEM → PINNs → Plots**), open a terminal in the project directory and run:
+To execute the full workflow (**Comparison → BEM → PINNs → Plots**), open a terminal in the project directory and run:
 
 ```bash
 make all
+```
+
+The aproximate time required is around 15 minutes using the stored models.
+
+Run the comparison plot a:
+
+```bash
+make run_comparison_plot_a
 ```
 
 Run the BEM script:
@@ -23,19 +31,13 @@ Run the PINNs script:
 make run_comparison_pinns
 ```
 
-Run the comparison plot a:
-
-```bash
-make run_comparison_plot_a
-```
-
 Generate the comparison plot b:
 
 ```bash
 make run_comparison_plot_b
 ```
 
-## 🧹 Cleaning Up
+##  Cleaning Up
 
 ```bash
 make clean
