@@ -3,7 +3,7 @@
 ![generalization](figures/generalization.svg)
 
 
-## 🚀 How to Run
+## How to Run
 
 To execute the full workflow (**BEM → PINNs → Plot**), open a terminal in the project directory and run:
 
@@ -29,8 +29,7 @@ Run the generalization plot:
 make run_generalization_plot
 ```
 
-
-## 🧹 Cleaning Up
+##  Cleaning Up
 
 ```bash
 make clean
