@@ -272,8 +272,8 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     u_scn_amp : 2D ndarray - Amplitude of the scattered field.
     u_scn_phase : 2D ndarray - Phase of the scattered field.
     """
-    fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.9))
-    shrink = 0.5 
+    fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.7))
+    shrink = 0.42 
   
     c1 = axs[0].pcolormesh(X, Y, u_amp/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
     cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
@@ -312,8 +312,8 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     u_scn_amp : 2D ndarray - Amplitude of the scattered field.
     u_scn_phase : 2D ndarray - Phase of the scattered field.
     """
-    fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.9))
-    shrink = 0.5  
+    fig, axs = plt.subplots(1, 2, figsize=(3.9, 1.7))
+    shrink = 0.42   
   
     c1 = axs[0].pcolormesh(X, Y, u_amp/np.abs(u_scn_amp).max(), cmap="magma", rasterized=True)
     cb1 = fig.colorbar(c1, ax=axs[0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')

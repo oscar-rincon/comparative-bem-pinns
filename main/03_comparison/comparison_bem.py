@@ -1,6 +1,7 @@
-#%%
+ 
  # -*- coding: utf-8 -*-
-
+#%%
+ 
 import sys
 import os
 
@@ -157,4 +158,5 @@ plot_bem_error(
     np.abs(np.imag(u_scn_exact) - u_scn_phase)
 )
 
-# %%
+#%%
+ 

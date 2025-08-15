@@ -1,5 +1,5 @@
  # -*- coding: utf-8 -*-
-
+#%%
 # Standard library imports
 import sys
 import os
@@ -24,6 +24,7 @@ from pinns_solution_functions import initialize_and_load_model
 from pinns_solution_functions import predict_displacement_pinns 
 from pinns_solution_functions import process_displacement_pinns
 
+#%%
 r_i = np.pi/4 # Inner radius
 l_se = np.pi # Outer semi-length
 k = 3  # Wave number
@@ -82,7 +83,7 @@ u_scn_amp_masked[R_grid < r_i] = 0
 relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real, 2) / \
                  np.linalg.norm(u_scn_exact_masked.real, 2)
 print(f"Relative L2 error: {relative_error:.4e}")
-
+#%%
 plot_pinns_error(
     X, Y,
     u_sc_amp_pinns,
