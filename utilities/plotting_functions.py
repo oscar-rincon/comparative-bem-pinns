@@ -356,12 +356,12 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     """
     Plot the amplitude and phase of the incident, scattered, and total displacement, plus relative error along y = 0.
     """
-
+    shrink = 0.8
     square_size = 2 * np.pi
     square_xy = (-square_size / 2, -square_size / 2)
     square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
 
-    fig = plt.figure(figsize=(4.5, 6.5))
+    fig = plt.figure(figsize=(3.4, 5.5))
     gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
 
     axs = np.empty((3, 2), dtype=object)
@@ -369,7 +369,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     # Subplot 1: Amplitude of the incident wave
     axs[0, 0] = fig.add_subplot(gs[0, 0])
     c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
-    cb1 = fig.colorbar(c1, ax=axs[0, 0], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb1 = fig.colorbar(c1, ax=axs[0, 0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
     cb1.set_label(r"$u_{\rm{sct}}$", fontsize=8)
     cb1.set_ticks([-1.5, 1.5])
     cb1.set_ticklabels(['-1.5', '1.5'], fontsize=8)
@@ -382,7 +382,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     axs[0, 1] = fig.add_subplot(gs[0, 1])
     amp_ratio = np.abs(u_amp) / np.abs(u_scn_amp).max()
     c2 = axs[0, 1].pcolormesh(X, Y, amp_ratio, cmap="magma", rasterized=True)
-    cb2 = fig.colorbar(c2, ax=axs[0, 1], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb2 = fig.colorbar(c2, ax=axs[0, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
     cb2.set_label(r"|Error| / max($u$)", fontsize=8)
     cb2.set_ticks([0, np.max(amp_ratio)])
     cb2.set_ticklabels([f'{0:.1f}', f'{np.max(amp_ratio):.4f}'], fontsize=8)
@@ -397,7 +397,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     # Subplot 3: Phase of the incident wave
     axs[1, 0] = fig.add_subplot(gs[1, 0])
     c3 = axs[1, 0].pcolormesh(X, Y, u_inc_phase, cmap="twilight_shifted", rasterized=True, vmin=-np.pi, vmax=np.pi)
-    cb3 = fig.colorbar(c3, ax=axs[1, 0], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb3 = fig.colorbar(c3, ax=axs[1, 0], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
     cb3.set_label(r"$u_{\rm{sct}}$", fontsize=8)
     cb3.set_ticks([-np.pi, np.pi])
     cb3.set_ticklabels([r'-$\pi$', r'$\pi$'], fontsize=8)
@@ -411,7 +411,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     axs[1, 1] = fig.add_subplot(gs[1, 1])
     phase_ratio = np.abs(u_phase) / np.abs(u_scn_phase).max()
     c4 = axs[1, 1].pcolormesh(X, Y, phase_ratio, cmap="magma", rasterized=True)
-    cb4 = fig.colorbar(c4, ax=axs[1, 1], shrink=0.7, orientation="horizontal", pad=0.07, format='%.4f')
+    cb4 = fig.colorbar(c4, ax=axs[1, 1], shrink=shrink, orientation="horizontal", pad=0.07, format='%.4f')
     cb4.set_label(r"|Error| / max($u$)", fontsize=8)
     cb4.set_ticks([0, np.max(phase_ratio)])
     cb4.set_ticklabels([f'{0:.1f}', f'{np.max(phase_ratio):.4f}'], fontsize=8)
@@ -452,11 +452,11 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
     square_size = 2 * np.pi
     square_xy = (-square_size / 2, -square_size / 2)
     square_props = dict(edgecolor="gray", facecolor="none", lw=0.8)
-    shrink = 0.7
+    shrink = 0.8
     decimales = 1e+4
 
     # Create figure and GridSpec layout
-    fig = plt.figure(figsize=(4.5, 6.5))
+    fig = plt.figure(figsize=(3.4, 5.5))
     gs = gridspec.GridSpec(3, 2, height_ratios=[1, 1, 0.6], hspace=0.4, wspace=0.05)
 
     # Subplots for amplitude

@@ -1,3 +1,4 @@
+#%%
  # -*- coding: utf-8 -*-
 
 import sys
@@ -24,6 +25,8 @@ from plotting_functions import plot_bem_error
 
 import numpy as np
 from scipy.interpolate import griddata
+
+#%%
 
 """
 Problem setup
@@ -108,6 +111,8 @@ grid_z = np.ma.masked_where(np.sqrt(X**2 + Y**2) < r_exclude, grid_z)
 u_scn_amp = grid_z.real   # Scattered field amplitude
 u_scn_phase = grid_z.imag # Scattered field phase
 
+#%%
+
 """
 Compute analytical solution for a sound-hard circular obstacle
 """
@@ -151,3 +156,5 @@ plot_bem_error(
     u_scn_phase + np.real(u_inc_exact),
     np.abs(np.imag(u_scn_exact) - u_scn_phase)
 )
+
+# %%
