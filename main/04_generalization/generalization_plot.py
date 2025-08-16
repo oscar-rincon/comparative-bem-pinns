@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #%% ======================== IMPORTS ========================
 import sys
 import os

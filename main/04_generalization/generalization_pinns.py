@@ -1,5 +1,4 @@
-# utf-8
-
+ 
 #%% ======================== IMPORTS ========================
 # Standard library imports
 import sys

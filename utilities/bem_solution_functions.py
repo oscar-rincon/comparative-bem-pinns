@@ -6,10 +6,7 @@ import time
 import numpy as np
 from scipy.interpolate import griddata
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
-#from bem_solution_functions import Circle_n, solveExteriorBoundary, solveExterior, generateInteriorPoints_excluding_circle
-
-
-
+ 
 def wavenumberToFrequency(k, c = 344.0):
     return 0.5 * k * c / np.pi
 

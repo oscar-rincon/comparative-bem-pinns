@@ -39,9 +39,9 @@ def plot_exact_displacement(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_sc
     u (numpy.ndarray): Total displacement field.
     """
 
-    fig, axs = plt.subplots(2, 3, figsize=(6.5, 3.5))
+    fig, axs = plt.subplots(2, 3, figsize=(6.5, 3.1))
     decimales = 1e+4  # Number of decimals for the color bar
-    shrink = 0.5  # Shrink factor for the color bar
+    shrink = 0.36  # Shrink factor for the color bar
 
     # Amplitude of the incident wave
     c1 = axs[0, 0].pcolormesh(X, Y, u_inc_amp, cmap="RdYlBu", rasterized=True, vmin=-1.5, vmax=1.5)
@@ -423,6 +423,8 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
     # Subplot 5: Relative error along y = 0 (full width)
     ax_err = fig.add_subplot(gs[2, :])
     ax_err.plot(x_line, rel_error_line, label='Relative error', color="#00a2ff", linewidth=1.0)
+    ax_err.axvline(x=np.pi, color="#acacac", linestyle='-', linewidth=1)
+    ax_err.axvline(x=2*np.pi, color="#acacac", linestyle='-', linewidth=1)  
     ax_err.set_xlabel(r'$x$')
     ax_err.set_ylabel(r"$|$Error$|$ / max($u$)")
     ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
@@ -506,7 +508,10 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
 
     # Subplot 5: Relative error line plot
     ax_err = fig.add_subplot(gs[2, :])
+    ax_err.axvline(x=np.pi, color="#acacac", linestyle='-', linewidth=1)
+    ax_err.axvline(x=2*np.pi, color="#acacac", linestyle='-', linewidth=1)    
     ax_err.plot(x_line, rel_error_line, label='Relative error', color="#00ff0d")
+    # Agregar líneas verticales en pi y 2pi
     ax_err.set_xlabel(r'$x$', fontsize=8)
     ax_err.set_ylabel(r"$|$Error$|$ / max($u$)", fontsize=8)
     ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)

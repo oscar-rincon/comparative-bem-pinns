@@ -1,3 +1,4 @@
+#%%
 # Standard library imports
 import sys
 import os
@@ -20,7 +21,7 @@ import matplotlib.pyplot as plt
 from analytical_solution_functions import sound_hard_circle_calc 
 from analytical_solution_functions import mask_displacement
 from plotting_functions import plot_exact_displacement
-
+#%%
 r_i = np.pi/4 # Inner radius
 l_se = np.pi # Outer semi-length
 k = 3  # Wave number
@@ -43,3 +44,4 @@ u_exact = mask_displacement(R_exact, r_i, l_se, u_exact)
 
 # Plot the displacement amplitude
 plot_exact_displacement(X, Y, np.real(u_inc_exact), np.real(u_scn_exact), np.real(u_exact), np.imag(u_inc_exact), np.imag(u_scn_exact), np.imag(u_exact))
+# %%

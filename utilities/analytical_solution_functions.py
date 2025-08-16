@@ -1,13 +1,7 @@
-# utf-8
+ 
 
 """
-Scattering of a plane wave by a rigid cylinder using the Mie series expansion.
-
-This script calculates the displacement field for the scattering of a plane wave by a rigid cylinder
-using the Mie series expansion. The displacement field is calculated as the sum of the incident and
-scattered waves. The incident wave is a plane wave impinging on the cylinder, and the scattered wave
-is the wave scattered by the cylinder. The displacement field is calculated in polar coordinates
-(r, theta) and plotted in polar coordinates.
+Scattering of a plane wave by a rigid cylinder using series expansion.
 
 """
 
