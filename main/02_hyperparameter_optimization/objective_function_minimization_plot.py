@@ -6,6 +6,7 @@ import os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import torch 
 import torch.nn as nn
 import optuna
@@ -91,24 +92,26 @@ class Sine(nn.Module):
 # %%% -------------------------------------------------------------------------
 # Optuna objective function
 # -----------------------------------------------------------------------------
+# %%% -------------------------------------------------------------------------
+# Optuna objective function
+# -----------------------------------------------------------------------------
 def objective(trial):
     results = []
     iter_train = 0
 
     # ---- Hyperparameters to optimize ----
-    adam_lr = trial.suggest_categorical("adam_lr", [1e-2, 1e-3, 1e-4])
-    lbfgs_lr = 1#trial.suggest_categorical("lbfgs_lr", [0.01, 0.1, 1.0])
+    adam_lr        = trial.suggest_categorical("adam_lr", [1e-2, 1e-3, 1e-4])
     hidden_layers_ = trial.suggest_categorical("hidden_layers", [1, 2, 3])
     hidden_units_  = trial.suggest_categorical("hidden_units", [25, 50, 75])
     activation_str = trial.suggest_categorical("activation", ["Tanh", "Sigmoid", "Sine"])
-    adam_fraction = 0.5#trial.suggest_categorical("adam_fraction", [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-    # Total fijo de iteraciones
-    total_iter = 1_000
-    adam_iters = int(total_iter * adam_fraction)
-    lbfgs_iters = total_iter - adam_iters
+    # ---- Iterations setup ----
+    adam_fraction = 0.5
+    total_iter    = 1_000
+    adam_iters    = int(total_iter * adam_fraction)
+    lbfgs_iters   = total_iter - adam_iters
 
-
+    # ---- Activation function ----
     if activation_str == "Tanh":
         activation_function_ = nn.Tanh()
     elif activation_str == "ReLU":
@@ -136,22 +139,27 @@ def objective(trial):
 
     # ---- Train with Adam ----
     start_time_adam = time.time()
-    train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left,
-               x_right, y_right, x_bottom, y_bottom, x_top, y_top,
-               k, iter_train, results, adam_lr, num_iter=adam_iters)
+    train_adam(
+        model, x_f, y_f, x_inner, y_inner, x_left, y_left,
+        x_right, y_right, x_bottom, y_bottom, x_top, y_top,
+        k, iter_train, results, adam_lr, num_iter=adam_iters
+    )
     adam_training_time = time.time() - start_time_adam
 
     # ---- Train with L-BFGS ----
     start_time_lbfgs = time.time()
-    train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left,
-                x_right, y_right, x_bottom, y_bottom, x_top, y_top,
-                k, iter_train, results, lbfgs_lr, num_iter=lbfgs_iters)
+    train_lbfgs(
+        model, x_f, y_f, x_inner, y_inner, x_left, y_left,
+        x_right, y_right, x_bottom, y_bottom, x_top, y_top,
+        k, iter_train, results, 1, num_iter=lbfgs_iters
+    )
     lbfgs_training_time = time.time() - start_time_lbfgs
 
     # ---- Evaluate model ----
     u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(
         model, l_e, r_i, k, n_grid
     )
+
     u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, \
     diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
         model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
@@ -164,9 +172,11 @@ def objective(trial):
         diff_u_scn_phase_pinns, R_exact, r_i
     )
 
+    # ---- Final metric ----
     mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
- 
-    return mean_rel_error_pinns 
+
+    return mean_rel_error_pinns
+
 
 # %%% -------------------------------------------------------------------------
 # Run Optuna study
@@ -184,15 +194,101 @@ print(study_loaded.best_value, study_loaded.best_params)
  
 # %%%
 
-vis.plot_rank(study).update_layout(height=800)
+# ============================
+# Extract trial results
+# ============================
+df = study_loaded.trials_dataframe(attrs=("number", "value", "state"))
+df = df[df["state"] == "COMPLETE"]
+best_values = df["value"].cummin()
 
+df_params = study_loaded.trials_dataframe(attrs=("number", "value", "params", "state"))
+df_params = df_params[df_params["state"] == "COMPLETE"]
 
-# %%
+params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
-vis.plot_optimization_history(study)
+# ============================
+# Create figure and gridspec
+# ============================
+fig = plt.figure(figsize=(7, 3.5))
+gs = fig.add_gridspec(2, 1, height_ratios=[1, 1.3], hspace=0.4)
 
-# %%
-vis.plot_param_importances(study)
+# ============================
+# Top panel (optimization history)
+# ============================
+ax0 = fig.add_subplot(gs[0, 0])
+ax0.plot(df["number"], best_values, color="#c7c8c8ff",
+         linewidth=1, label="Best Value", zorder=1)
+ax0.scatter(df["number"], df["value"], color="#437ab0ff",
+            s=10, label="Objective Value", zorder=2)
+
+ax0.set_ylabel("Objective Value", fontsize=8)
+ax0.set_xlabel("Trial number", fontsize=8)
+
+ax0.set_xticks([0, 5, 10, 15, 20])
+ax0.set_yticks([0.5, 0.75, 1, 1.25])
+ax0.tick_params(axis="y", labelsize=7)
+ax0.tick_params(axis="x", labelsize=7)
+
+# Adjust width manually (left, bottom, width, height in figure coordinates)
+pos = ax0.get_position()
+ax0.set_position([pos.x0, pos.y0, 0.95 * pos.width, pos.height])
+
+# ============================
+# Bottom panel (slice plots)
+# ============================
+gs2 = gs[1].subgridspec(1, len(params), wspace=0.4)
+axes = [fig.add_subplot(gs2[0, i]) for i in range(len(params))]
+
+norm = mcolors.Normalize(vmin=0, vmax=20)
+
+for i, p in enumerate(params):
+    sc = axes[i].scatter(
+        df_params[f"params_{p}"],
+        df_params["value"],
+        c=df_params["number"],
+        cmap="Blues",
+        edgecolor="k",
+        s=15,
+        norm=norm,
+        alpha=0.5
+    )
+
+    # X labels
+    if p == "adam_lr":
+        axes[i].set_xlabel(r"Learning rate $\alpha$", fontsize=8)
+        axes[i].set_xscale("log")
+    elif p == "hidden_layers":
+        axes[i].set_xlabel(r"Hidden layers $L$", fontsize=8)
+    elif p == "hidden_units":
+        axes[i].set_xlabel(r"Neurons per layer $N$", fontsize=8)
+        axes[i].set_xticks([25, 50, 75])
+    elif p == "activation":
+        axes[i].set_xlabel(r"Activation $\sigma$", fontsize=8)
+
+    # Y label only for first plot
+    if i == 0:
+        axes[i].set_ylabel("Objective Value", fontsize=8)
+
+    # Ticks
+    axes[i].tick_params(axis="x", rotation=45, labelsize=7)
+    axes[i].tick_params(axis="y", labelsize=7)
+
+# ============================
+# Shared colorbar
+# ============================
+cbar = fig.colorbar(sc, ax=axes,
+                    orientation="vertical", fraction=0.05, pad=0.02)
+cbar.set_ticks(np.arange(0, 20 + 1, 5))  # ticks cada 5 → incluye el 20
+cbar.set_label("Trial number", fontsize=8)
+cbar.ax.tick_params(labelsize=7)
+
+# ============================
+# Save & show
+# ============================
+plt.savefig("figures/hyperparameter_tunning.svg", dpi=300, bbox_inches="tight")
+plt.savefig("figures/hyperparameter_tunning.pdf", dpi=300, bbox_inches="tight")
+plt.show()
+
 
 #%%
 

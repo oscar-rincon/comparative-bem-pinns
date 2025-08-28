@@ -14,7 +14,7 @@ make run_analytical_solution
 
  
 
-## 🧹 Cleaning Up
+##  Cleaning Up
 
 ```bash
 make clean
