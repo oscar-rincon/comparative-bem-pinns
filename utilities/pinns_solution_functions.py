@@ -221,11 +221,11 @@ def mse_b(model, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y
     mse = mse_inner + mse_left + mse_right + mse_bottom + mse_top
     return mse
 
-def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, num_iter=5_000):
- 
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-    global iter
-     
+def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results, lr_, num_iter=500):
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_)
+    #global iter
+
     for i in range(1, num_iter + 1):
         optimizer.zero_grad()
         loss_f = mse_f(model, x_f, y_f, k)
@@ -237,10 +237,10 @@ def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_rig
         results.append([iter, loss.item()])
         if iter % 500 == 0:
             torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-            print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
+            #print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
 
 
-def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k):
+def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results):
     
     # Reset gradients
     optimizer.zero_grad()
@@ -254,21 +254,21 @@ def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_righ
     loss.backward(retain_graph=True)
     
     # Update iteration counter and print loss every 100 iterations
-    global iter
+    #global iter
     iter += 1
     results.append([iter, loss.item()])
     if iter % 500 == 0:
         torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-        print(f"Iteration {iter}, Loss: {loss.item()}")
-            
+        #print(f"Iteration {iter}, Loss: {loss.item()}")
+
     return loss
 
 
 # Function for L-BFGS training
-def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, num_iter=5_000):
+def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results, lbfgs_lr, num_iter=500):
 
     optimizer = torch.optim.LBFGS(model.parameters(),
-                                    lr=1,
+                                    lr=lbfgs_lr,
                                     max_iter=num_iter,
                                     max_eval=num_iter,
                                     tolerance_grad=1e-7,
@@ -276,10 +276,9 @@ def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_ri
                                     tolerance_change=1.0 * np.finfo(float).eps,
                                     line_search_fn="strong_wolfe")
  
-    closure_fn = partial(closure, model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k)
+    closure_fn = partial(closure, model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results)
     optimizer.step(closure_fn)
 
- 
 
 def generate_points(n_Omega_P, side_length, r_i, n_Gamma_I, n_boundary_e):
     """
@@ -450,7 +449,7 @@ def plot_points(x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_
     
 #     return model
 
-def initialize_and_load_model(model_path, hidden_layers, hidden_units):
+def initialize_and_load_model(model_path, hidden_layers, hidden_units, activation_function):
     """
     Initializes an MLP model and loads pre-trained weights from the specified path.
     Args:
@@ -473,8 +472,8 @@ def initialize_and_load_model(model_path, hidden_layers, hidden_units):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Initialize the model
-    model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=nn.Tanh()).to(device)
-    
+    model = MLP(input_size=2, output_size=2, hidden_layers=hidden_layers, hidden_units=hidden_units, activation_function=activation_function).to(device)
+
     # Load the pre-trained model
     model.load_state_dict(torch.load(model_path))
     model.eval()

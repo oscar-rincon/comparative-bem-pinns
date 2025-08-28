@@ -12,3 +12,6 @@ dependencies:
   - pandas==2.2.2
   - imageio==2.34.1
   - svgutils==0.3.4
+  - optuna==4.5.0
+  - plotly==6.0.1
+  - nbformat==5.10.4

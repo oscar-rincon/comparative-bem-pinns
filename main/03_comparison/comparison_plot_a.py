@@ -92,10 +92,6 @@ from pinns_solution_functions import evaluate_pinn_accuracy
 
 #%%
 
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import LogLocator
-
 # --- Load CSV data ---
 bem_df = pd.read_csv("data/bem_accuracy_vs_n.csv")
 pinn_df = pd.read_csv("data/pinn_accuracy_vs_architecture.csv")
