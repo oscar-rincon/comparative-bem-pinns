@@ -6,14 +6,14 @@ This repository contains the code and scripts used to generate the figures prese
 
 We recommend setting up a new Python environment with conda. You can do this by running the following commands:
 
-```
+```bash
 conda env create -f environment.yml
 conda activate comparative-pinns-bem-env
 ```
 
 To verify the packages installed in your `comparative-pinns-bem-env` conda environment, you can use the following command:
 
-```
+```bash
 conda list -n comparative-pinns-bem-env
 ```
 
@@ -25,7 +25,6 @@ conda list -n comparative-pinns-bem-env
 
 ![displacement_exact](main/01_analytical_solution/figures/displacement_exact.svg)
 
-
 - `02_hyperparameter_optimization/`: Results in Figure 5.
 
 ![hyperparameter_tunning](main/02_hyperparameter_optimization/figures/hyperparameter_tunning.svg)
@@ -34,9 +33,8 @@ conda list -n comparative-pinns-bem-env
 
 ![comparison](main/03_comparison/figures/comparison.svg)
 
-
 - `04_generalization/`: Results in Figure 7. Scattered field computed by BEM and PINNs outside the training region.
- 
+
 ![generalization](main/04_generalization/figures/generalization.svg)
 
 ## How to Run
@@ -47,7 +45,7 @@ To execute the full workflow (**Analytical → BEM → PINNs → Plots → Gener
 make all
 ```
 
-###  Run Individual Steps
+### Run Individual Steps
 
 Run the analytical solution script:
 
@@ -99,7 +97,6 @@ make run_generalization_bem
 
 Run the generalization PINNs script:
 
-
 ```bash
 make run_generalization_pinns
 ```
@@ -111,6 +108,7 @@ make run_generalization_plot
 ```
 
 ### Cleaning Up
+
 To remove all generated figures from the figures/ folders:
 
 ```bash

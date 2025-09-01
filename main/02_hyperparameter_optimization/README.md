@@ -20,4 +20,3 @@ Generate the optimization results plot:
 
 ```bash
 make plot_optimize
-```
