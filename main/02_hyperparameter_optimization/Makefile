@@ -1,20 +1,25 @@
 # Makefile to run Optuna minimization script
+ 
+.PHONY: all clean optimize plot_optimize
 
-.PHONY: all clean run_hyperparameter_optimization
+all: optimize plot_optimize
 
-# Define default target
-all: run_hyperparameter_optimization
+# Run hyperparameter optimization
+optimize:
+    @echo "Running optimize_pinns.py with Optuna..."
+    @python3 optimize_pinns.py
+    @echo "Finished optimize_pinns.py..."
 
-# Target to run hyperparameter optimization
-run_hyperparameter_optimization:
-	@echo "Running objective_function_minimization_plot.py with Optuna..."
-	@python objective_function_minimization_plot.py
-	@echo "Finished objective_function_minimization_plot.py..."
+# Run plotting script
+plot_optimize:
+    @echo "Running plot_optuna_results.py..."
+    @python3 plot_optuna_results.py
+    @echo "Finished plot_optuna_results.py..."
 
 # Clean up generated files
 clean:
-	@echo "Cleaning up..."
-	@rm -rf figures/* 
-	@rm -rf __pycache__ 
-	@rm -rf *.log *.tmp
-	@echo "Clean up complete."
+    @echo "Cleaning up..."
+    @rm -rf figures/* || true
+    @rm -rf __pycache__ || true
+    @rm -f *.log *.tmp study.pkl
+    @echo "Clean up complete."

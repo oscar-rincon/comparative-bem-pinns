@@ -2,6 +2,8 @@
 
 .PHONY: all clean run_all \
 	run_analytical_solution \
+	run_hyperparameter_optimization \
+	run_plot_optuna_results \
 	run_comparison_bem run_comparison_pinns \
 	run_comparison_plot_a run_comparison_plot_b \
 	run_generalization_bem run_generalization_pinns \
@@ -11,7 +13,8 @@
 all: run_all
 
 # Run all scripts in order
-run_all: run_analytical_solution run_comparison_bem run_comparison_pinns \
+run_all: run_analytical_solution run_hyperparameter_optimization \
+         run_plot_optuna_results run_comparison_bem run_comparison_pinns \
          run_comparison_plot_a run_comparison_plot_b \
          run_generalization_bem run_generalization_pinns run_generalization_plot
 
@@ -20,6 +23,18 @@ run_analytical_solution:
 	@echo "Running analytical_solution.py..."
 	@python main/01_analytical_solution/analytical_solution.py
 	@echo "Finished analytical_solution.py..."
+
+# Hyperparameter optimization
+run_hyperparameter_optimization:
+	@echo "Running optimize_pinns.py..."
+	@python main/02_hyperparameter_optimization/optimize_pinns.py
+	@echo "Finished optimize_pinns.py..."
+
+# Plot Optuna results
+run_plot_optuna_results:
+	@echo "Running plot_optuna_results.py..."
+	@python main/02_hyperparameter_optimization/plot_optuna_results.py
+	@echo "Finished plot_optuna_results.py..."
 
 # Comparison BEM
 run_comparison_bem:
@@ -67,6 +82,7 @@ run_generalization_plot:
 clean:
 	@echo "Cleaning up figures..."
 	@rm -rf main/01_analytical_solution/figures/*
+	@rm -rf main/02_hyperparameter_optimization/figures/*
 	@rm -rf main/03_comparison/figures/*
 	@rm -rf main/04_generalization/figures/*
 	@echo "Clean up complete."

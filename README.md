@@ -28,6 +28,7 @@ conda list -n comparative-pinns-bem-env
 
 - `02_hyperparameter_optimization/`: Results in Figure 5.
 
+![hyperparameter_tunning](main/02_hyperparameter_optimization/figures/hyperparameter_tunning.svg)
 
 - `03_comparison/`: Results in Figure 6. Performance evaluation of BEM and PINNs.
 
@@ -52,6 +53,18 @@ Run the analytical solution script:
 
 ```bash
 make run_analytical_solution
+```
+
+Run the hyperparameter optimization script:
+
+```bash
+make run_hyperparameter_optimization
+```
+
+Run the hyperparameter optimization results plot script:
+
+```bash
+make run_plot_optuna_results
 ```
 
 Run the BEM comparison script:
