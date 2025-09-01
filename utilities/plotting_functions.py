@@ -514,7 +514,8 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
     # Agregar líneas verticales en pi y 2pi
     ax_err.set_xlabel(r'$x$', fontsize=8)
     ax_err.set_ylabel(r"$|$Error$|$ / max($u$)", fontsize=8)
-    ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
+    ax_err.set_ylim(0, 10)
+    #ax_err.set_ylim(0, np.max(rel_error_line) * 1.1)
     ax_err.xaxis.set_major_locator(MultipleLocator(base=np.pi))
 
     def format_func(value, tick_number):

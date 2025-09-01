@@ -96,6 +96,37 @@ from pinns_solution_functions import evaluate_pinn_accuracy
 bem_df = pd.read_csv("data/bem_accuracy_vs_n.csv")
 pinn_df = pd.read_csv("data/pinn_accuracy_vs_architecture.csv")
  
+#%%
+
+# Values reported in the paragraph
+# PINN with 3 layers and 75 neurons
+pinn_val = pinn_df[(pinn_df["layers"] == 3) & (pinn_df["neurons_per_layer"] == 75)].iloc[0]
+
+# Closest BEM (n=15)
+bem_val = bem_df[bem_df["n"] == 15].iloc[0]
+
+# Relative speed calculations
+bem_vs_pinn_training = bem_val["time_sec"] / pinn_val["training_time_sec"]  # ratio < 1
+pinn_eval_vs_bem = bem_val["time_sec"] / pinn_val["evaluation_time_sec"]    # ratio > 1
+
+# Express as "times faster"
+bem_times_faster = round(1 / bem_vs_pinn_training)   
+pinn_times_faster = round(pinn_eval_vs_bem)         
+
+# Collect reported values
+reported_values = {
+    "PINN (3,75) relative_error": pinn_val["relative_error"],
+    "PINN (3,75) training_time_sec": pinn_val["training_time_sec"],
+    "PINN (3,75) evaluation_time_sec": pinn_val["evaluation_time_sec"],
+    "BEM (n=15) relative_error": bem_val["relative_error"],
+    "BEM (n=15) time_sec": bem_val["time_sec"],
+    "BEM ~times faster than PINN training": bem_times_faster,
+    "PINN evaluation ~times faster than BEM": pinn_times_faster,
+}
+
+reported_values
+
+
  
 #%%
 
@@ -108,7 +139,7 @@ plt.figure(figsize=(6.7, 2.0))
 
 # --- Plot BEM (blue) ---
 bem_points = plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
-                         color="#0000a8", edgecolors="#0000a8",
+                         color="#437ab0ff", edgecolors="#437ab0ff",
                          label='BEM (solution)', s=bem_marker_sizes, zorder=5)
  
 
@@ -149,6 +180,6 @@ plt.legend(loc='lower left', fontsize=7.5, frameon=False,
 
 # --- Final layout and save ---
 plt.tight_layout()
-plt.savefig("figures/rel_error_time_annotated.svg", dpi=150, bbox_inches='tight')
+plt.savefig("figures/rel_error_time.svg", dpi=150, bbox_inches='tight')
 plt.show()
  
