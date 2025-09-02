@@ -301,7 +301,7 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
 
     plt.tight_layout()
     plt.savefig("figures/bem_error.svg", dpi=150, bbox_inches='tight')
-    plt.show()
+    #plt.show()
 
 def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):
     """
@@ -341,7 +341,7 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
 
     plt.tight_layout()
     plt.savefig("figures/pinns_error.svg", dpi=150, bbox_inches='tight')
-    plt.show()
+    #plt.show()
 
 def format_func(value, tick_number):
     n = int(round(value / np.pi))
@@ -441,7 +441,7 @@ def plot_bem_displacements_errors(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase
 
     plt.tight_layout()
     plt.savefig("figures/generalization_bem.svg", dpi=300, bbox_inches='tight')
-    plt.show()
+    #plt.show()
 
 def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
                                             u_inc_phase, u_scn_phase, u_phase,
@@ -538,4 +538,4 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
 
     # Save and show
     plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')
-    plt.show()
+    #plt.show()

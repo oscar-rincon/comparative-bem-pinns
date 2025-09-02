@@ -1,9 +1,9 @@
 # Makefile to run Python scripts in sequence
 
-.PHONY: all clean run_comparison_bem run_comparison_pinns  run_comparison_plot
+.PHONY: all run_comparison_bem run_comparison_pinns  run_comparison_plot
 
 # Define default target
-all: clean run_generalization_bem run_generalization_pinns run_generalization_plot
+all: run_generalization_bem run_generalization_pinns run_generalization_plot
 
 # Target to run generalization_bem.py
 run_generalization_bem:

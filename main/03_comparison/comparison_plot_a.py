@@ -132,7 +132,7 @@ plt.legend(loc='lower left', fontsize=7.5, frameon=False,
 # --- Final layout and save ---
 plt.tight_layout()
 plt.savefig("figures/rel_error_time.svg", dpi=150, bbox_inches='tight')
-plt.show()
+#plt.show()
  
 
 #%% Record runtime and save to .txt

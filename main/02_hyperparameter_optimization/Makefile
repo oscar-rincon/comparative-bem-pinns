@@ -1,6 +1,6 @@
 # Makefile to run Optuna minimization script
  
-.PHONY: all clean optimize plot_optimize
+.PHONY: all optimize plot_optimize
 
 all: optimize plot_optimize
 

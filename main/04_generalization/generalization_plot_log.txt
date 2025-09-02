@@ -1,2 +1,0 @@
-Script: generalization_plot.py
-Execution time (s): 0.02
