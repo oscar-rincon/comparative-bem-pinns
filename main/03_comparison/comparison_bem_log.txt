@@ -1,2 +1,0 @@
-Script: comparison_bem.py
-Execution time (s): 13.12

@@ -20,6 +20,22 @@ sys.path.insert(0, utilities_dir)
 # Importar funciones personalizadas
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
 from pinns_solution_functions import generate_points, MLP, init_weights, train_adam, train_lbfgs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+#%% Start time measurement
+# Record start time
+start_time = time.time()
+
+# Get script name without extension
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+
+# Define output folder (e.g., "logs" inside the current script directory)
+output_folder = os.path.join(os.path.dirname(__file__), "logs")
+
+# Create folder if it does not exist
+os.makedirs(output_folder, exist_ok=True)
+
+# Define output file path
+output_file = os.path.join(output_folder, f"{script_name}_log.txt")
+
 
 #%%
 # Parámetros
@@ -125,3 +141,35 @@ for key, value in best_trial.params.items():
 #%%
 # Guardar el estudio
 joblib.dump(study, "study.pkl")
+
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+ 
+# Build log text
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+# Define log filename inside the logs folder
+log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename}")
+
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+ 
+# Build log text
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+# Define log filename inside the logs folder
+log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename}")

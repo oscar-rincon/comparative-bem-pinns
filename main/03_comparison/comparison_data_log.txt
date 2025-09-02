@@ -1,2 +1,0 @@
-Script: comparison_data.py
-Execution time (s): 223.02

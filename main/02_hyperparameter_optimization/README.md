@@ -21,3 +21,7 @@ Generate the optimization results plot:
 ```bash
 make plot_optimize
 ```
+
+## Estimated time
+
+The execution of this script takes approximately 4.31 s.

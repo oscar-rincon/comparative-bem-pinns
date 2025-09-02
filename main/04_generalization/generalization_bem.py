@@ -29,13 +29,21 @@ from bem_solution_functions import solveExterior
 from bem_solution_functions import generateInteriorPoints_excluding_circle
 from plotting_functions import plot_bem_displacements_errors
 
-#%%
-
+#%% Start time measurement
 # Record start time
 start_time = time.time()
 
-# Get script name
-script_name = os.path.basename(__file__) 
+# Get script name without extension
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+
+# Define output folder (e.g., "logs" inside the current script directory)
+output_folder = os.path.join(os.path.dirname(__file__), "logs")
+
+# Create folder if it does not exist
+os.makedirs(output_folder, exist_ok=True)
+
+# Define output file path
+output_file = os.path.join(output_folder, f"{script_name}_log.txt")
 
 #%% ======================= PROBLEM SETUP =======================
 """
@@ -349,11 +357,15 @@ print(f"Log saved to {log_filename}")
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
-
+ 
+# Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-log_filename = os.path.splitext(script_name)[0] + "_log.txt"
+# Define log filename inside the logs folder
+log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file
 with open(log_filename, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to {log_filename}") 
+print(f"Log saved to: {log_filename}")

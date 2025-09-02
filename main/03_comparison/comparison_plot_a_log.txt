@@ -1,2 +1,0 @@
-Script: comparison_plot_a.py
-Execution time (s): 2.73
