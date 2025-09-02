@@ -37,6 +37,15 @@ conda list -n comparative-pinns-bem-env
 
 ![generalization](main/04_generalization/figures/generalization.svg)
 
+## Execution times
+
+- `01_analytical_solution/`: 8.71 s  
+- `02_hyperparameter_optimization/`: 4.31 s  
+- `03_comparison/`: 241.72 s  
+- `04_generalization/`: 48.55 s  
+
+**Total execution time:** 303.29 s
+
 ## How to Run
 
 To execute the full workflow (**Analytical → BEM → PINNs → Plots → Generalization**), open a terminal in the project root directory and run:

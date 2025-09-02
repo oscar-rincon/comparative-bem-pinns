@@ -39,4 +39,4 @@ make run_comparison_plot_b
 
 ## Estimated time
 
-The execution of this script takes approximately 19.28 s.
+The execution of this script takes approximately 241.72 s.

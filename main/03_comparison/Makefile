@@ -1,9 +1,9 @@
 # Makefile to run Python scripts in sequence
 
-.PHONY: all run_comparison_bem run_comparison_pinns run_comparison_plot_a run_comparison_plot_b
+.PHONY: all run_comparison_bem run_comparison_pinns run_comparison_data run_comparison_plot_a run_comparison_plot_b
 
 # Define default target
-all: run_comparison_bem run_comparison_pinns run_comparison_plot_a run_comparison_plot_b
+all: run_comparison_bem run_comparison_pinns run_comparison_data run_comparison_plot_a run_comparison_plot_b
 
 # Target to run comparison_bem.py
 run_comparison_bem:
@@ -16,6 +16,12 @@ run_comparison_pinns:
 	@echo "Running comparison_pinns.py..."
 	@python comparison_pinns.py
 	@echo "Finished comparison_pinns.py..."	
+
+# Target to run comparison_data.py
+run_comparison_data:
+	@echo "Running comparison_data.py..."
+	@python comparison_data.py
+	@echo "Finished comparison_data.py..."
 
 # Target to run comparison_plot_a.py
 run_comparison_plot_a:
