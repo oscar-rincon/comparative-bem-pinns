@@ -1,6 +1,6 @@
 # Makefile to run Python scripts in sequence
 
-.PHONY: all clean run_analytical_solution 
+.PHONY: all run_analytical_solution 
 
 # Define default target
 all: run_analytical_solution

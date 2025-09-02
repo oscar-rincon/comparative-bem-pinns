@@ -29,9 +29,6 @@ Run the generalization plot:
 make run_generalization_plot
 ```
 
+## Estimated time
 
-## 🧹 Cleaning Up
-
-```bash
-make clean
-```
+The execution of this script takes approximately 48.55 s.

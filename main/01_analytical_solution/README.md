@@ -16,11 +16,5 @@ make run_analytical_solution
 
 ## Estimated time
 
-The execution of this script takes approximately **8.71** on a standard machine.
-
-
-##  Cleaning Up
-
-```bash
-make clean
-```
+The execution of this script takes approximately 8.71 s.
+ 

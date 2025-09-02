@@ -37,8 +37,6 @@ Generate the comparison plot b:
 make run_comparison_plot_b
 ```
 
-##  Cleaning Up
+## Estimated time
 
-```bash
-make clean
-```
+The execution of this script takes approximately 19.28 s.
