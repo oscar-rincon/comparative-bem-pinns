@@ -3,6 +3,7 @@
 # Standard library imports
 import sys
 import os
+import time
 import numpy as np
 import torch
 from torch import nn
@@ -27,6 +28,14 @@ from plotting_functions import plot_pinns_displacements_with_errorline
 from pinns_solution_functions import initialize_and_load_model
 from pinns_solution_functions import predict_displacement_pinns 
 from pinns_solution_functions import process_displacement_pinns
+
+#%%
+
+# Record start time
+start_time = time.time()
+
+# Get script name
+script_name = os.path.basename(__file__) 
 
 #%% ======================== PARAMETERS ========================
 # Parameters
@@ -257,4 +266,14 @@ plot_pinns_displacements_with_errorline(
     rel_error_line
 )
 
-# %%
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+log_filename = os.path.splitext(script_name)[0] + "_log.txt"
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to {log_filename}") 

@@ -2,14 +2,18 @@
 
 #%%
 # Imports
- 
+import time
+import os 
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-# Set the current directory and utilities path
- 
+# Record start time
+start_time = time.time()
+
+# Get script name
+script_name = os.path.basename(__file__) 
 
 #%%
 # Cargar el estudio
@@ -92,4 +96,14 @@ plt.savefig("figures/hyperparameter_tunning.svg", dpi=300, bbox_inches="tight")
 plt.savefig("figures/hyperparameter_tunning.pdf", dpi=300, bbox_inches="tight")
 plt.show()
 
-# %%
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+log_filename = os.path.splitext(script_name)[0] + "_log.txt"
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to {log_filename}")

@@ -3,7 +3,8 @@
 # Standard library imports
 import sys
 import os
- 
+import time
+
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -16,6 +17,15 @@ sys.path.insert(0, utilities_dir)
 
 from svgutils.compose import *
 
+#%%
+
+# Record start time
+start_time = time.time()
+
+# Get script name
+script_name = os.path.basename(__file__) 
+
+#%%
 # Load the SVGs
 svg1 = SVG("figures/bem_error.svg").scale(1.0)
 svg2 = SVG("figures/pinns_error.svg").scale(1.0)
@@ -40,4 +50,15 @@ Figure(
     #Text("A", 5, 15, size=12, weight="bold",font="sans-serif"),
     Panel(svg2).move(-3, 175)#,Text("B", 5, 225, size=12, weight="bold", font="sans-serif")
 ).save("figures/comparison.svg")
-# %%
+ 
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+log_filename = os.path.splitext(script_name)[0] + "_log.txt"
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to {log_filename}") 

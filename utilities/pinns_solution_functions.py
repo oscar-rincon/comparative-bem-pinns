@@ -741,7 +741,7 @@ def evaluate_pinn_accuracy(n_layers, n_neurons, model_dir='models', k=3.0, r_i=n
 
     # Load and evaluate model
     start_time = time.time()
-    model = initialize_and_load_model(model_path, n_layers, n_neurons)
+    model = initialize_and_load_model(model_path, n_layers, n_neurons, nn.Tanh())
     u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, _, _ = process_displacement_pinns(
         model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
     )

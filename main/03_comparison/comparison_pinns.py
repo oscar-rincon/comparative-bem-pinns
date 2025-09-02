@@ -3,9 +3,10 @@
 # Standard library imports
 import sys
 import os
+import time
 import numpy as np
 from scipy.interpolate import griddata
-
+from torch import nn
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -23,6 +24,14 @@ from plotting_functions import plot_pinns_error
 from pinns_solution_functions import initialize_and_load_model
 from pinns_solution_functions import predict_displacement_pinns 
 from pinns_solution_functions import process_displacement_pinns
+
+#%%
+
+# Record start time
+start_time = time.time()
+
+# Get script name
+script_name = os.path.basename(__file__) 
 
 #%%
 r_i = np.pi/4 # Inner radius
@@ -58,8 +67,8 @@ iter = 0                 # Iteration counter
 side_length = 2 * l_e    # Side length of the square
  
 # Initialize and load the model
-model_path = 'models/Scattering_2_75.pt'
-model = initialize_and_load_model(model_path, 2, 75)
+model_path = 'models/Scattering_3_75.pt'
+model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
 
 # Predict the displacement
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)
@@ -93,3 +102,16 @@ plot_pinns_error(
     u_sc_phase_pinns + np.real(u_inc_exact),
     np.abs(np.imag(u_scn_exact) - u_sc_phase_pinns)
 )
+
+
+#%% Record runtime and save to .txt
+end_time = time.time()
+elapsed_time = end_time - start_time
+
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+
+log_filename = os.path.splitext(script_name)[0] + "_log.txt"
+with open(log_filename, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to {log_filename}")

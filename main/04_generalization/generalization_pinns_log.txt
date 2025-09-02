@@ -1,0 +1,2 @@
+Script: generalization_pinns.py
+Execution time (s): 35.74
