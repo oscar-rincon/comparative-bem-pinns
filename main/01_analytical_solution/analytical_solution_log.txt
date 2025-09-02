@@ -1,2 +1,0 @@
-Script: analytical_solution.py
-Execution time (s): 8.54
