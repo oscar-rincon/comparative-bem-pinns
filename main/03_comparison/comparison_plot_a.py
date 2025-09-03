@@ -56,6 +56,14 @@ pinn_val = pinn_df[(pinn_df["layers"] == 3) & (pinn_df["neurons_per_layer"] == 7
 # Closest BEM (n=15)
 bem_val = bem_df[bem_df["n"] == 15].iloc[0]
 
+# --- Extract selected values for plotting ---
+error_bem_sel = bem_val["relative_error"]
+time_bem_sel  = bem_val["time_sec"]
+
+error_pinn_sel = pinn_val["relative_error"]
+time_pinn_sel  = pinn_val["training_time_sec"]  
+time_pinn_eval = pinn_val["evaluation_time_sec"]
+
 # Relative speed calculations
 bem_vs_pinn_training = bem_val["time_sec"] / pinn_val["training_time_sec"]  # ratio < 1
 pinn_eval_vs_bem = bem_val["time_sec"] / pinn_val["evaluation_time_sec"]    # ratio > 1
@@ -125,6 +133,22 @@ ax.set_yticklabels([r'$10^{3}$', r'$10^{2}$', r'$10^{1}$', r'$10^{0}$', r'$10^{-
 # --- Grid ---
 #plt.grid(True, which="both", ls="--", linewidth=0.5)
 
+plt.annotate(r"BEM ($n=15$)", 
+             (error_bem_sel, time_bem_sel), 
+             xytext=(error_bem_sel*0.7, time_bem_sel*3), 
+             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
+
+plt.annotate(r"PINN ($L=3,n=75$)", 
+             (error_pinn_sel, time_pinn_sel), 
+             xytext=(error_pinn_sel*0.45, time_pinn_sel*0.57), 
+             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
+
+plt.annotate(r"PINN ($L=3,n=75$)", 
+             (error_pinn_sel, time_pinn_eval), 
+             xytext=(error_pinn_sel*0.45, time_pinn_eval*0.57), 
+             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
+
+
 # --- Legend ---
 plt.legend(loc='lower left', fontsize=7.5, frameon=False,
            handletextpad=0.5, markerscale=0.9, labelspacing=1.2)
@@ -132,7 +156,7 @@ plt.legend(loc='lower left', fontsize=7.5, frameon=False,
 # --- Final layout and save ---
 plt.tight_layout()
 plt.savefig("figures/rel_error_time.svg", dpi=150, bbox_inches='tight')
-#plt.show()
+plt.show()
  
 
 #%% Record runtime and save to .txt
