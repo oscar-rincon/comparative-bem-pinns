@@ -57,7 +57,7 @@ Figure(
     Panel(svg1).move(0, 0).scale(1.3),
     #Text("A", 5, 15, size=12, weight="bold",font="sans-serif"),
     Panel(svg2).move(-3, 175)#,Text("B", 5, 225, size=12, weight="bold", font="sans-serif")
-).save("figures/comparison.svg")
+).save("figures/comparison.svg") 
  
 #%% Record runtime and save to .txt
 end_time = time.time()
