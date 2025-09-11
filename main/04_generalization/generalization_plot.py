@@ -2,6 +2,7 @@
 import sys
 import os
 import time
+import cairosvg
 #%% ======================== PATH SETUP ========================
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,10 +37,17 @@ svg2 = SVG("figures/generalization_pinns.svg")
 Figure(
     658,  # total width (still no math if you avoid this by guessing)
     573,  # height (or just use one of them)
+    SVG("figures/base.svg").scale(4.0),
     Panel(svg1).scale(1.30),
     Panel(svg2).move(255, 0).scale(1.30)
-).save("figures/generalization.svg")
+).save("figures/06_generalization.svg")
 
+# Convert to PDF
+cairosvg.svg2pdf(
+    url="figures/06_generalization.svg", 
+    write_to="figures/06_generalization.pdf"
+)
+ 
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time

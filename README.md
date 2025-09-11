@@ -35,7 +35,7 @@ conda list -n comparative-pinns-bem-env
 
 - `04_generalization/`: Results in Figure 7. Scattered field computed by BEM and PINNs outside the training region.
 
-![generalization](main/04_generalization/figures/generalization.svg)
+![generalization](main/04_generalization/figures/06_generalization.svg)
 
 ## Execution times
 
