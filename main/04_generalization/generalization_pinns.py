@@ -253,15 +253,14 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
     ax_err.set_title('PINNs - Amplitude', fontsize=8)
 
     # Add rotated labels
-    fig.text(0.08, 0.79, r'BEM - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
-    fig.text(0.08, 0.48, r'BEM - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.08, 0.79, r'PINNs - Amplitude', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.08, 0.48, r'PINNs - Phase', fontsize=8, va='center', ha='center', rotation='vertical')
 
     # Save and show
     plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')
-    #plt.show()
+    plt.show()
 
-
-
+# 
 plot_pinns_displacements_with_errorline(
     X, Y,
     u_sc_amp_pinns,
@@ -289,3 +288,5 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+
+# %%

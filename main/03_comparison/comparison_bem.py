@@ -15,6 +15,16 @@ os.chdir(current_dir)
 # Modify the module search path to include utilities directory
 sys.path.insert(0, utilities_dir)
 
+import importlib
+import analytical_solution_functions
+import bem_solution_functions
+import plotting_functions
+
+# Reload them each time this file runs
+importlib.reload(analytical_solution_functions)
+importlib.reload(bem_solution_functions)
+importlib.reload(plotting_functions)
+
 from analytical_solution_functions import sound_hard_circle_calc 
 from analytical_solution_functions import mask_displacement
 
@@ -151,6 +161,7 @@ Compute relative L2 error (real part of scattered field)
 """
 
 # Create masked copies to zero-out interior region
+
 R_grid = np.sqrt(X**2 + Y**2)
 u_scn_exact_masked = np.copy(u_scn_exact)
 u_scn_amp_masked   = np.copy(u_scn_amp)
@@ -161,6 +172,7 @@ relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real,
                  np.linalg.norm(u_scn_exact_masked.real, 2)
 print(f"Relative L2 error: {relative_error:.4e}")
 
+#%%
 """
 Visualize the BEM error in amplitude and phase
 """
@@ -190,3 +202,5 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+
+# %%

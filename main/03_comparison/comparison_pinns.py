@@ -17,6 +17,16 @@ os.chdir(current_dir)
 # Modify the module search path to include utilities directory
 sys.path.insert(0, utilities_dir)
 
+import importlib
+import analytical_solution_functions
+import bem_solution_functions
+import plotting_functions
+
+# Reload them each time this file runs
+importlib.reload(analytical_solution_functions)
+importlib.reload(bem_solution_functions)
+importlib.reload(plotting_functions)
+
 # Import Functions
 from analytical_solution_functions import sound_hard_circle_calc 
 from analytical_solution_functions import mask_displacement
@@ -111,7 +121,6 @@ plot_pinns_error(
     np.abs(np.imag(u_scn_exact) - u_sc_phase_pinns)
 )
 
-
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
@@ -127,3 +136,4 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+# %%

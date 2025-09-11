@@ -55,3 +55,5 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+
+# %%

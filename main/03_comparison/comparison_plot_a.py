@@ -96,23 +96,121 @@ bem_marker_sizes = 7 #* bem_df["n"]          # BEM: scaled by number of integrat
 # --- Plot setup ---
 plt.figure(figsize=(6.7, 2.0))
 
-# --- Plot BEM (blue) ---
-bem_points = plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
-                         color="#437ab0ff", edgecolors="#437ab0ff",
-                         label='BEM (solution)', s=bem_marker_sizes, zorder=5)
+# # --- Plot BEM (blue) ---
+# bem_points = plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
+#                          color="#437ab0ff", edgecolors="#437ab0ff",
+#                          label='BEM (solution)', s=bem_marker_sizes, zorder=3)
  
 
-# --- Plot PINN evaluation time (gray) ---
-pinn_eval_points = plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
-                                color="#5e5e5e", edgecolors="#5e5e5e",
-                                label='PINN (evaluation)', s=pinn_marker_sizes, zorder=4)
+# # --- Plot PINN evaluation time (gray) ---
+# pinn_eval_points = plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
+#                                 color="#5e5e5e", edgecolors="#5e5e5e",
+#                                 label='PINN (evaluation)', s=pinn_marker_sizes, zorder=3)
 
  
-# --- Plot PINN training time (black) ---
-pinn_train_points = plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
-                                 color="#000000", edgecolors="#000000",
-                                 label='PINN (training)', s=pinn_marker_sizes, zorder=3)
- 
+# # --- Plot PINN training time (black) ---
+# pinn_train_points = plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
+#                                  color="#000000", edgecolors="#000000",
+#                                  label='PINN (training)', s=pinn_marker_sizes, zorder=3)
+
+# --- Marker sizes ---
+pinn_marker_sizes = 15
+bem_marker_sizes = 15
+
+plt.figure(figsize=(6.7, 2.0))
+
+# --- Plot BEM (blue, all points) ---
+plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
+            facecolors="#437ab0ff", edgecolors="#437ab0ff",
+            label='BEM (solution)', s=bem_marker_sizes, zorder=3)
+
+# --- Plot PINN evaluation (gray, all points) ---
+plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
+            facecolors="#5e5e5e", edgecolors="#5e5e5e",
+            label='PINN (evaluation)', s=pinn_marker_sizes, zorder=3)
+
+# --- Plot PINN training (black, all points) ---
+plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
+            facecolors="#000000", edgecolors="#000000",
+            label='PINN (training)', s=pinn_marker_sizes, zorder=3)
+
+
+# ==========================
+# HIGHLIGHTS (same marker, hollow)
+# ==========================
+
+# PINN highlights
+manual_highlights = [
+    #{"L": 1, "n": 75, "color": "#00a2ff"},
+    #{"L": 2, "n": 50, "color": "#ee2d2d"},
+    {"L": 3, "n": 75, "color": "#00ff0d"},
+]
+
+for h in manual_highlights:
+    row = pinn_df[(pinn_df["layers"] == h["L"]) &
+                  (pinn_df["neurons_per_layer"] == h["n"])].iloc[0]
+    # training
+    plt.scatter(row["relative_error"], row["training_time_sec"],
+                facecolors="none", edgecolors=h["color"],
+                s=pinn_marker_sizes, linewidths=1.0, zorder=4)
+    # evaluation
+    plt.scatter(row["relative_error"], row["evaluation_time_sec"],
+                facecolors="none", edgecolors=h["color"],
+                s=pinn_marker_sizes, linewidths=1.0, zorder=4)
+
+# BEM highlights
+bem_highlights = [
+    #{"n": 5, "color": "#00a2ff"},
+    #{"n": 10, "color": "#ee2d2d"},
+    {"n": 15, "color": "#00ff0d"},
+]
+
+for h in bem_highlights:
+    row = bem_df[bem_df["n"] == h["n"]].iloc[0]
+    plt.scatter(row["relative_error"], row["time_sec"],
+                facecolors="none", edgecolors=h["color"],
+                s=bem_marker_sizes, linewidths=0.6, zorder=4)
+
+# # --- Horizontal lines for BEM ---
+bem_min = bem_df.loc[bem_df["time_sec"].idxmin()]
+bem_max = bem_df.loc[bem_df["time_sec"].idxmax()]
+
+# # --- Horizontal lines for PINN evaluation ---
+pinn_eval_min = pinn_df.loc[pinn_df["evaluation_time_sec"].idxmin()]
+pinn_eval_max = pinn_df.loc[pinn_df["evaluation_time_sec"].idxmax()]
+
+# # --- Horizontal lines for PINN training ---
+pinn_train_min = pinn_df.loc[pinn_df["training_time_sec"].idxmin()]
+pinn_train_max = pinn_df.loc[pinn_df["training_time_sec"].idxmax()]
+
+# --- Gray transparent backgrounds instead of horizontal lines ---
+# BEM range
+plt.axhspan(bem_min["time_sec"], bem_max["time_sec"],
+            color="#437ab0", alpha=0.1, zorder=0)
+
+# PINN evaluation range
+plt.axhspan(pinn_eval_min["evaluation_time_sec"], pinn_eval_max["evaluation_time_sec"],
+            color="#5e5e5e", alpha=0.1, zorder=0)
+
+# PINN training range
+plt.axhspan(pinn_train_min["training_time_sec"], pinn_train_max["training_time_sec"],
+            color="#000000", alpha=0.07, zorder=0)
+
+# --- Print values instead of plotting them ---
+print("\n--- Min/Max Times ---")
+print(f"BEM:   min={bem_min['time_sec']:.3f} s (n={int(bem_min['n'])}), "
+      f"max={bem_max['time_sec']:.3f} s (n={int(bem_max['n'])})")
+
+print(f"PINN Evaluation: min={pinn_eval_min['evaluation_time_sec']:.3f} s "
+      f"(L={pinn_eval_min['layers']}, n={pinn_eval_min['neurons_per_layer']}), "
+      f"max={pinn_eval_max['evaluation_time_sec']:.3f} s "
+      f"(L={pinn_eval_max['layers']}, n={pinn_eval_max['neurons_per_layer']})")
+
+print(f"PINN Training:   min={pinn_train_min['training_time_sec']:.3f} s "
+      f"(L={pinn_train_min['layers']}, n={pinn_train_min['neurons_per_layer']}), "
+      f"max={pinn_train_max['training_time_sec']:.3f} s "
+      f"(L={pinn_train_max['layers']}, n={pinn_train_max['neurons_per_layer']})")
+
 # --- Axes labels ---
 plt.xlabel('Relative Error', fontsize=8)
 plt.ylabel('Time (s)', fontsize=8)
@@ -121,8 +219,32 @@ plt.ylabel('Time (s)', fontsize=8)
 plt.xscale('log')
 plt.yscale('log')
 
+
+# --- Legend ---
+#plt.legend(loc='lower left', fontsize=7.5, frameon=False,
+#           handletextpad=0.1, markerscale=1.0, labelspacing=0.8)
+
+
+
 # --- Ticks ---
 ax = plt.gca()
+
+# Use the right edge of the plot for placement
+x_text = ax.get_xlim()[1] * 1.05  # little outside the right edge
+
+# Labels aligned with ranges
+ax.text(x_text, (bem_min["time_sec"] * bem_max["time_sec"])**0.5,
+        "BEM (solution)", va="center", ha="left",
+        fontsize=7.5, color="#437ab0ff")
+
+ax.text(x_text, (pinn_eval_min["evaluation_time_sec"] * pinn_eval_max["evaluation_time_sec"])**0.5,
+        "PINN (evaluation)", va="center", ha="left",
+        fontsize=7.5, color="#5e5e5e")
+
+ax.text(x_text, (pinn_train_min["training_time_sec"] * pinn_train_max["training_time_sec"])**0.5,
+        "PINN (training)", va="center", ha="left",
+        fontsize=7.5, color="#000000")
+
 #ax.grid(True, which="major", axis='y', linestyle='-', linewidth=0.5, color='gray', alpha=0.6)
 ax.set_xticks([1e+0, 1e-1, 1e-2])
 ax.set_xticklabels([r'$10^{0}$', r'$10^{-1}$', r'$10^{-2}$'], fontsize=8)
@@ -130,35 +252,12 @@ ax.yaxis.set_major_locator(LogLocator(base=10.0, subs=(1.0, 2.0, 5.0), numticks=
 ax.set_yticks([1e+3, 1e+2, 1e+1, 1e+0, 1e-1, 1e-2])
 ax.set_yticklabels([r'$10^{3}$', r'$10^{2}$', r'$10^{1}$', r'$10^{0}$', r'$10^{-1}$', r'$10^{-2}$'], fontsize=8)
 
-# --- Grid ---
-#plt.grid(True, which="both", ls="--", linewidth=0.5)
-
-plt.annotate(r"BEM ($n=15$)", 
-             (error_bem_sel, time_bem_sel), 
-             xytext=(error_bem_sel*0.7, time_bem_sel*3), 
-             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
-
-plt.annotate(r"PINN ($L=3,n=75$)", 
-             (error_pinn_sel, time_pinn_sel), 
-             xytext=(error_pinn_sel*0.45, time_pinn_sel*0.57), 
-             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
-
-plt.annotate(r"PINN ($L=3,n=75$)", 
-             (error_pinn_sel, time_pinn_eval), 
-             xytext=(error_pinn_sel*0.45, time_pinn_eval*0.57), 
-             arrowprops=dict(arrowstyle="-", color="black", linewidth=0.6), fontsize=6)
-
-
-# --- Legend ---
-plt.legend(loc='lower left', fontsize=7.5, frameon=False,
-           handletextpad=0.5, markerscale=0.9, labelspacing=1.2)
-
 # --- Final layout and save ---
 plt.tight_layout()
 plt.savefig("figures/rel_error_time.svg", dpi=150, bbox_inches='tight')
-plt.show()
+plt.savefig("figures/rel_error_time.pdf", dpi=150, bbox_inches='tight')
+#plt.show()
  
-
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
@@ -174,3 +273,4 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+# %%

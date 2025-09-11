@@ -295,7 +295,7 @@ def plot_bem_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, 
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.1, 0.55, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.13, 0.60, r'BEM', fontsize=8, va='center', ha='center', rotation='vertical')
 
     fig.subplots_adjust(wspace=-0.5)
 
@@ -335,7 +335,7 @@ def plot_pinns_error(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase
     axs[1].axis("off")
     axs[1].set_aspect("equal")
 
-    fig.text(0.1, 0.55, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
+    fig.text(0.13, 0.60, r'PINNs', fontsize=8, va='center', ha='center', rotation='vertical')
 
     fig.subplots_adjust(wspace=-0.5)
 
