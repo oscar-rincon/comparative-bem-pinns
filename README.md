@@ -46,15 +46,15 @@ conda list -n comparative-pinns-bem-env
 
 **Total execution time:** 303.29 s
 
-## How to Run
+## How to run
 
-To execute the full workflow (**Analytical → BEM → PINNs → Plots → Generalization**), open a terminal in the project root directory and run:
+To execute the full workflow (**Analytical solution → Hyperparameter tunning → Comparative analysis → Generalization**), open a terminal in the project root directory and run:
 
 ```bash
 make all
 ```
 
-### Run Individual Steps
+### Run individual steps
 
 Run the analytical solution script:
 
