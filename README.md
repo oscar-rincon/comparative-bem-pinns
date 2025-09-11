@@ -31,7 +31,7 @@ conda list -n comparative-pinns-bem-env
 
 - `03_comparison/`: Results in Figure 6. Performance evaluation of BEM and PINNs.
 
-![comparison](main/03_comparison/figures/comparison.svg)
+![comparison](main/03_comparison/figures/05_accuracy_time_error_bem_pinns.svg)
 
 - `04_generalization/`: Results in Figure 7. Scattered field computed by BEM and PINNs outside the training region.
 
