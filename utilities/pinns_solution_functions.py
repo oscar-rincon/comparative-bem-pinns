@@ -1,12 +1,13 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 import torch 
 import torch.nn as nn
 import time
 from matplotlib.patches import Rectangle
 from functools import partial   
-from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
+from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
 from matplotlib.gridspec import GridSpec
 
 class MLP(nn.Module):
@@ -239,6 +240,46 @@ def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_rig
             torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
             #print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
 
+def train_adam_logs(
+    model, x_f, y_f, x_inner, y_inner, x_left, y_left,
+    x_right, y_right, x_bottom, y_bottom, x_top, y_top,
+    k, iter, results, lr_, num_iter=500,
+    save_csv_path="training_log.csv",
+    l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
+    u_scn_exact=None, u_exact=None
+):
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_)
+
+    for i in range(1, num_iter + 1):
+        optimizer.zero_grad()
+        loss_f = mse_f(model, x_f, y_f, k)
+        loss_b = mse_b(model, x_inner, y_inner, x_left, y_left,
+                       x_right, y_right, x_bottom, y_bottom,
+                       x_top, y_top, k)
+        loss = loss_f + loss_b
+        loss.backward(retain_graph=True)
+        optimizer.step()
+        iter += 1
+
+        # --- Compute mean relative error ---
+        u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
+            model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+        )
+        rel_error_uscn_amp_pinns, rel_error_uscn_phase_pinns, *_ = calculate_relative_errors(
+            u_scn_exact, u_exact, diff_uscn_amp_pinns,
+            diff_u_scn_phase_pinns, R_exact, r_i
+        )
+        mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
+
+        # Save iteration, loss, and mean relative error
+        results.append([iter, loss.item(), mean_rel_error_pinns])
+
+        if iter % 500 == 0:
+            torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
+
+    # --- Save results to CSV ---
+    df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
+    df.to_csv(save_csv_path, index=False)
 
 def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results):
     
@@ -279,6 +320,161 @@ def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_ri
     closure_fn = partial(closure, model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results)
     optimizer.step(closure_fn)
 
+
+def closure_with_logs(
+    model, optimizer,
+    x_f, y_f,
+    x_inner, y_inner,
+    x_left, y_left,
+    x_right, y_right,
+    x_bottom, y_bottom,
+    x_top, y_top,
+    k,
+    iter_container,
+    results,
+    l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
+    u_scn_exact=None, u_exact=None
+):
+    # Reset gradients
+    optimizer.zero_grad()
+
+    # Calculate the loss
+    loss_f = mse_f(model, x_f, y_f, k)
+    loss_b = mse_b(model, x_inner, y_inner, x_left, y_left,
+                   x_right, y_right, x_bottom, y_bottom,
+                   x_top, y_top, k)
+    loss = loss_b + loss_f
+
+    # Backpropagate the loss
+    loss.backward(retain_graph=True)
+
+    # Update iteration counter
+    iter_container[0] += 1
+    it = iter_container[0]
+
+    # --- Log only every 100 iterations ---
+    if it % 100 == 0 or it == 1:  # also log the first iteration
+        mean_rel_error_pinns = None
+
+        if all(v is not None for v in [l_e, r_i, n_grid, X, Y, R_exact, u_scn_exact, u_exact]):
+            # Compute relative error ONLY when logging
+            u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
+                model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+            )
+            rel_error_uscn_amp_pinns, rel_error_uscn_phase_pinns, *_ = calculate_relative_errors(
+                u_scn_exact, u_exact, diff_uscn_amp_pinns,
+                diff_u_scn_phase_pinns, R_exact, r_i
+            )
+            mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
+
+        results.append([it, loss.item(), mean_rel_error_pinns])
+        print(f"LBFGS - Iter: {it} - Loss: {loss.item()} - Mean Rel Error: {mean_rel_error_pinns}")
+
+    return loss
+
+
+
+def train_adam_with_logs(
+    model, x_f, y_f, x_inner, y_inner,
+    x_left, y_left, x_right, y_right,
+    x_bottom, y_bottom, x_top, y_top,
+    k, iter, results, lr_,
+    num_iter=500,
+    save_csv_path="training_log.csv",
+    l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
+    u_scn_exact=None, u_exact=None
+):
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr_)
+
+    for i in range(1, num_iter + 1):
+        optimizer.zero_grad()
+        loss_f = mse_f(model, x_f, y_f, k)
+        loss_b = mse_b(model, x_inner, y_inner, x_left, y_left,
+                       x_right, y_right, x_bottom, y_bottom,
+                       x_top, y_top, k)
+        loss = loss_f + loss_b
+        loss.backward(retain_graph=True)
+        optimizer.step()
+        iter += 1
+
+        # --- Log only every 100 iterations ---
+        if iter % 100 == 0 or iter == 1:  # also log the first iteration
+            mean_rel_error_pinns = None
+
+            if all(v is not None for v in [l_e, r_i, n_grid, X, Y, R_exact, u_scn_exact, u_exact]):
+                # Compute relative error ONLY when logging
+                u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
+                    model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+                )
+                rel_error_uscn_amp_pinns, rel_error_uscn_phase_pinns, *_ = calculate_relative_errors(
+                    u_scn_exact, u_exact, diff_uscn_amp_pinns,
+                    diff_u_scn_phase_pinns, R_exact, r_i
+                )
+                mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
+
+            results.append([iter, loss.item(), mean_rel_error_pinns])
+            print(f"Adam - Iter: {iter} - Loss: {loss.item()} - Mean Rel Error: {mean_rel_error_pinns}")
+
+    # --- Save results to CSV ---
+    df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
+    df.to_csv(save_csv_path, index=False)
+
+    return iter
+
+
+
+def train_lbfgs_with_logs(
+    model, x_f, y_f,
+    x_inner, y_inner,
+    x_left, y_left,
+    x_right, y_right,
+    x_bottom, y_bottom,
+    x_top, y_top,
+    k,
+    iter_start,
+    results,
+    lbfgs_lr,
+    num_iter=500,
+    save_csv_path="training_log.csv",
+    l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
+    u_scn_exact=None, u_exact=None
+):
+    optimizer = torch.optim.LBFGS(
+        model.parameters(),
+        lr=lbfgs_lr,
+        max_iter=num_iter,
+        max_eval=num_iter,
+        tolerance_grad=1e-7,
+        history_size=100,
+        tolerance_change=1.0 * np.finfo(float).eps,
+        line_search_fn="strong_wolfe"
+    )
+
+    # Use a mutable container so closure can update iteration
+    iter_container = [iter_start]
+
+    closure_fn = partial(
+        closure_with_logs,
+        model, optimizer,
+        x_f, y_f,
+        x_inner, y_inner,
+        x_left, y_left,
+        x_right, y_right,
+        x_bottom, y_bottom,
+        x_top, y_top,
+        k,
+        iter_container,
+        results,
+        l_e, r_i, n_grid, X, Y, R_exact, u_scn_exact, u_exact
+    )
+
+    optimizer.step(closure_fn)
+
+    # --- Save results to CSV ---
+    df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
+    df.to_csv(save_csv_path, index=False)
+
+    return iter_container[0]  # final iteration count
 
 def generate_points(n_Omega_P, side_length, r_i, n_Gamma_I, n_boundary_e):
     """

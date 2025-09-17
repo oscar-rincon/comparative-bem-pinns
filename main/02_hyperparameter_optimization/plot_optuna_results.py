@@ -1,11 +1,21 @@
  
 
 #%%
-# Imports
+import sys
+import os
 import time
-import os 
+# Set the current directory and utilities path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+utilities_dir = os.path.join(current_dir, '../../utilities')
+
+# Change the working directory to the notebook's directory
+os.chdir(current_dir)
+
+# Modify the module search path to include utilities directory
+sys.path.insert(0, utilities_dir) 
 import joblib
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
@@ -48,10 +58,15 @@ df_params = study_loaded.trials_dataframe(attrs=("number", "value", "params", "s
 df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
+# --- Load training log from CSV (iterations, loss, rel_error) ---
+log_df = pd.read_csv("logs/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
+# Columns: iteration | loss | mean_rel_error
+
 #%%
 # Figura y gridspec
-fig = plt.figure(figsize=(7, 3.5))
-gs = fig.add_gridspec(2, 1, height_ratios=[1, 1.3], hspace=0.4)
+#fig = plt.figure(figsize=(7, 3.5))
+fig = plt.figure(figsize=(7, 6.0))
+gs = fig.add_gridspec(3, 1, height_ratios=[0.9, 1.2, 0.8], hspace=0.5)
 
 # Panel superior (historia de optimización)
 ax0 = fig.add_subplot(gs[0, 0])
@@ -63,10 +78,8 @@ ax0.set_xticks([0, 5, 10, 15, 20])
 ax0.set_yticks([0.5, 0.75, 1, 1.25])
 ax0.tick_params(axis="y", labelsize=7)
 ax0.tick_params(axis="x", labelsize=7)
-pos = ax0.get_position()
-ax0.set_position([pos.x0, pos.y0, 0.95 * pos.width, pos.height])
 
-# Panel inferior (slice plots)
+# Panel intermedio (slice plots)
 gs2 = gs[1].subgridspec(1, len(params), wspace=0.4)
 axes = [fig.add_subplot(gs2[0, i]) for i in range(len(params))]
 norm = mcolors.Normalize(vmin=0, vmax=20)
@@ -102,9 +115,56 @@ cbar.set_ticks(np.arange(0, 20 + 1, 5))
 cbar.set_label("Trial number", fontsize=8)
 cbar.ax.tick_params(labelsize=7)
 
+# Panel inferior (relative error)
+ax2 = fig.add_subplot(gs[2, 0])
+pos = ax2.get_position()  # current position
+ax2.set_position([pos.x0, pos.y0 - 0.04, pos.width, pos.height])  # move it down
+ax2.plot(log_df["iteration"], log_df["mean_rel_error"], color="#437ab0ff", linewidth=1.2, label="Mean Relative Error")
+
+transition = log_df["iteration"].max() // 2
+ymin, ymax = ax2.get_ylim()
+
+# Shaded areas
+ax2.axvspan(0, transition, color="lightblue", alpha=0.3)
+ax2.axvspan(transition, log_df["iteration"].max(), color="lightgreen", alpha=0.3)
+
+
+# --- Adam annotation ---
+adam_idx = len(log_df) // 4
+adam_x = log_df["iteration"].iloc[adam_idx]
+adam_y = log_df["mean_rel_error"].iloc[adam_idx]
+ax2.annotate(
+    "Adam",
+    xy=(adam_x, adam_y),              # point on the curve
+    xytext=(adam_x, adam_y*1.15),    # text above the curve
+    textcoords="data",
+    fontsize=8,
+    color="#02008dff",
+    ha="center"
+)
+
+# --- LBFGS annotation ---
+lbfgs_idx = 3 * len(log_df) // 4
+lbfgs_x = log_df["iteration"].iloc[lbfgs_idx]
+lbfgs_y = log_df["mean_rel_error"].iloc[lbfgs_idx]
+ax2.annotate(
+    "L-BFGS",
+    xy=(lbfgs_x, lbfgs_y),              # point on the curve
+    xytext=(lbfgs_x, lbfgs_y*2.5),
+    textcoords="data",
+    fontsize=8,
+    color="#00572eff",
+    ha="center",
+)
+
+ax2.set_ylabel("Relative Error", fontsize=8)
+ax2.set_xlabel("Iteration", fontsize=8)
+ax2.tick_params(axis="y", labelsize=7)
+ax2.tick_params(axis="x", labelsize=7)
+
 # Guardar y mostrar
-plt.savefig("figures/hyperparameter_tunning.svg", dpi=300, bbox_inches="tight")
-plt.savefig("figures/hyperparameter_tunning.pdf", dpi=300, bbox_inches="tight")
+plt.savefig("figures/05_hyperparameter_tunning.svg", dpi=300, bbox_inches="tight")
+plt.savefig("figures/05_hyperparameter_tunning.pdf", dpi=300, bbox_inches="tight")
 plt.show()
 
 #%% Record runtime and save to .txt
