@@ -27,15 +27,15 @@ conda list -n comparative-pinns-bem-env
 
 - `02_hyperparameter_optimization/`: Results in Figure 5.
 
-![hyperparameter_tunning](main/02_hyperparameter_optimization/figures/hyperparameter_tunning.svg)
+![hyperparameter_tunning](main/02_hyperparameter_optimization/figures/05_hyperparameter_tunning.svg)
 
 - `03_comparison/`: Results in Figure 6. Performance evaluation of BEM and PINNs.
 
-![comparison](main/03_comparison/figures/05_accuracy_time_error_bem_pinns.svg)
+![comparison](main/03_comparison/figures/06_accuracy_time_error_bem_pinns.svg)
 
 - `04_generalization/`: Results in Figure 7. Scattered field computed by BEM and PINNs outside the training region.
 
-![generalization](main/04_generalization/figures/06_generalization.svg)
+![generalization](main/04_generalization/figures/07_generalization.svg)
 
 ## Execution times
 

@@ -64,8 +64,8 @@ Figure(
 
 # Convert to PDF
 cairosvg.svg2pdf(
-    url="figures/05_accuracy_time_error_bem_pinns.svg", 
-    write_to="figures/05_accuracy_time_error_bem_pinns.pdf"
+    url="figures/06_accuracy_time_error_bem_pinns.svg", 
+    write_to="figures/06_accuracy_time_error_bem_pinns.pdf"
 )
  
 #%% Record runtime and save to .txt

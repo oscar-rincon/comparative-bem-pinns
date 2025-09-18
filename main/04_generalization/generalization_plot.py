@@ -44,8 +44,8 @@ Figure(
 
 # Convert to PDF
 cairosvg.svg2pdf(
-    url="figures/06_generalization.svg", 
-    write_to="figures/06_generalization.pdf"
+    url="figures/07_generalization.svg", 
+    write_to="figures/07_generalization.pdf"
 )
  
 #%% Record runtime and save to .txt
