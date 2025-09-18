@@ -23,7 +23,7 @@ conda list -n comparative-pinns-bem-env
 
 - `01_analytical_solution/`: Results in Figure 4. Analytical estimation of scattering.
 
-![displacement_exact](main/01_analytical_solution/figures/displacement_exact.svg)
+![displacement_exact](main/01_analytical_solution/figures/04_displacement_exact.svg)
 
 - `02_hyperparameter_optimization/`: Results in Figure 5.
 
