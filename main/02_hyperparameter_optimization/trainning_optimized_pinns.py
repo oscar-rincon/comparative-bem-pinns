@@ -17,7 +17,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-
+import torch 
+import torch.nn as nn
 import importlib
 import analytical_solution_functions
 import bem_solution_functions
@@ -42,6 +43,15 @@ start_time = time.time()
 
 # Get script name without extension
 script_name = os.path.splitext(os.path.basename(__file__))[0]
+
+# Define output folder (e.g., "logs" inside the current script directory)
+output_folder = os.path.join(os.path.dirname(__file__), "logs")
+
+# Create folder if it does not exist
+os.makedirs(output_folder, exist_ok=True)
+
+# Define output file path
+output_file = os.path.join(output_folder, f"{script_name}_log.txt")
 
 #%%
 

@@ -3,20 +3,24 @@
 ![comparison](figures/comparison.svg)
 
 
-## 🚀 How to Run
+##  How to Run
 
-To execute the full workflow (**Comparison → BEM → PINNs → Plots**), open a terminal in the project directory and run:
+To execute the full workflow (**PINNs Training → BEM & PINNs Evaluation → Comparisons → Plots**), open a terminal in the project directory and run:
 
 ```bash
 make all
 ```
 
-The aproximate time required is around 15 minutes using the stored models.
-
-Run the comparison plot a:
+Run the PINNs training script:
 
 ```bash
-make run_comparison_plot_a
+make run_pinns_training
+```
+
+The aproximate time required is around 15 minutes using the stored models.
+
+```bash
+make run_bem_solution_pinns_evaluation
 ```
 
 Run the BEM script:
@@ -31,10 +35,16 @@ Run the PINNs script:
 make run_comparison_pinns
 ```
 
-Generate the comparison plot b:
+Run the comparison plot top:
 
 ```bash
-make run_comparison_plot_b
+make run_comparison_plot_top
+```
+
+Generate the comparison plot bottom:
+
+```bash
+make run_comparison_plot_bottom
 ```
 
 ## Estimated time

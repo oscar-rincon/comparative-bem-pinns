@@ -1,20 +1,26 @@
-# Makefile to run Optuna minimization script
- 
-.PHONY: all optimize plot_optimize
+# Makefile to run Optuna minimization script and train optimized PINNs
 
-all: optimize plot_optimize
+.PHONY: all optimize train plot_optimize clean
+
+all: optimize train plot_optimize
 
 # Run hyperparameter optimization
 optimize:
 	@echo "Running optimize_pinns.py with Optuna..."
 	@python3 optimize_pinns.py
-	@echo "Finished optimize_pinns.py..."
+	@echo "Finished optimize_pinns.py."
+
+# Train with optimized hyperparameters
+train:
+	@echo "Running trainning_optimized_pinns.py..."
+	@python3 trainning_optimized_pinns.py
+	@echo "Finished trainning_optimized_pinns.py."
 
 # Run plotting script
 plot_optimize:
 	@echo "Running plot_optuna_results.py..."
 	@python3 plot_optuna_results.py
-	@echo "Finished plot_optuna_results.py..."
+	@echo "Finished plot_optuna_results.py."
 
 # Clean up generated files
 clean:

@@ -78,7 +78,7 @@ def objective(trial):
     hidden_units_  = trial.suggest_categorical("hidden_units", [25, 50, 75])
     activation_str = trial.suggest_categorical("activation", ["Tanh", "Sigmoid", "Sine"])
     adam_fraction = 0.5
-    total_iter    = 1_000
+    total_iter    = 10_000
     adam_iters    = int(total_iter * adam_fraction)
     lbfgs_iters   = total_iter - adam_iters
     if activation_str == "Tanh":
@@ -130,7 +130,7 @@ def objective(trial):
 #%%
 # Ejecutar Optuna
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=20)
+study.optimize(objective, n_trials=100)
 print("Best trial:")
 best_trial = study.best_trial
 print(f"  Value (mean error): {best_trial.value:.3e}")

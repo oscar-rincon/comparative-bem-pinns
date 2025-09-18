@@ -67,35 +67,41 @@ df.to_csv("data/bem_accuracy_vs_n.csv", index=False)
 print("Results saved to 'bem_accuracy_vs_n.csv'")
 
 # %%
-
 # Define the number of layers and neurons per layer to evaluate
 layer_values = [1, 2, 3]
 neuron_values = [25, 50, 75]
 
-# List of training times in seconds (must match the order of layer-neuron combinations)
-training_pinn_time = [
-    268.5808, 287.7863, 291.1042,  # layers = 1
-    333.6271, 346.1852, 356.2399,  # layers = 2
-    401.7561, 396.7530, 430.8179   # layers = 3
-]
+# Path where the PINN logs are stored
+pinn_logs_dir = os.path.join(current_dir, "logs")
 
-# List to store the results
 results = []
 
-# Evaluate each combination of layers and neurons
-i = 0
+# Loop over architectures
 for layers in layer_values:
     for neurons in neuron_values:
         print(f"Evaluating for layers = {layers}, neurons = {neurons}...")
-        eval_time, rel_error = evaluate_pinn_accuracy(layers, neurons)
+
+        # --- Load metrics from CSV produced during training ---
+        csv_filename = os.path.join(
+            pinn_logs_dir, f"{layers}_layers_{neurons}_neurons.csv"
+        )
+        if not os.path.exists(csv_filename):
+            raise FileNotFoundError(f"Missing results file: {csv_filename}")
+
+        metrics_df = pd.read_csv(csv_filename)
+        training_time_sec = float(metrics_df["training_time_sec"].iloc[0])
+        rel_error = float(metrics_df["mean_relative_error"].iloc[0])
+
+        # --- Evaluate inference time ---
+        eval_time, _ = evaluate_pinn_accuracy(layers, neurons)
+
         results.append({
             "layers": layers,
             "neurons_per_layer": neurons,
             "evaluation_time_sec": eval_time,
             "relative_error": rel_error,
-            "training_time_sec": training_pinn_time[i]
+            "training_time_sec": training_time_sec,
         })
-        i += 1
 
 # Convert results to a DataFrame
 df = pd.DataFrame(results)
@@ -121,3 +127,4 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+# %%
