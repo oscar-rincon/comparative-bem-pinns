@@ -83,8 +83,12 @@ reported_values = {
     "PINN evaluation ~times faster than BEM": pinn_times_faster,
 }
 
-reported_values
-
+# Save dictionary to txt
+with open("logs/reported_values.txt", "w") as f:
+    f.write("Reported values\n")
+    f.write("=====================\n")
+    for key, val in reported_values.items():
+        f.write(f"{key}: {val}\n")
 
  
 #%%

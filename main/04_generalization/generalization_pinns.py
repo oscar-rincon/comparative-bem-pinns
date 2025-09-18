@@ -101,6 +101,12 @@ u_scn_amp_masked[R_grid < r_i] = 0
 relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real, 2) / np.linalg.norm(u_scn_exact_masked.real, 2)
 print(f"Relative L2 error: {relative_error:.2e}")
 
+# Save result to txt
+with open("logs/error_results.txt", "w") as f:
+    f.write("Relative L2 error computation\n")
+    f.write("=============================\n")
+    f.write(f"Relative L2 error: {relative_error:.6e}\n")
+
 #%% ======================== ERROR LINE PROFILE ========================
 # Set the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
