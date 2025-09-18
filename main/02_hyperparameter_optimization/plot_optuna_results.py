@@ -4,6 +4,7 @@
 import sys
 import os
 import time
+
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -119,15 +120,30 @@ cbar.ax.tick_params(labelsize=7)
 ax2 = fig.add_subplot(gs[2, 0])
 pos = ax2.get_position()  # current position
 ax2.set_position([pos.x0, pos.y0 - 0.04, pos.width, pos.height])  # move it down
-ax2.plot(log_df["iteration"], log_df["mean_rel_error"], color="#437ab0ff", linewidth=1.2, label="Mean Relative Error")
 
 transition = log_df["iteration"].max() // 2
-ymin, ymax = ax2.get_ylim()
+
+# --- Split the curve into Adam (0 → transition) and L-BFGS (transition → end) ---
+adam_mask = log_df["iteration"] <= transition
+lbfgs_mask = log_df["iteration"] >= transition
+
+# Adam segment (blue)
+ax2.plot(
+    log_df.loc[adam_mask, "iteration"],
+    log_df.loc[adam_mask, "mean_rel_error"],
+    color="#437ab0ff", linewidth=1.2, label="Adam"
+)
+
+# L-BFGS segment (gray)
+ax2.plot(
+    log_df.loc[lbfgs_mask, "iteration"],
+    log_df.loc[lbfgs_mask, "mean_rel_error"],
+    color="gray", linewidth=1.2, label="L-BFGS"
+)
 
 # Shaded areas
 ax2.axvspan(0, transition, color="lightblue", alpha=0.3)
-ax2.axvspan(transition, log_df["iteration"].max(), color="lightgreen", alpha=0.3)
-
+ax2.axvspan(transition, log_df["iteration"].max(), color="lightgray", alpha=0.3)
 
 # --- Adam annotation ---
 adam_idx = len(log_df) // 4
@@ -135,8 +151,8 @@ adam_x = log_df["iteration"].iloc[adam_idx]
 adam_y = log_df["mean_rel_error"].iloc[adam_idx]
 ax2.annotate(
     "Adam",
-    xy=(adam_x, adam_y),              # point on the curve
-    xytext=(adam_x, adam_y*1.15),    # text above the curve
+    xy=(adam_x, adam_y),
+    xytext=(adam_x, adam_y*1.15),
     textcoords="data",
     fontsize=8,
     color="#02008dff",
@@ -149,11 +165,11 @@ lbfgs_x = log_df["iteration"].iloc[lbfgs_idx]
 lbfgs_y = log_df["mean_rel_error"].iloc[lbfgs_idx]
 ax2.annotate(
     "L-BFGS",
-    xy=(lbfgs_x, lbfgs_y),              # point on the curve
+    xy=(lbfgs_x, lbfgs_y),
     xytext=(lbfgs_x, lbfgs_y*2.5),
     textcoords="data",
     fontsize=8,
-    color="#00572eff",
+    color="#2c2c2cff",
     ha="center",
 )
 

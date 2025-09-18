@@ -100,20 +100,20 @@ def objective(trial):
         activation_function=activation_function_,
     ).to(device)
     model.apply(init_weights)
-    start_time_adam = time.time()
+    #start_time_adam = time.time()
     train_adam(
         model, x_f, y_f, x_inner, y_inner, x_left, y_left,
         x_right, y_right, x_bottom, y_bottom, x_top, y_top,
         k, iter_train, results, adam_lr, num_iter=adam_iters
     )
-    adam_training_time = time.time() - start_time_adam
-    start_time_lbfgs = time.time()
+    #adam_training_time = time.time() - start_time_adam
+    #start_time_lbfgs = time.time()
     train_lbfgs(
         model, x_f, y_f, x_inner, y_inner, x_left, y_left,
         x_right, y_right, x_bottom, y_bottom, x_top, y_top,
         k, iter_train, results, 1, num_iter=lbfgs_iters
     )
-    lbfgs_training_time = time.time() - start_time_lbfgs
+    #lbfgs_training_time = time.time() - start_time_lbfgs
     u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(
         model, l_e, r_i, k, n_grid
     )

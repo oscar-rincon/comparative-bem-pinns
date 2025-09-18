@@ -274,8 +274,8 @@ def train_adam_logs(
         # Save iteration, loss, and mean relative error
         results.append([iter, loss.item(), mean_rel_error_pinns])
 
-        if iter % 500 == 0:
-            torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
+        #if iter % 500 == 0:
+        #    torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
 
     # --- Save results to CSV ---
     df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
@@ -298,8 +298,8 @@ def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_righ
     #global iter
     iter += 1
     results.append([iter, loss.item()])
-    if iter % 500 == 0:
-        torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
+    #if iter % 500 == 0:
+    #    torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
         #print(f"Iteration {iter}, Loss: {loss.item()}")
 
     return loss
