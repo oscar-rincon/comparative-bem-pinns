@@ -1,0 +1,2 @@
+Script: comparison_plot_top
+Execution time (s): 4.04

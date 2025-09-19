@@ -60,7 +60,7 @@ Figure(
     Panel(svg1).move(0, 0).scale(1.3),
     #Text("A", 5, 15, size=12, weight="bold",font="sans-serif"),
     Panel(svg2).move(25, 175)#,Text("B", 5, 225, size=12, weight="bold", font="sans-serif")
-).save("figures/05_accuracy_time_error_bem_pinns.svg") 
+).save("figures/06_accuracy_time_error_bem_pinns.svg") 
 
 # Convert to PDF
 cairosvg.svg2pdf(
