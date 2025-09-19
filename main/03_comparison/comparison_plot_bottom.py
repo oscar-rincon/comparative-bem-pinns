@@ -58,8 +58,7 @@ Figure(
     348,  # height (or just use one of them)
     SVG("figures/comparison_base.svg").scale(3.79),
     Panel(svg1).move(0, 0).scale(1.3),
-    #Text("A", 5, 15, size=12, weight="bold",font="sans-serif"),
-    Panel(svg2).move(25, 175)#,Text("B", 5, 225, size=12, weight="bold", font="sans-serif")
+    Panel(svg2).move(25, 175)
 ).save("figures/06_accuracy_time_error_bem_pinns.svg") 
 
 # Convert to PDF

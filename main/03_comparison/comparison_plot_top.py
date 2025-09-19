@@ -101,22 +101,7 @@ bem_marker_sizes = 7 #* bem_df["n"]          # BEM: scaled by number of integrat
 plt.figure(figsize=(6.7, 2.0))
 
 # # --- Plot BEM (blue) ---
-# bem_points = plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
-#                          color="#437ab0ff", edgecolors="#437ab0ff",
-#                          label='BEM (solution)', s=bem_marker_sizes, zorder=3)
  
-
-# # --- Plot PINN evaluation time (gray) ---
-# pinn_eval_points = plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
-#                                 color="#5e5e5e", edgecolors="#5e5e5e",
-#                                 label='PINN (evaluation)', s=pinn_marker_sizes, zorder=3)
-
- 
-# # --- Plot PINN training time (black) ---
-# pinn_train_points = plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
-#                                  color="#000000", edgecolors="#000000",
-#                                  label='PINN (training)', s=pinn_marker_sizes, zorder=3)
-
 # --- Marker sizes ---
 pinn_marker_sizes = 15
 bem_marker_sizes = 15
@@ -145,8 +130,6 @@ plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
 
 # PINN highlights
 manual_highlights = [
-    #{"L": 1, "n": 75, "color": "#00a2ff"},
-    #{"L": 2, "n": 50, "color": "#ee2d2d"},
     {"L": 3, "n": 75, "color": "#00ff0d"},
 ]
 
@@ -164,8 +147,6 @@ for h in manual_highlights:
 
 # BEM highlights
 bem_highlights = [
-    #{"n": 5, "color": "#00a2ff"},
-    #{"n": 10, "color": "#ee2d2d"},
     {"n": 15, "color": "#00ff0d"},
 ]
 
@@ -222,13 +203,6 @@ plt.ylabel('Time (s)', fontsize=8)
 # --- Log-log scale ---
 plt.xscale('log')
 plt.yscale('log')
-
-
-# --- Legend ---
-#plt.legend(loc='lower left', fontsize=7.5, frameon=False,
-#           handletextpad=0.1, markerscale=1.0, labelspacing=0.8)
-
-
 
 # --- Ticks ---
 ax = plt.gca()
