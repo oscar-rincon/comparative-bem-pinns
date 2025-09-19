@@ -1,2 +1,2 @@
 Script: generalization_plot
-Execution time (s): 0.02
+Execution time (s): 0.21

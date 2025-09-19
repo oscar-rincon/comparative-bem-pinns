@@ -1,6 +1,7 @@
  
 #%% ======================== IMPORTS ========================
 # Standard library imports
+from datetime import datetime
 import sys
 import os
 import time
@@ -102,7 +103,7 @@ relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real,
 print(f"Relative L2 error: {relative_error:.2e}")
 
 # Save result to txt
-with open("logs/error_results.txt", "w") as f:
+with open("data/error_results.txt", "w") as f:
     f.write("Relative L2 error computation\n")
     f.write("=============================\n")
     f.write(f"Relative L2 error: {relative_error:.6e}\n")
@@ -264,7 +265,7 @@ def plot_pinns_displacements_with_errorline(X, Y, u_inc_amp, u_scn_amp, u_amp,
 
     # Save and show
     plt.savefig("figures/generalization_pinns.svg", dpi=300, bbox_inches='tight')
-    plt.show()
+    #plt.show()
 
 # 
 plot_pinns_displacements_with_errorline(
@@ -282,17 +283,18 @@ plot_pinns_displacements_with_errorline(
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
- 
+
 # Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-# Define log filename inside the logs folder
-log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Define log filename inside the logs folder (with date)
+log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
 
 # Write log file
 with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
-
-# %%

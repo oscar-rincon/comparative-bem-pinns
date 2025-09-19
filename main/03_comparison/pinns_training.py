@@ -1,4 +1,5 @@
 #%%
+import datetime
 import random
 import sys
 import os
@@ -170,10 +171,14 @@ log_text = (
     f"Total execution time (s): {total_elapsed_time:.2f}\n"
 )
 
-log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Define log filename inside the logs folder (with date)
+log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+
+# Write log file
 with open(log_filename, "w") as f:
     f.write(log_text)
 
-print(f"\nLog saved to: {log_filename}")
-
-# %%
+print(f"Log saved to: {log_filename}")
