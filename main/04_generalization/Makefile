@@ -18,9 +18,9 @@ run_04_generalization:
 	@python generalization_pinns.py
 	@echo "Finished generalization_pinns.py."
 
-	@echo "Running generalization_plot.py..."
-	@python generalization_plot.py
-	@echo "Finished generalization_plot.py."
+	@echo "Running generalization_figure_composition.py..."
+	@python generalization_figure_composition.py
+	@echo "Finished generalization_figure_composition.py."
 
 	@echo "=============================================="
 	@echo ">>> END: 04_generalization Workflow"

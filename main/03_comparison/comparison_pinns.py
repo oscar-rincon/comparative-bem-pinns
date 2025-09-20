@@ -1,4 +1,28 @@
- # -*- coding: utf-8 -*-
+
+
+# ============================================================
+"""
+Script: comparison_pinns.py
+
+Description:
+    This script evaluates the generalization of a trained 
+    Physics-Informed Neural Network (PINN) for the scattering 
+    problem of a sound-hard circular obstacle. It loads a 
+    pre-trained model, predicts displacements on a square 
+    domain, and compares results with the analytical solution. 
+
+Inputs:
+    - Pre-trained PINN model (path: ./models/)
+    - Problem parameters: wave number k, inner radius, domain size.
+    - Analytical displacement fields for validation.
+
+Outputs:
+    - Visualization of PINN prediction errors (amplitude & phase)
+    - Relative L2 error printed to console
+    - Log file (TXT) with script name and execution time, saved in ./logs/
+"""
+# ============================================================
+
 #%%
 # Standard library imports
 import datetime

@@ -1,3 +1,28 @@
+
+# ============================================================
+"""
+Script: comparison_bem_pinns.py
+
+Description:
+    This script evaluates and compares the accuracy and runtime 
+    of the Boundary Element Method (BEM) and Physics-Informed 
+    Neural Networks (PINNs) for solving the acoustic scattering 
+    problem by a sound-hard circular obstacle.
+
+Inputs:
+    - BEM: number of boundary elements (n_values).
+    - PINNs: architecture parameters (hidden layers, neurons 
+      per layer), and precomputed training results stored as CSV.
+
+Outputs (all filenames include timestamp):
+    - CSV file with BEM accuracy vs. number of boundary elements,
+      saved in ./data/
+    - CSV file with PINNs accuracy vs. network architecture,
+      saved in ./data/
+    - Log file (TXT) with script runtime, saved in ./logs/
+"""
+# ============================================================
+ 
 #%%
 # -*- coding: utf-8 -*-
 import datetime
@@ -64,7 +89,7 @@ print(f"Results saved to '{bem_csv}'")
 # %% PINNs evaluation
 layer_values = [1, 2, 3]
 neuron_values = [25, 50, 75]
-pinn_logs_dir = os.path.join(current_dir, "logs")
+pinn_logs_dir = os.path.join(current_dir, "data")
 
 results = []
 for layers in layer_values:
@@ -72,7 +97,7 @@ for layers in layer_values:
         print(f"Evaluating for layers = {layers}, neurons = {neurons}...")
 
         csv_filename = os.path.join(
-            pinn_logs_dir, f"{layers}_layers_{neurons}_neurons_{date_str}.csv"
+            pinn_logs_dir, f"{layers}_layers_{neurons}_neurons.csv"
         )
         if not os.path.exists(csv_filename):
             raise FileNotFoundError(f"Missing results file: {csv_filename}")

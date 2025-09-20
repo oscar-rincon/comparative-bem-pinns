@@ -1,3 +1,26 @@
+
+# ============================================================
+"""
+Script: pinns_training.py
+
+Description:
+    This script trains a Physics-Informed Neural Network (PINN) 
+    to solve the scattering problem for a sound-hard circular obstacle. 
+    It first runs Adam optimization, followed by L-BFGS refinement, 
+    while logging training progress and metrics.
+
+Inputs:
+    - Problem parameters: wave number k, geometry (inner radius, domain size), 
+      number of training points.
+    - Neural network architecture (layers, neurons, activation).
+    - Exact analytical displacement fields for error evaluation.
+
+Outputs:
+    - Training log (CSV) with losses, errors, and runtime, saved in ./data/
+    - Log file (TXT) with script name and execution time, saved in ./logs/
+"""
+# ============================================================
+
 #%%
 from datetime import datetime
 
@@ -41,7 +64,7 @@ from analytical_solution_functions import sound_hard_circle_calc, mask_displacem
 from pinns_solution_functions import set_seed, generate_points, MLP, init_weights, train_adam_with_logs, train_lbfgs_with_logs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
 set_seed(42)
  
-#%% Start time measurement
+#%% Start time measurement and folder setup
 
 # Record start time
 start_time = time.time()
@@ -49,12 +72,13 @@ start_time = time.time()
 # Get script name without extension
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
-# Define output folder (e.g., "logs" inside the current script directory)
+# Define base output folders
 output_folder = os.path.join(os.path.dirname(__file__), "logs")
+data_folder = os.path.join(os.path.dirname(__file__), "data")
 
-# Create folder if it does not exist
+# Create folders if they do not exist
 os.makedirs(output_folder, exist_ok=True)
-
+os.makedirs(data_folder, exist_ok=True)
 # Define output file path
 output_file = os.path.join(output_folder, f"{script_name}_log.txt")
 
@@ -111,7 +135,7 @@ os.makedirs("data", exist_ok=True)
 # Current date as YYYYMMDD
 date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-csv_name = f"logs/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
+csv_name = f"data/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
 
 # --- Adam training with logs ---
 iter_train = train_adam_with_logs(

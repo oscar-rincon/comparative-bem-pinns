@@ -1,5 +1,27 @@
  
+"""
+Script: 05_hyperparameter_tunning.py
 
+Description:
+    This script loads the results of an Optuna study and visualizes
+    the hyperparameter optimization process. It generates three panels:
+        (1) Optimization history showing the objective values across trials.
+        (2) Slice plots illustrating the relationship between hyperparameters
+            (activation, hidden layers, hidden units, learning rate) and the objective value.
+        (3) Training log plot showing relative error across iterations, 
+            separated into Adam and L-BFGS optimization stages with shaded regions.
+
+Inputs:
+    - study.pkl (Optuna study with completed trials).
+    - Training log CSV file with columns:
+        iteration | loss | mean_rel_error.
+
+Outputs:
+    - Figures saved in ./figures/ as:
+        05_hyperparameter_tunning.svg
+        05_hyperparameter_tunning.pdf
+    - Execution log saved in ./logs/ with runtime information.
+"""
 #%%
 import datetime
 import sys
@@ -40,7 +62,7 @@ output_file = os.path.join(output_folder, f"{script_name}_log.txt")
 
 #%%
 # Cargar el estudio
-study_loaded = joblib.load("study.pkl")
+study_loaded = joblib.load("data/study.pkl")
 print(study_loaded.best_value, study_loaded.best_params)
 
 #%%
@@ -61,7 +83,7 @@ df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
 # --- Load training log from CSV (iterations, loss, rel_error) ---
-log_df = pd.read_csv("logs/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
+log_df = pd.read_csv("data/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
 # Columns: iteration | loss | mean_rel_error
 
 #%%
@@ -174,7 +196,7 @@ ax2.annotate(
     ha="center",
 )
 
-ax2.set_ylabel("Relative Error", fontsize=8)
+ax2.set_ylabel("Objective Value", fontsize=8)
 ax2.set_xlabel("Iteration", fontsize=8)
 ax2.tick_params(axis="y", labelsize=7)
 ax2.tick_params(axis="x", labelsize=7)

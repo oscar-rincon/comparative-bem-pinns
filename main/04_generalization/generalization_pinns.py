@@ -1,3 +1,29 @@
+
+# ============================================================
+"""
+Script: generalization_pinns.py
+
+Description:
+    This script evaluates a trained Physics-Informed Neural Network (PINN) 
+    for the acoustic scattering problem of a sound-hard circular obstacle. 
+    The workflow includes:
+        - Computing the analytical reference solution.
+        - Loading the trained PINN model and predicting the scattered field.
+        - Computing relative L2 errors between analytical and PINN solutions.
+        - Generating error line profiles along a defined axis.
+        - Plotting displacement fields and error distributions.
+
+Inputs:
+    - Wave number k, inner radius r_i, domain size l_se.
+    - Trained PINN model (stored in ./models/).
+    - Grid resolution for evaluation.
+
+Outputs:
+    - Error metrics saved to ./data/error_results.txt
+    - Plots of PINN vs analytical displacements with error visualization.
+    - Log file (TXT) with script name, timestamp, and execution time, saved in ./logs/
+"""
+
 #%% ======================== IMPORTS ========================
 # Standard library imports
 from datetime import datetime
@@ -131,11 +157,16 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 
 # Build log text
-log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
+date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+log_text = (
+    f"Script: {script_name}\n"
+    f"Execution time (s): {elapsed_time:.2f}\n"
+    f"Finished at: {date_str}\n"
+)
 
 # Add timestamp to filename
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+file_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_filename = os.path.join(output_folder, f"{script_name}_log_{file_timestamp}.txt")
 
 with open(log_filename, "w") as f:
     f.write(log_text)

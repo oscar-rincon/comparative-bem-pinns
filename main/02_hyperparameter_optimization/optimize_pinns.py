@@ -1,5 +1,25 @@
 #%%
-# Imports y configuración
+"""
+Script: Hyperparameter optimization of Physics-Informed Neural Networks (PINNs)
+
+Description:
+    This script performs hyperparameter optimization using Optuna for PINNs 
+    applied to the Helmholtz equation with a circular scatterer. It compares
+    different architectures (hidden layers, units, activations, learning rates),
+    trains models using Adam + L-BFGS optimizers, and evaluates them against
+    the analytical solution. The best configuration is stored, and runtime is logged.
+
+Inputs:
+    - Analytical solution functions (Bessel expansions for circular scatterer).
+    - Utility functions for PINN training and evaluation.
+    - Problem parameters (wave number k, geometry, number of training points).
+
+Outputs:
+    - Optuna study object stored in `data/study_<timestamp>.pkl`
+    - Log file with execution time in `logs/<script_name>_log_<timestamp>.txt`
+    - Console printout of best hyperparameters and error values.
+"""
+#%% Imports y configuración
 from datetime import datetime
 import sys
 import os

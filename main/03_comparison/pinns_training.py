@@ -1,3 +1,30 @@
+# ============================================================
+"""
+Script: pinns_training.py
+
+Description:
+    This script performs a systematic hyperparameter study of 
+    Physics-Informed Neural Networks (PINNs) applied to the 
+    scattering problem by a sound-hard circular obstacle.
+    For each combination of hidden layers and neurons, the 
+    model is trained using Adam followed by L-BFGS, then 
+    evaluated against the analytical solution.
+
+Inputs:
+    - Problem parameters: wave number k, geometry (inner radius, 
+      domain size), number of training/collocation points.
+    - Neural network hyperparameters: hidden layers, neurons 
+      per layer, activation function, optimizer settings.
+    - Analytical displacement fields for error computation.
+
+Outputs (all filenames include timestamp):
+    - Trained models (.pt) saved in ./models/
+    - CSV files in ./data/ containing relative errors and 
+      training times
+    - Log file (TXT) with total runtime saved in ./logs/
+"""
+# ============================================================
+
 #%%
 import datetime
 import random
@@ -9,7 +36,7 @@ import time
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
 
-# Change the working directory to the notebook's directory
+# Change the working directory to the script's directory
 os.chdir(current_dir)
 
 # Modify the module search path to include utilities directory
@@ -28,7 +55,7 @@ import bem_solution_functions
 import pinns_solution_functions
 import plotting_functions
 
-# Reload them each time this file runs
+# Reload custom modules each run
 importlib.reload(analytical_solution_functions)
 importlib.reload(bem_solution_functions)
 importlib.reload(pinns_solution_functions)
@@ -41,17 +68,19 @@ from pinns_solution_functions import set_seed, generate_points, MLP, init_weight
 set_seed(42)
 
 #%% Start total time measurement
-# Get current date and time string
+# Timestamp for outputs
 date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 total_start_time = time.time()
 
-# Get script name without extension
+# Script name
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
-# Define output folder
+# Define output folders
 output_folder = os.path.join(os.path.dirname(__file__), "logs")
 os.makedirs(output_folder, exist_ok=True)
+os.makedirs("data", exist_ok=True)
+os.makedirs("models", exist_ok=True)
 
 #%% Parameters
 r_i = np.pi / 4  # Inner radius
@@ -84,10 +113,6 @@ x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom
 )
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-
-os.makedirs("data", exist_ok=True)
-models_dir = "models"
-os.makedirs("models", exist_ok=True)
 
 #%% Loop over layer and neuron values
 layer_values = [1, 2, 3]
@@ -139,13 +164,13 @@ for hidden_layers_ in layer_values:
 
         mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
 
-        # Save model (.pt) with date
+        # Save model (.pt) with timestamp
         model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.pt"
-        model_path = os.path.join(models_dir, model_name)
+        model_path = os.path.join("models", model_name)
         torch.save(model.state_dict(), model_path)
         print(f"Model saved to: {model_path}")
 
-        # Save CSV results with date
+        # Save CSV results with timestamp
         results_dict = {
             "hidden_layers": [hidden_layers_],
             "hidden_units": [hidden_units_],
@@ -162,12 +187,14 @@ for hidden_layers_ in layer_values:
 total_end_time = time.time()
 total_elapsed_time = total_end_time - total_start_time
 
+# Include timestamp in log text too
 log_text = (
     f"Script: {script_name}\n"
+    f"Timestamp: {date_str}\n"
     f"Total execution time (s): {total_elapsed_time:.2f}\n"
 )
 
-# Define log filename inside the logs folder (with date)
+# Define log filename with timestamp
 log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
 
 # Write log file

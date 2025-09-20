@@ -1,3 +1,24 @@
+
+#%%
+"""
+Script: analytical_solution.py
+
+Description:
+    This script computes the analytical solution of the 
+    scattering problem for a sound-hard circular obstacle.
+    It evaluates the incident, scattered, and total displacement 
+    fields over a square domain, applies masking, and produces 
+    corresponding plots for visualization.
+
+Inputs:
+    - Analytical solution functions (Bessel expansions).
+    - Problem parameters: wave number k, geometry (inner radius, domain size), grid resolution.
+
+Outputs:
+    - Plots of the real and imaginary parts of the displacements.
+    - Log file saved in ./logs/ with script name and runtime.
+"""
+# ==========================================================
 #%% Script start and time measurement
 import time
 import os
@@ -7,7 +28,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #%% Start time measurement
-# Record start time
 start_time = time.time()
 
 # Get script name without extension
@@ -15,13 +35,7 @@ script_name = os.path.splitext(os.path.basename(__file__))[0]
 
 # Define output folder (e.g., "logs" inside the current script directory)
 output_folder = os.path.join(os.path.dirname(__file__), "logs")
-
-# Create folder if it does not exist
 os.makedirs(output_folder, exist_ok=True)
-
-# Define output file path
-output_file = os.path.join(output_folder, f"{script_name}_log.txt")
-
 
 #%% Directory setup
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -36,10 +50,10 @@ from analytical_solution_functions import sound_hard_circle_calc, mask_displacem
 from plotting_functions import plot_exact_displacement
 
 #%% Parameters and grid
-r_i = np.pi/4  # Inner radius
+r_i = np.pi/4   # Inner radius
 l_se = np.pi    # Outer semi-length
-k = 3          # Wave number
-n_grid = 501   # Number of grid points in x and y 
+k = 3           # Wave number
+n_grid = 501    # Number of grid points in x and y 
 
 Y, X = np.mgrid[-l_se:l_se:n_grid*1j, -l_se:l_se:n_grid*1j]
 R_exact = np.sqrt(X**2 + Y**2)
@@ -52,8 +66,11 @@ u_scn_exact = mask_displacement(R_exact, r_i, l_se, u_scn_exact)
 u_exact = mask_displacement(R_exact, r_i, l_se, u_exact)
 
 #%% Plot
-plot_exact_displacement(X, Y, np.real(u_inc_exact), np.real(u_scn_exact), np.real(u_exact),
-                        np.imag(u_inc_exact), np.imag(u_scn_exact), np.imag(u_exact))
+plot_exact_displacement(
+    X, Y,
+    np.real(u_inc_exact), np.real(u_scn_exact), np.real(u_exact),
+    np.imag(u_inc_exact), np.imag(u_scn_exact), np.imag(u_exact)
+)
 
 #%% Record runtime and save to .txt
 end_time = time.time()

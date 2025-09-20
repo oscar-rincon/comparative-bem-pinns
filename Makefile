@@ -44,7 +44,7 @@ run_03_comparison:
 	@python main/03_comparison/comparison_bem.py
 	@python main/03_comparison/comparison_pinns.py
 	@python main/03_comparison/comparison_plot_top.py
-	@python main/03_comparison/comparison_plot_bottom.py
+	@python main/03_comparison/comparison_figure_compose.py
 	@echo "=============================================="
 	@echo ">>> END: 03 Comparison"
 	@echo "=============================================="
@@ -57,7 +57,7 @@ run_04_generalization:
 	@echo "=============================================="
 	@python main/04_generalization/generalization_bem.py
 	@python main/04_generalization/generalization_pinns.py
-	@python main/04_generalization/generalization_plot.py
+	@python main/04_generalization/generalization_figure_composition.py
 	@echo "=============================================="
 	@echo ">>> END: 04 Generalization"
 	@echo "=============================================="

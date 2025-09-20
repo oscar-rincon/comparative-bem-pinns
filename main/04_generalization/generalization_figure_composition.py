@@ -1,3 +1,27 @@
+
+
+# ============================================================
+"""
+Script: generalization_figure_composition.py
+
+Description:
+    This script composes and exports figures for generalization analysis 
+    by combining multiple SVGs. It creates a composite SVG figure, 
+    then converts it into a PDF for publication-ready use. 
+    Execution time and metadata are logged with timestamps.
+
+Inputs:
+    - Individual SVG figures located in ./figures/
+        * generalization_bem.svg
+        * generalization_pinns.svg
+        * base.svg
+
+Outputs:
+    - Composite SVG saved as ./figures/06_generalization.svg
+    - PDF version saved as ./figures/06_generalization.pdf
+    - Log file (TXT) with script name, timestamp, and execution time, saved in ./logs/
+"""
+
 #%% ======================== IMPORTS ========================
 from datetime import datetime
 import sys

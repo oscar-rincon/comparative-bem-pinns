@@ -1,5 +1,26 @@
- 
- # -*- coding: utf-8 -*-
+# ============================================================
+"""
+Script: comparison_bem.py
+
+Description:
+    This script solves the acoustic scattering problem for a 
+    sound-hard circular obstacle using the Boundary Element 
+    Method (BEM). The scattered field is computed on a 2D domain, 
+    interpolated on a regular grid, and compared against the 
+    analytical solution to quantify accuracy.
+
+Inputs:
+    - Wave number k
+    - Number of boundary elements (n)
+    - Circular obstacle radius
+    - Domain size and sampling resolution
+
+Outputs (all filenames include timestamp):
+    - Visualization of BEM error (amplitude and phase)
+    - Log file (TXT) with runtime saved in ./logs/
+"""
+# ============================================================
+
 #%%
  
 from datetime import datetime

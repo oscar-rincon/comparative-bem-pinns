@@ -30,9 +30,9 @@ run_03_comparison:
 	@python comparison_plot_top.py
 	@echo "Finished comparison_plot_top.py."
 
-	@echo "Running comparison_plot_bottom.py..."
-	@python comparison_plot_bottom.py
-	@echo "Finished comparison_plot_bottom.py."
+	@echo "Running comparison_figure_compose.py..."
+	@python comparison_figure_compose.py
+	@echo "Finished comparison_figure_compose.py."
 
 	@echo "=============================================="
 	@echo ">>> END: 03_comparison Workflow"
