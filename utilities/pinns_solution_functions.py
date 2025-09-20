@@ -1,4 +1,5 @@
 import os
+import random
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -9,6 +10,28 @@ from matplotlib.patches import Rectangle
 from functools import partial   
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
 from matplotlib.gridspec import GridSpec
+
+def set_seed(seed=42):
+    # Python's built-in random module
+    
+    os.environ["PYTHONHASHSEED"] = str(seed)
+
+    random.seed(seed)
+    
+    # Numpy's random module
+    np.random.seed(seed)
+    
+    # PyTorch seed for CPU
+    torch.manual_seed(seed)
+    
+    # PyTorch seed for all GPU devices (if using CUDA)
+    torch.cuda.manual_seed_all(seed)
+    
+    # Make sure to disable CuDNN's non-deterministic optimizations
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+    torch.use_deterministic_algorithms(True)
 
 class MLP(nn.Module):
     def __init__(self, input_size, output_size, hidden_layers, hidden_units, activation_function):
@@ -43,19 +66,7 @@ class MLP(nn.Module):
             x = self.act(layer(x))
         x = self.linear_out(x)
         return x    
-
-def set_seed(seed: int = 42):
-    """
-    Sets the seed for generating random numbers to ensure reproducibility of results.
-
-    Args:
-        seed (int, optional): The seed value to use for random number generation. Defaults to 42.
-    """
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
+ 
 
 
 def derivative(dy: torch.Tensor, x: torch.Tensor, order: int = 1) -> torch.Tensor:
@@ -88,6 +99,7 @@ def init_weights(m):
            will be initialized.
     """
     if type(m) == nn.Linear:
+        torch.manual_seed(42)  # fix inside
         torch.nn.init.xavier_normal_(m.weight)
         m.bias.data.fill_(0.0)
       

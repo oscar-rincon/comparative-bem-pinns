@@ -1,8 +1,12 @@
 #%%
 from datetime import datetime
+
 import sys
 import os
 import time
+import random
+ 
+ 
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -34,9 +38,9 @@ importlib.reload(plotting_functions)
 
 # Importar funciones personalizadas
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
-from pinns_solution_functions import generate_points, MLP, init_weights, train_adam_with_logs, train_lbfgs_with_logs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+from pinns_solution_functions import set_seed, generate_points, MLP, init_weights, train_adam_with_logs, train_lbfgs_with_logs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
 
-
+ 
 #%% Start time measurement
 
 # Record start time
@@ -101,10 +105,13 @@ model = MLP(
 model.apply(init_weights)
 
 # Ensure logs directory exists
-os.makedirs("logs", exist_ok=True)
+os.makedirs("data", exist_ok=True)
 
 # Build CSV filename
-csv_name = f"logs/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons.csv"
+# Current date as YYYYMMDD
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+csv_name = f"logs/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
 
 # --- Adam training with logs ---
 iter_train = train_adam_with_logs(
@@ -163,9 +170,6 @@ elapsed_time = end_time - start_time
 # Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-# Get current date and time
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
 # Define log filename inside the logs folder (with date)
 log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
 
@@ -174,3 +178,4 @@ with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+# %%
