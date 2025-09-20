@@ -343,17 +343,7 @@ plot_bem_displacements_errors(
     rel_error_line
 )
 
-#%% Record runtime and save to .txt
-end_time = time.time()
-elapsed_time = end_time - start_time
 
-log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
-
-log_filename = os.path.splitext(script_name)[0] + "_log.txt"
-with open(log_filename, "w") as f:
-    f.write(log_text)
-
-print(f"Log saved to {log_filename}") 
 
 #%% Record runtime and save to .txt
 end_time = time.time()

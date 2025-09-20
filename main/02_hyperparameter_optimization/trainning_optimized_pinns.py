@@ -39,7 +39,7 @@ importlib.reload(plotting_functions)
 # Importar funciones personalizadas
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
 from pinns_solution_functions import set_seed, generate_points, MLP, init_weights, train_adam_with_logs, train_lbfgs_with_logs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
-
+set_seed(42)
  
 #%% Start time measurement
 

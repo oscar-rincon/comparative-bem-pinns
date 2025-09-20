@@ -35,6 +35,9 @@ from plotting_functions import plot_pinns_error
 from pinns_solution_functions import initialize_and_load_model
 from pinns_solution_functions import predict_displacement_pinns 
 from pinns_solution_functions import process_displacement_pinns
+from pinns_solution_functions import set_seed
+
+set_seed(42)
 
 #%% Start time measurement
 # Record start time

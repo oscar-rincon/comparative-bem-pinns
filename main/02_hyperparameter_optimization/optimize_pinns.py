@@ -20,7 +20,9 @@ sys.path.insert(0, utilities_dir)
 
 # Importar funciones personalizadas
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
-from pinns_solution_functions import generate_points, MLP, init_weights, train_adam, train_lbfgs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+from pinns_solution_functions import set_seed, generate_points, MLP, init_weights, train_adam, train_lbfgs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+set_seed(42)
+
 #%% Start time measurement
 # Record start time
 start_time = time.time()

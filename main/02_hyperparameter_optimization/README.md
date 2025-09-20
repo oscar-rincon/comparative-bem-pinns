@@ -4,28 +4,10 @@
 
 ## How to Run
 
-To execute the Optuna minimization and generate the plots, open a terminal in the project directory and run:
+To execute the full hyperparameter optimization workflow (Optuna search, training with optimized PINNs, and plotting results), open a terminal in the project directory and run:
 
 ```bash
-make all
-```
-
-Run the optimization process:
-
-```bash
-make optimize
-```
-
-Train the PINN with the optimized hyperparameters:
-
-```bash
-make train
-```
-
-Generate the optimization results plot:
-
-```bash
-make plot_optimize
+make run_02_hyperparameter_optimization
 ```
 
 ## Estimated time

@@ -4,6 +4,7 @@ import random
 import sys
 import os
 import time
+
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -35,18 +36,14 @@ importlib.reload(plotting_functions)
 
 # Import custom functions
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
-from pinns_solution_functions import generate_points, MLP, init_weights, train_adam, train_lbfgs, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+from pinns_solution_functions import set_seed, generate_points, MLP, init_weights, train_adam, train_lbfgs, predict_displacement_pinns, process_displacement_pinns
 
-# Set seed for reproducibility
-seed = 42
-random.seed(seed)
-np.random.seed(seed)
-torch.manual_seed(seed)
-if torch.cuda.is_available():
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
+set_seed(42)
 
 #%% Start total time measurement
+# Get current date and time string
+date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 total_start_time = time.time()
 
 # Get script name without extension
@@ -88,10 +85,9 @@ x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-# Ensure logs and models directories exist
-os.makedirs("logs", exist_ok=True)
-models_dir = os.path.join(current_dir, "models")
-os.makedirs(models_dir, exist_ok=True)
+os.makedirs("data", exist_ok=True)
+models_dir = "models"
+os.makedirs("models", exist_ok=True)
 
 #%% Loop over layer and neuron values
 layer_values = [1, 2, 3]
@@ -143,13 +139,13 @@ for hidden_layers_ in layer_values:
 
         mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
 
-        # Save model (.pt)
-        model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons.pt"
+        # Save model (.pt) with date
+        model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.pt"
         model_path = os.path.join(models_dir, model_name)
         torch.save(model.state_dict(), model_path)
         print(f"Model saved to: {model_path}")
 
-        # Save CSV results
+        # Save CSV results with date
         results_dict = {
             "hidden_layers": [hidden_layers_],
             "hidden_units": [hidden_units_],
@@ -157,7 +153,7 @@ for hidden_layers_ in layer_values:
             "training_time_sec": [training_time],
         }
         csv_filename = os.path.join(
-            output_folder, f"{hidden_layers_}_layers_{hidden_units_}_neurons.csv"
+            "data", f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
         )
         pd.DataFrame(results_dict).to_csv(csv_filename, index=False)
         print(f"Results saved to: {csv_filename}")
@@ -170,9 +166,6 @@ log_text = (
     f"Script: {script_name}\n"
     f"Total execution time (s): {total_elapsed_time:.2f}\n"
 )
-
-# Get current date and time
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Define log filename inside the logs folder (with date)
 log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")

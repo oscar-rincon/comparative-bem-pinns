@@ -37,6 +37,45 @@ conda list -n comparative-pinns-bem-env
 
 ![generalization](main/04_generalization/figures/07_generalization.svg)
 
+
+## How to run
+
+To execute the full workflow (**1. Analytical Solution → 2. Hyperparameter Optimization → 3. Comparison → 4. Generalization**), open a terminal in the project root directory and run:
+
+
+```bash
+make all
+```
+
+### Run individual sections
+
+Run the Section 1 **Analytical Solution**:
+
+```bash
+make run_01_analytical_solution
+```
+
+Run the Section 2 **Hyperparameter Optimization**:
+(Optuna search → training with optimized hyperparameters → plotting results):
+
+```bash
+make run_02_hyperparameter_optimization
+```
+
+Run the Section 3 **Comparison**:
+(PINNs training → BEM solution evaluation → comparisons → plots):
+
+```bash
+make run_03_comparison
+```
+
+Run the Section 4 **Generalization**:
+(BEM → PINNs → plots):
+
+```bash
+make run_04_generalization
+``` 
+
 ## Execution times
 
 - `01_analytical_solution/`: 8.71 s  
@@ -45,81 +84,3 @@ conda list -n comparative-pinns-bem-env
 - `04_generalization/`: 48.55 s  
 
 **Total execution time:** 303.29 s
-
-## How to run
-
-To execute the full workflow (**Analytical solution → Hyperparameter tunning → Comparative analysis → Generalization**), open a terminal in the project root directory and run:
-
-```bash
-make all
-```
-
-### Run individual steps
-
-Run the analytical solution script:
-
-```bash
-make run_analytical_solution
-```
-
-Run the hyperparameter optimization script:
-
-```bash
-make run_hyperparameter_optimization
-```
-
-Run the hyperparameter optimization results plot script:
-
-```bash
-make run_plot_optuna_results
-```
-
-Run the BEM comparison script:
-
-```bash
-make run_comparison_bem
-```
-
-Run the PINNs comparison script:
-
-```bash
-make run_comparison_pinns
-```
-
-Generate comparison plot A:
-
-```bash
-make run_comparison_plot_a
-```
-
-Generate comparison plot B:
-
-```bash
-make run_comparison_plot_b
-```
-
-Run the generalization BEM script:
-
-```bash
-make run_generalization_bem
-```
-
-Run the generalization PINNs script:
-
-```bash
-make run_generalization_pinns
-```
-
-Generate the generalization plot:
-
-```bash
-make run_generalization_plot
-```
-
-### Cleaning Up
-
-To remove all generated figures from the figures/ folders:
-
-```bash
-make clean
-```

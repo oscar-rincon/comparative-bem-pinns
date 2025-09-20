@@ -19,11 +19,7 @@ os.chdir(current_dir)
 # Modify the module search path to include utilities directory
 sys.path.insert(0, utilities_dir)
 
-# Import the function to evaluate BEM accuracy
-from bem_solution_functions import evaluate_bem_accuracy
-from analytical_solution_functions import sound_hard_circle_calc 
-from analytical_solution_functions import mask_displacement
-from pinns_solution_functions import evaluate_pinn_accuracy 
+ 
 
 #%% Start time measurement
 # Record start time
