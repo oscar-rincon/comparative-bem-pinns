@@ -50,7 +50,8 @@ sys.path.insert(0, utilities_dir)
 #%% ======================== FUNCTION IMPORTS ========================
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement
 from plotting_functions import plot_pinns_displacements_with_errorline
-from pinns_solution_functions import initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+from pinns_solution_functions import set_seed, initialize_and_load_model, predict_displacement_pinns, process_displacement_pinns
+set_seed(42)
 
 #%% ======================== LOGGING SETUP ========================
 # Record start time
@@ -140,6 +141,8 @@ error_line = np.abs(np.real(u_scn_exact_line) - u_sc_amp_pred)
 rel_error_line = error_line / np.max(u_inc_line + u_sc_amp_pred)
 
 #%% ======================== PLOTTING ========================
+ 
+ 
 plot_pinns_displacements_with_errorline(
     X, Y,
     u_sc_amp_pinns,
@@ -152,23 +155,20 @@ plot_pinns_displacements_with_errorline(
     rel_error_line
 )
 
-#%% ======================== LOGGING ========================
+#%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
-
+ 
 # Build log text
-date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_text = (
-    f"Script: {script_name}\n"
-    f"Execution time (s): {elapsed_time:.2f}\n"
-    f"Finished at: {date_str}\n"
-)
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-# Add timestamp to filename
-file_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-log_filename = os.path.join(output_folder, f"{script_name}_log_{file_timestamp}.txt")
+# Define log filename inside the logs folder
+log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
 
+# Write log file
 with open(log_filename, "w") as f:
     f.write(log_text)
 
 print(f"Log saved to: {log_filename}")
+
+# %%

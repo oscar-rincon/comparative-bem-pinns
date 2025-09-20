@@ -14,7 +14,6 @@ Inputs:
     - Individual SVG figures located in ./figures/
         * generalization_bem.svg
         * generalization_pinns.svg
-        * base.svg
 
 Outputs:
     - Composite SVG saved as ./figures/06_generalization.svg
@@ -32,6 +31,12 @@ import cairosvg
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
+
+# Change the working directory to the script's directory
+os.chdir(current_dir)
+
+# Modify the module search path to include utilities directory
+sys.path.insert(0, utilities_dir)
 
 #%% Start time measurement
 # Record start time

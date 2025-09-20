@@ -142,8 +142,41 @@ relative_error = np.linalg.norm(
 ) / np.linalg.norm(u_scn_exact_masked.real, 2)
 print(f"Relative L2 error: {relative_error:.2e}")
 
+#%% ======================= RADIAL LINE PROFILE =======================
+# Línea radial desde el centro hacia +x, con y=0
+x_line = np.linspace(np.pi, 10 * np.pi, 500)
+y_line = np.zeros_like(x_line)
+points_line = np.vstack((x_line, y_line)).T
+
+# Evaluar campo BEM en puntos de la línea
+interiorIncidentPhi_line = np.zeros(points_line.shape[0], dtype=complex)
+phi_bem_line = solveExterior(
+    k, v, phi,
+    interiorIncidentPhi_line,
+    points_line,
+    aVertex, aElement,
+    'exterior'
+)
+
+# Solución exacta
+X_line, Y_line = x_line, y_line
+u_inc_line, u_scn_exact_line, u_tot_exact_line = sound_hard_circle_calc(
+    k, r_exclude,
+    X_line, Y_line
+)
+
+# Error relativo
+error_line = np.abs(np.real(u_scn_exact_line) - np.real(phi_bem_line))
+rel_error_line = error_line / np.max(np.real(u_scn_exact_line))
+
+
 #%% ======================= PLOTTING =======================
-# (keeping your plotting function as is)
+ 
+
+
+
+
+
 plot_bem_displacements_errors(
     X, Y,
     u_scn_amp,
@@ -152,9 +185,10 @@ plot_bem_displacements_errors(
     u_scn_phase,
     u_scn_phase + np.real(u_inc_exact),
     np.abs(np.imag(u_scn_exact) - u_scn_phase),
-    np.linspace(np.pi, 10*np.pi, 500),
-    None  # rel_error_line already computed inside function if needed
+    x_line,
+    rel_error_line
 )
+
 
 #%% ======================= LOGGING =======================
 end_time = time.time()

@@ -1,0 +1,2 @@
+Script: analytical_solution
+Execution time (s): 16.01
