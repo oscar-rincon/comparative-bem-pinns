@@ -121,6 +121,10 @@ df = pd.DataFrame(results)
 pinn_csv = os.path.join("data", f"pinn_accuracy_vs_architecture_{date_str}.csv")
 df.to_csv(pinn_csv, index=False)
 print(f"Results saved to '{pinn_csv}'")
+# Save without date
+pinn_csv_no_date = os.path.join("data", f"pinn_accuracy_vs_architecture.csv")
+df.to_csv(pinn_csv_no_date, index=False)
+print(f"Results also saved to '{pinn_csv_no_date}'")
 
 #%% Record runtime and save to .txt
 end_time = time.time()

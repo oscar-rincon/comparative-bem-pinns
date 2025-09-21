@@ -79,9 +79,6 @@ data_folder = os.path.join(os.path.dirname(__file__), "data")
 # Create folders if they do not exist
 os.makedirs(output_folder, exist_ok=True)
 os.makedirs(data_folder, exist_ok=True)
-# Define output file path
-output_file = os.path.join(output_folder, f"{script_name}_log.txt")
-
 #%%
 
 # Parámetros
@@ -108,8 +105,8 @@ adam_lr        = 1e-4
 hidden_layers_ = 3
 hidden_units_  = 25
  
-adam_iters     = 5000
-lbfgs_iters    = 5000
+adam_iters     = 3000
+lbfgs_iters    = 3000
 
 class Sine(nn.Module):
     def forward(self, x):
@@ -140,6 +137,7 @@ os.makedirs("data", exist_ok=True)
 date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 csv_name = f"data/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
+csv_name_no_date = f"data/training_log_{hidden_layers_}_layers_{hidden_units_}_neurons.csv"
 
 # --- Adam training with logs ---
 iter_train = train_adam_with_logs(
@@ -156,6 +154,7 @@ iter_train = train_adam_with_logs(
     adam_lr,
     num_iter=adam_iters,
     save_csv_path=csv_name,  # dynamic filename
+    save_csv_path_no_datetime=csv_name_no_date,  # static filename
     l_e=l_e,
     r_i=r_i,
     n_grid=n_grid,
@@ -181,6 +180,7 @@ iter_train = train_lbfgs_with_logs(
     lbfgs_lr=1.0,
     num_iter=lbfgs_iters,
     save_csv_path=csv_name,  # same CSV, continues appending
+    save_csv_path_no_datetime=csv_name_no_date,  # also save without date
     l_e=l_e,
     r_i=r_i,
     n_grid=n_grid,

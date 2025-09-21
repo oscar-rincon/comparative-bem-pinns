@@ -1,2 +1,0 @@
-Script: comparison_plot_a
-Execution time (s): 0.60

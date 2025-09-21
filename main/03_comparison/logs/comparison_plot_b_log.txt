@@ -1,2 +1,0 @@
-Script: comparison_plot_b
-Execution time (s): 21.62

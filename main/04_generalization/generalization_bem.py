@@ -30,7 +30,7 @@ Outputs:
 import sys
 import os
 import time
-import datetime
+from datetime import datetime
 import numpy as np
 from scipy.interpolate import griddata
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
@@ -214,3 +214,5 @@ with open(log_filename_no_date, "w") as f:
 
 print(f"Log saved to: {log_filename_with_date}")
 print(f"Log also saved to: {log_filename_no_date}")
+
+# %%

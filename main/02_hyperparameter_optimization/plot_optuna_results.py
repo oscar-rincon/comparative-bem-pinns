@@ -23,7 +23,7 @@ Outputs:
     - Execution log saved in ./logs/ with runtime information.
 """
 #%%
-import datetime
+from datetime import datetime
 import sys
 import os
 import time
@@ -230,3 +230,4 @@ with open(log_filename_no_date, "w") as f:
 
 print(f"Log saved to: {log_filename_with_date}")
 print(f"Log also saved to: {log_filename_no_date}")
+# %%

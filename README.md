@@ -76,11 +76,13 @@ Run the Section 4 **Generalization**:
 make run_04_generalization
 ``` 
 
-## Execution times
+## Execution Times
 
-- `01_analytical_solution/`: 8.71 s  
-- `02_hyperparameter_optimization/`: 4.31 s  
-- `03_comparison/`: 241.72 s  
-- `04_generalization/`: 48.55 s  
+Execution times (hh:mm:ss) of the scripts measured on GPU: NVIDIA GeForce RTX 4060 Laptop.
 
-**Total execution time:** 303.29 s
+- `01_analytical_solution/`: 0:00:08  
+- `02_hyperparameter_optimization/`: 12:18:39  
+- `03_comparison/`: 0:06:21  
+- `04_generalization/`: 0:02:03  
+
+**Total execution time:** 12:27:11

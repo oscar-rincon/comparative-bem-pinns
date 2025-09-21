@@ -257,6 +257,7 @@ def train_adam_logs(
     x_right, y_right, x_bottom, y_bottom, x_top, y_top,
     k, iter, results, lr_, num_iter=500,
     save_csv_path="training_log.csv",
+    save_csv_path_no_datetime="training_log_no_date.csv",
     l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
     u_scn_exact=None, u_exact=None
 ):
@@ -292,6 +293,7 @@ def train_adam_logs(
     # --- Save results to CSV ---
     df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
     df.to_csv(save_csv_path, index=False)
+    df.to_csv(save_csv_path_no_datetime, index=False)
 
 def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results):
     
@@ -392,7 +394,8 @@ def train_adam_with_logs(
     x_bottom, y_bottom, x_top, y_top,
     k, iter, results, lr_,
     num_iter=500,
-    save_csv_path="training_log.csv",
+    save_csv_path=None,
+    save_csv_path_no_datetime=None,
     l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
     u_scn_exact=None, u_exact=None
 ):
@@ -430,6 +433,7 @@ def train_adam_with_logs(
     # --- Save results to CSV ---
     df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
     df.to_csv(save_csv_path, index=False)
+    df.to_csv(save_csv_path_no_datetime, index=False)
 
     return iter
 
@@ -447,7 +451,8 @@ def train_lbfgs_with_logs(
     results,
     lbfgs_lr,
     num_iter=500,
-    save_csv_path="training_log.csv",
+    save_csv_path=None,
+    save_csv_path_no_datetime=None,
     l_e=None, r_i=None, n_grid=None, X=None, Y=None, R_exact=None,
     u_scn_exact=None, u_exact=None
 ):
@@ -485,6 +490,7 @@ def train_lbfgs_with_logs(
     # --- Save results to CSV ---
     df = pd.DataFrame(results, columns=["iteration", "loss", "mean_rel_error"])
     df.to_csv(save_csv_path, index=False)
+    df.to_csv(save_csv_path_no_datetime, index=False)
 
     return iter_container[0]  # final iteration count
 

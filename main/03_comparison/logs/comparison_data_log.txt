@@ -1,2 +1,0 @@
-Script: comparison_data
-Execution time (s): 222.44

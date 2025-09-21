@@ -112,12 +112,30 @@ u_scn_amp_masked[R_grid < r_i] = 0
 relative_error = np.linalg.norm(u_scn_exact_masked.real - u_scn_amp_masked.real, 2) / np.linalg.norm(u_scn_exact_masked.real, 2)
 print(f"Relative L2 error: {relative_error:.2e}")
 
-# Save result to txt
+# Save result to txt with timestamp
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Create folder if it doesn't exist
 os.makedirs("data", exist_ok=True)
-with open("data/error_results.txt", "w") as f:
+
+# File paths
+file_no_date = os.path.join("data", "error_results.txt")
+file_with_date = os.path.join("data", f"error_results_{date_str}.txt")
+
+# Save result (no date, always overwritten)
+with open(file_no_date, "w") as f:
     f.write("Relative L2 error computation\n")
     f.write("=============================\n")
     f.write(f"Relative L2 error: {relative_error:.6e}\n")
+
+# Save result (with timestamp in filename, historical)
+with open(file_with_date, "w") as f:
+    f.write(f"Error results generated on {date_str}\n")
+    f.write("=============================\n")
+    f.write(f"Relative L2 error: {relative_error:.6e}\n")
+
+print(f"Error results saved to '{file_no_date}' (latest)")
+print(f"Error results also saved to '{file_with_date}' (historical)")
 
 #%% ======================== ERROR LINE PROFILE ========================
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

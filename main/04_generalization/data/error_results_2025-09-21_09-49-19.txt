@@ -1,0 +1,3 @@
+Error results generated on 2025-09-21_09-49-19
+=============================
+Relative L2 error: 4.486147e+01

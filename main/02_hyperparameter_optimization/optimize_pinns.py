@@ -100,7 +100,7 @@ def objective(trial):
     activation_str = trial.suggest_categorical("activation", ["Tanh", "Sigmoid", "Sine"])
 
     adam_fraction = 0.5
-    total_iter    = 10_000
+    total_iter    = 6_000
     adam_iters    = int(total_iter * adam_fraction)
     lbfgs_iters   = total_iter - adam_iters
 

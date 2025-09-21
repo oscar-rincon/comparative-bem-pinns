@@ -105,6 +105,7 @@ reported_values = {
 # Save reported values with timestamp
 date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 reported_file = os.path.join("data", f"reported_values_{date_str}.txt")
+reported_file_no_date = os.path.join("data", "reported_values.txt")
 
 with open(reported_file, "w") as f:
     f.write(f"Reported values generated on {date_str}\n")
@@ -112,8 +113,15 @@ with open(reported_file, "w") as f:
     for key, val in reported_values.items():
         f.write(f"{key}: {val}\n")
 
-print(f"Reported values saved to: {reported_file}")
+with open(reported_file_no_date, "w") as f:
+    f.write(f"Reported values generated on {date_str}\n")
+    f.write("====================================\n")
+    for key, val in reported_values.items():
+        f.write(f"{key}: {val}\n")
 
+
+print(f"Reported values saved to: {reported_file}")
+print(f"Reported values also saved to: {reported_file_no_date}")
 
 #%% Plotting
 pinn_marker_sizes = 15
