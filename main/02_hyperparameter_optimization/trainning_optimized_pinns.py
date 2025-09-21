@@ -104,13 +104,17 @@ u_exact = mask_displacement(R_exact, r_i, l_e, u_exact)
 results = []
 iter_train = 0
 
-adam_lr        = 1e-3
+adam_lr        = 1e-4
 hidden_layers_ = 3
-hidden_units_  = 75
-adam_fraction  = 0.5
+hidden_units_  = 25
+ 
 adam_iters     = 5000
 lbfgs_iters    = 5000
-activation_function_ = nn.Tanh()
+
+class Sine(nn.Module):
+    def forward(self, x):
+        return torch.sin(x)
+activation_function_ = Sine()
 
 x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top = generate_points(
     n_Omega_P, side_length, r_i, n_Gamma_I, n_Gamma_E
@@ -194,12 +198,20 @@ elapsed_time = end_time - start_time
 # Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-# Define log filename inside the logs folder (with date)
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-# Write log file
-with open(log_filename, "w") as f:
+# Define log filenames inside the logs folder
+log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file with date
+with open(log_filename_with_date, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to: {log_filename}")
-# %%
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename_with_date}")
+print(f"Log also saved to: {log_filename_no_date}")

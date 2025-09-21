@@ -1,0 +1,4 @@
+Script: comparison_plot_top
+Start time: 2025-09-20 18:57:23.163097
+End time:   2025-09-20 18:57:23.955508
+Execution time (s): 0.79

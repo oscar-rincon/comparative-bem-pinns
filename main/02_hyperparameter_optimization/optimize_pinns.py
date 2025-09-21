@@ -164,7 +164,7 @@ def objective(trial):
 #%%
 # Ejecutar Optuna
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=100)
+study.optimize(objective, n_trials=20)
 print("Best trial:")
 best_trial = study.best_trial
 print(f"  Value (mean error): {best_trial.value:.3e}")
@@ -181,23 +181,7 @@ date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Save study with date in filename
 joblib.dump(study, f"data/study_{date_str}.pkl")
-
-#%% Record runtime and save to .txt
-end_time = time.time()
-elapsed_time = end_time - start_time
- 
-# Build log text
-log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
-
-# Define log filename inside the logs folder
-log_filename = os.path.join(output_folder, f"{script_name}_log.txt")
-
-# Write log file
-with open(log_filename, "w") as f:
-    f.write(log_text)
-
-print(f"Log saved to: {log_filename}")
-
+joblib.dump(study, "data/study.pkl")  # also save without date for easy access
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
@@ -208,11 +192,18 @@ log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 # Get current date and time
 date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-# Define log filename inside the logs folder (with date)
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+# Define log filenames inside the logs folder
+log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
 
-# Write log file
-with open(log_filename, "w") as f:
+# Write log file with date
+with open(log_filename_with_date, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to: {log_filename}")
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename_with_date}")
+print(f"Log also saved to: {log_filename_no_date}")
+# %%

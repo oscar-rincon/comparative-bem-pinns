@@ -1,0 +1,2 @@
+Script: optimize_pinns
+Execution time (s): 43988.97

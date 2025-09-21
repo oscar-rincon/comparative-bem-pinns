@@ -31,7 +31,7 @@ def set_seed(seed=42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    torch.use_deterministic_algorithms(True)
+ 
 
 class MLP(nn.Module):
     def __init__(self, input_size, output_size, hidden_layers, hidden_units, activation_function):

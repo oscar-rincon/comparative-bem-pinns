@@ -190,20 +190,27 @@ plot_bem_displacements_errors(
 )
 
 
-#%% ======================= LOGGING =======================
+#%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
-date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-log_text = (
-    f"Script: {script_name}\n"
-    f"Start time: {datetime.datetime.fromtimestamp(start_time)}\n"
-    f"End time:   {datetime.datetime.fromtimestamp(end_time)}\n"
-    f"Execution time (s): {elapsed_time:.2f}\n"
-)
+# Build log text
+log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
-with open(log_filename, "w") as f:
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Define log filenames inside the logs folder
+log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file with date
+with open(log_filename_with_date, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to: {log_filename}")
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename_with_date}")
+print(f"Log also saved to: {log_filename_no_date}")

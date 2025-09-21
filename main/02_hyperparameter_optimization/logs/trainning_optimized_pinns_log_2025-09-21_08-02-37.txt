@@ -1,2 +1,2 @@
 Script: trainning_optimized_pinns
-Execution time (s): 498.00
+Execution time (s): 486.19

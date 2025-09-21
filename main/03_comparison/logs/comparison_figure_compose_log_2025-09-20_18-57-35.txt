@@ -1,0 +1,4 @@
+Script: comparison_figure_compose
+Start time: 2025-09-20 18:57:35.366101
+End time:   2025-09-20 18:57:35.660278
+Execution time (s): 0.29

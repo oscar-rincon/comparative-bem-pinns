@@ -33,7 +33,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 
-from versions.pinns.pinns_scat_circ import set_seed
 
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -123,15 +122,27 @@ pinn_csv = os.path.join("data", f"pinn_accuracy_vs_architecture_{date_str}.csv")
 df.to_csv(pinn_csv, index=False)
 print(f"Results saved to '{pinn_csv}'")
 
-#%% Record runtime and save log
+#%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time
 
+# Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 
-# Save log with date
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
-with open(log_filename, "w") as f:
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Define log filenames inside the logs folder
+log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
+
+# Write log file with date
+with open(log_filename_with_date, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to: {log_filename}")
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename_with_date}")
+print(f"Log also saved to: {log_filename_no_date}")

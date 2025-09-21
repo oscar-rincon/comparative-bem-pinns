@@ -83,14 +83,14 @@ df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
 # --- Load training log from CSV (iterations, loss, rel_error) ---
-log_df = pd.read_csv("data/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
+log_df = pd.read_csv("data/training_log_3_layers_25_neurons.csv")  # adapt filename pattern
 # Columns: iteration | loss | mean_rel_error
 
 #%%
 # Figura y gridspec
 #fig = plt.figure(figsize=(7, 3.5))
-fig = plt.figure(figsize=(7, 6.0))
-gs = fig.add_gridspec(3, 1, height_ratios=[0.9, 1.2, 0.8], hspace=0.5)
+fig = plt.figure(figsize=(7, 6.2))
+gs = fig.add_gridspec(3, 1, height_ratios=[0.9, 1.4, 0.8], hspace=0.5)
 
 # Panel superior (historia de optimización)
 ax0 = fig.add_subplot(gs[0, 0])
@@ -98,11 +98,11 @@ ax0.plot(df["number"], best_values, color="#c7c8c8ff", linewidth=1, label="Best 
 ax0.scatter(df["number"], df["value"], color="#437ab0ff", s=10, label="Objective Value", zorder=2)
 ax0.set_ylabel("Objective Value", fontsize=8)
 ax0.set_xlabel("Trial number", fontsize=8)
-ax0.set_xticks([0, 5, 10, 15, 20])
-ax0.set_yticks([0.5, 0.75, 1, 1.25])
+#ax0.set_xticks([0, 5, 10, 15, 20])
+#ax0.set_yticks([0.0,0.5, 0.75, 1, 1.25])
 ax0.tick_params(axis="y", labelsize=7)
 ax0.tick_params(axis="x", labelsize=7)
-
+ax0.set_ylim(-0.1, 1.1)
 # Panel intermedio (slice plots)
 gs2 = gs[1].subgridspec(1, len(params), wspace=0.4)
 axes = [fig.add_subplot(gs2[0, i]) for i in range(len(params))]
@@ -116,7 +116,7 @@ for i, p in enumerate(params):
         edgecolor="k",
         s=15,
         norm=norm,
-        alpha=0.5
+        alpha=0.4
     )
     if p == "adam_lr":
         axes[i].set_xlabel(r"Learning rate $\alpha$", fontsize=8)
@@ -216,11 +216,17 @@ log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
 # Get current date and time
 date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-# Define log filename inside the logs folder (with date)
-log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+# Define log filenames inside the logs folder
+log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
 
-# Write log file
-with open(log_filename, "w") as f:
+# Write log file with date
+with open(log_filename_with_date, "w") as f:
     f.write(log_text)
 
-print(f"Log saved to: {log_filename}")
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
+print(f"Log saved to: {log_filename_with_date}")
+print(f"Log also saved to: {log_filename_no_date}")

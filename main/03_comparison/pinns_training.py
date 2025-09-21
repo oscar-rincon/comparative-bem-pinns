@@ -104,8 +104,8 @@ iter_train = 0
 
 adam_lr        = 1e-3
 adam_fraction  = 0.5
-adam_iters     = 50
-lbfgs_iters    = 50
+adam_iters     = 5000
+lbfgs_iters    = 5000
 activation_function_ = nn.Tanh()
 
 x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top = generate_points(
@@ -196,9 +196,16 @@ log_text = (
 
 # Define log filename with timestamp
 log_filename = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")
+log_filename_no_date   = os.path.join(output_folder, f"{script_name}_log.txt")
 
 # Write log file
 with open(log_filename, "w") as f:
     f.write(log_text)
 
+# Write log file without date
+with open(log_filename_no_date, "w") as f:
+    f.write(log_text)
+
 print(f"Log saved to: {log_filename}")
+print(f"Log also saved to: {log_filename_no_date}")
+ 
