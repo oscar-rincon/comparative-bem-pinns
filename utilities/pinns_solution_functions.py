@@ -940,7 +940,7 @@ def evaluate_pinn_accuracy(n_layers, n_neurons, model_dir='models', k=3.0, r_i=n
     """
 
     # Set model path assuming naming convention
-    model_name = f'Scattering_{n_layers}_{n_neurons}.pt'
+    model_name = f'{n_layers}_layers_{n_neurons}_neurons.pt'
     model_path = f'{model_dir}/{model_name}'
 
     # Create the grid

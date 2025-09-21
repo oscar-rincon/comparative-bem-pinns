@@ -102,10 +102,10 @@ u_exact = mask_displacement(R_exact, r_i, l_e, u_exact)
 results_all = []
 iter_train = 0
 
-adam_lr        = 1e-3
+adam_lr        = 1e-2
 adam_fraction  = 0.5
-adam_iters     = 5000
-lbfgs_iters    = 5000
+adam_iters     = 3000
+lbfgs_iters    = 3000
 activation_function_ = nn.Tanh()
 
 x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top = generate_points(
@@ -164,24 +164,41 @@ for hidden_layers_ in layer_values:
 
         mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
 
-        # Save model (.pt) with timestamp
-        model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.pt"
+        # ===== Save model =====
+        # With timestamp
+        model_name_ts = f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.pt"
+        model_path_ts = os.path.join("models", model_name_ts)
+        torch.save(model.state_dict(), model_path_ts)
+        print(f"Model saved to: {model_path_ts}")
+
+        # Without timestamp
+        model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons.pt"
         model_path = os.path.join("models", model_name)
         torch.save(model.state_dict(), model_path)
-        print(f"Model saved to: {model_path}")
+        print(f"Model also saved without timestamp: {model_path}")
 
-        # Save CSV results with timestamp
+        # ===== Save CSV results =====
         results_dict = {
             "hidden_layers": [hidden_layers_],
             "hidden_units": [hidden_units_],
             "mean_relative_error": [float(mean_rel_error_pinns)],
             "training_time_sec": [training_time],
         }
-        csv_filename = os.path.join(
+
+        # With timestamp
+        csv_filename_ts = os.path.join(
             "data", f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
         )
+        pd.DataFrame(results_dict).to_csv(csv_filename_ts, index=False)
+        print(f"Results saved to: {csv_filename_ts}")
+
+        # Without timestamp
+        csv_filename = os.path.join(
+            "data", f"{hidden_layers_}_layers_{hidden_units_}_neurons.csv"
+        )
         pd.DataFrame(results_dict).to_csv(csv_filename, index=False)
-        print(f"Results saved to: {csv_filename}")
+        print(f"Results also saved without timestamp: {csv_filename}")
+
 
 #%% Record total runtime
 total_end_time = time.time()

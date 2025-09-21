@@ -90,7 +90,7 @@ k = 3.0
 iter = 0
 side_length = 2 * l_e
 
-model_path = 'models/Scattering_3_75.pt'
+model_path = 'models/3_layers_75_neurons.pt'
 model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
 
 #%% ======================== PINNs PREDICTION & PROCESSING ========================

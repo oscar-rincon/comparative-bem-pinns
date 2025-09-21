@@ -113,7 +113,7 @@ iter = 0                 # Iteration counter
 side_length = 2 * l_e    # Side length of the square
  
 # Initialize and load the model
-model_path = 'models/Scattering_3_75.pt'
+model_path = 'models/3_layers_75_neurons.pt'
 model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
 
 # Predict the displacement
