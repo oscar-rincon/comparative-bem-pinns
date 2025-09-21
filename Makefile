@@ -29,6 +29,7 @@ run_02_hyperparameter_optimization:
 	@python main/02_hyperparameter_optimization/optimize_pinns.py
 	@python main/02_hyperparameter_optimization/training_optimized_pinns.py
 	@python main/02_hyperparameter_optimization/plot_optuna_results.py
+	@python sum_times.py
 	@echo "=============================================="
 	@echo ">>> END: 02 Hyperparameter Optimization"
 	@echo "=============================================="
@@ -45,6 +46,7 @@ run_03_comparison:
 	@python main/03_comparison/comparison_pinns.py
 	@python main/03_comparison/comparison_plot_top.py
 	@python main/03_comparison/comparison_figure_compose.py
+	@python sum_times.py
 	@echo "=============================================="
 	@echo ">>> END: 03 Comparison"
 	@echo "=============================================="
@@ -58,6 +60,7 @@ run_04_generalization:
 	@python main/04_generalization/generalization_bem.py
 	@python main/04_generalization/generalization_pinns.py
 	@python main/04_generalization/generalization_figure_composition.py
+	@python sum_times.py
 	@echo "=============================================="
 	@echo ">>> END: 04 Generalization"
 	@echo "=============================================="

@@ -34,6 +34,10 @@ run_03_comparison:
 	@python comparison_figure_compose.py
 	@echo "Finished comparison_figure_compose.py."
 
+	@echo "Running sum_times.py..."
+	@python sum_times.py
+	@echo "Finished sum_times.py."
+
 	@echo "=============================================="
 	@echo ">>> END: 03_comparison Workflow"
 	@echo "=============================================="

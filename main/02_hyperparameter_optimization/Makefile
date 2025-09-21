@@ -19,6 +19,11 @@ run_02_hyperparameter_optimization:
 	@python3 plot_optuna_results.py
 	@echo "Finished plot_optuna_results.py."
 
+	@echo "Running sum_times.py..."
+	@python3 sum_times.py
+	@echo "Finished sum_times.py."
+
 	@echo "=============================================="
 	@echo ">>> END: Hyperparameter Optimization Workflow"
 	@echo "=============================================="
+

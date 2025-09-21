@@ -22,6 +22,10 @@ run_04_generalization:
 	@python generalization_figure_composition.py
 	@echo "Finished generalization_figure_composition.py."
 
+	@echo "Running sum_times.py..."
+	@python sum_times.py
+	@echo "Finished sum_times.py."
+
 	@echo "=============================================="
 	@echo ">>> END: 04_generalization Workflow"
 	@echo "=============================================="

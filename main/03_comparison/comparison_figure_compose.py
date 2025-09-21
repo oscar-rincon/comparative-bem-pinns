@@ -67,7 +67,7 @@ Figure(
     631,  # total width
     191,  # height
     Panel(svg1),
-    Panel(svg2).move(240, 0)
+    Panel(svg2).move(230, 0)
 ).scale(1.3).save(os.path.join(figures_folder, "errors.svg"))
 
 #%% Create final combined figure
