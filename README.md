@@ -78,11 +78,11 @@ make run_04_generalization
 
 ## Execution Times
 
-Execution times (hh:mm:ss) of the scripts measured on GPU: NVIDIA GeForce RTX 4060 Laptop.
+Approximated execution times of the scripts measured on GPU: NVIDIA GeForce RTX 4060 Laptop.
 
-- `01_analytical_solution/`: 0:00:08  
-- `02_hyperparameter_optimization/`: 12:18:39  
-- `03_comparison/`: 0:06:21  
-- `04_generalization/`: 0:02:03  
+- `01_analytical_solution/`: less than 1 minute
+- `02_hyperparameter_optimization/`: ~ 1 hour and 33 minutes 
+- `03_comparison/`: ~ 6 minutes  
+- `04_generalization/`: ~ 3 minutes  
 
-**Total execution time:** 12:27:11
+**Total execution time:** ~ 1 hour and 39 minutes

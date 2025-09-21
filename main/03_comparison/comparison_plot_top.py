@@ -24,7 +24,7 @@ Outputs:
 # ============================================================
 
 #%%
-import datetime
+from datetime import datetime
 import sys
 import os
 import time
@@ -103,7 +103,7 @@ reported_values = {
 }
 
 # Save reported values with timestamp
-date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 reported_file = os.path.join("data", f"reported_values_{date_str}.txt")
 reported_file_no_date = os.path.join("data", "reported_values.txt")
 
@@ -210,9 +210,6 @@ elapsed_time = end_time - start_time
 
 # Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
-
-# Get current date and time
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Define log filenames inside the logs folder
 log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")

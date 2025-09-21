@@ -27,7 +27,7 @@ Outputs:
 import sys
 import os
 import time
-import datetime
+from datetime import datetime
 import cairosvg
 
 # Third-party imports

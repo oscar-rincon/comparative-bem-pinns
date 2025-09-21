@@ -12,4 +12,4 @@ make run_01_analytical_solution
 
 ## Estimated time
 
-The execution of this script takes approximately 9.24 s.
+less than 1 minute

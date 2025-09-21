@@ -13,4 +13,4 @@ make run_03_comparison
 
 ## Estimated time
 
-The execution of this script takes approximately 241.72 s.
+~ 6 minutes 

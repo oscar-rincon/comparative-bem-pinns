@@ -13,4 +13,4 @@ make run_04_generalization
 
 ## Estimated time
 
-The execution of this script takes approximately 48.55 s.
+~ 3 minutes

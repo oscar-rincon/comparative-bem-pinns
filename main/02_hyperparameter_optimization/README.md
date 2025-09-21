@@ -12,4 +12,4 @@ make run_02_hyperparameter_optimization
 
 ## Estimated time
 
-The execution of this script takes approximately 4.31 s.
+~ 1 hour 33 minutes

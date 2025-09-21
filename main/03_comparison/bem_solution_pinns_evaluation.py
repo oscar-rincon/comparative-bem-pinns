@@ -25,7 +25,7 @@ Outputs (all filenames include timestamp):
  
 #%%
 # -*- coding: utf-8 -*-
-import datetime
+from datetime import datetime
 import sys
 import os
 import time
@@ -54,7 +54,7 @@ set_seed(42)
 start_time = time.time()
 
 # Get current date and time string
-date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Get script name without extension
 script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -82,8 +82,11 @@ df = pd.DataFrame(results)
 
 # Save with date
 bem_csv = os.path.join("data", f"bem_accuracy_vs_n_{date_str}.csv")
+bem_csv_no_date = os.path.join("data", f"bem_accuracy_vs_n.csv")
 df.to_csv(bem_csv, index=False)
+df.to_csv(bem_csv_no_date, index=False)
 print(f"Results saved to '{bem_csv}'")
+print(f"Results also saved to '{bem_csv_no_date}'")
 
 # %% PINNs evaluation
 layer_values = [1, 2, 3]

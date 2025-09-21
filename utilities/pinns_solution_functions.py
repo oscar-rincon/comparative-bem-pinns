@@ -248,9 +248,9 @@ def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_rig
         optimizer.step()
         iter += 1
         results.append([iter, loss.item()])
-        #if iter % 500 == 0:
-        #    torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-            #print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
+        if iter % 500 == 0:
+            #torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
+            print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
 
 def train_adam_logs(
     model, x_f, y_f, x_inner, y_inner, x_left, y_left,
@@ -312,9 +312,9 @@ def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_righ
     #global iter
     iter += 1
     results.append([iter, loss.item()])
-    #if iter % 500 == 0:
-    #    torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-        #print(f"Iteration {iter}, Loss: {loss.item()}")
+    if iter % 500 == 0:
+        #torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
+        print(f"Iteration {iter}, Loss: {loss.item()}")
 
     return loss
 
@@ -923,43 +923,45 @@ def plot_pinns_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_s
 
 def evaluate_pinn_accuracy(n_layers, n_neurons, model_dir='models', k=3.0, r_i=np.pi/4, l_e=np.pi, n_grid=501):
     """
-    Evaluates the accuracy of a PINN model for wave scattering from a circular obstacle.
-    
-    Parameters:
-        n_layers (int): Number of hidden layers in the neural network.
-        n_neurons (int): Number of neurons per hidden layer.
-        model_dir (str): Directory where the model is stored.
-        k (float): Wave number.
-        r_i (float): Inner radius of the circular obstacle.
-        l_e (float): Semi-length of the square domain.
-        n_grid (int): Number of grid points per dimension for interpolation.
-
-    Returns:
-        float: Computation time in seconds.
-        float: Relative L2 error.
+    Evaluates the PINN model accuracy and returns evaluation time and relative L2 error.
+    Only the PINN prediction (forward pass) is timed.
     """
 
-    # Set model path assuming naming convention
+    # Set model path
     model_name = f'{n_layers}_layers_{n_neurons}_neurons.pt'
     model_path = f'{model_dir}/{model_name}'
 
-    # Create the grid
+    # Preprocessing 
     Y, X = np.mgrid[-l_e:l_e:n_grid*1j, -l_e:l_e:n_grid*1j]
     R_exact = np.sqrt(X**2 + Y**2)
-
-    # Calculate analytical solution
-    u_inc_exact, u_scn_exact, u_exact = sound_hard_circle_calc(k, r_i, X, Y, n_terms=None)
-    u_inc_exact = mask_displacement(R_exact, r_i, l_e, u_inc_exact)
+    _, u_scn_exact, _ = sound_hard_circle_calc(k, r_i, X, Y, n_terms=None)
     u_scn_exact = mask_displacement(R_exact, r_i, l_e, u_scn_exact)
-    u_exact     = mask_displacement(R_exact, r_i, l_e, u_exact)
 
-    # Load and evaluate model
+    # Load model  
     start_time = time.time()
     model = initialize_and_load_model(model_path, n_layers, n_neurons, nn.Tanh())
-    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, _, _ = process_displacement_pinns(
-        model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+
+    # === PINN prediction only (timed) ===
+    u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(
+        model, l_e, r_i, k, n_grid
     )
     end_time = time.time()
+    computation_time = end_time - start_time
+
+    # Post-processing (not timed)
+    # Incident field
+    u_inc_amp_pinns = np.real(np.exp(1j * k * X))
+    u_inc_phase_pinns = np.imag(np.exp(1j * k * X))
+
+    # Mask fields
+    u_sc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_amp_pinns)
+    u_sc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_sc_phase_pinns)
+    u_inc_amp_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_amp_pinns)
+    u_inc_phase_pinns = mask_displacement(R_exact, r_i, l_e, u_inc_phase_pinns)
+
+    # Total field
+    u_amp_pinns = u_inc_amp_pinns + u_sc_amp_pinns
+    u_phase_pinns = u_inc_phase_pinns + u_sc_phase_pinns
 
     # Compute relative L2 error (real part of scattered field)
     u_scn_exact_masked = np.copy(u_scn_exact.real)
@@ -970,6 +972,5 @@ def evaluate_pinn_accuracy(n_layers, n_neurons, model_dir='models', k=3.0, r_i=n
     relative_error = np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) / \
                      np.linalg.norm(u_scn_exact_masked, 2)
 
-    computation_time = end_time - start_time
-
     return computation_time, relative_error
+

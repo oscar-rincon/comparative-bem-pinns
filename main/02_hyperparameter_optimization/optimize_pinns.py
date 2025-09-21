@@ -164,7 +164,7 @@ def objective(trial):
 #%%
 # Ejecutar Optuna
 study = optuna.create_study(direction="minimize")
-study.optimize(objective, n_trials=20)
+study.optimize(objective, n_trials=50)
 print("Best trial:")
 best_trial = study.best_trial
 print(f"  Value (mean error): {best_trial.value:.3e}")

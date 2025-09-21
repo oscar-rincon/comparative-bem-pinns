@@ -131,6 +131,7 @@ for hidden_layers_ in layer_values:
             hidden_units=hidden_units_,
             activation_function=activation_function_,
         ).to(device)
+        
         model.apply(init_weights)
 
         # Training time measurement
@@ -207,7 +208,6 @@ total_elapsed_time = total_end_time - total_start_time
 # Include timestamp in log text too
 log_text = (
     f"Script: {script_name}\n"
-    f"Timestamp: {date_str}\n"
     f"Total execution time (s): {total_elapsed_time:.2f}\n"
 )
 
