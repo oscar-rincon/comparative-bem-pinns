@@ -1,4 +1,0 @@
-Script: generalization_bem
-Start time: 2025-09-20 18:39:46.013019
-End time:   2025-09-20 18:40:11.831144
-Execution time (s): 25.82

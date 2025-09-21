@@ -101,9 +101,9 @@ u_exact = mask_displacement(R_exact, r_i, l_e, u_exact)
 results = []
 iter_train = 0
 
-adam_lr        = 1e-4
+adam_lr        = 1e-2
 hidden_layers_ = 3
-hidden_units_  = 25
+hidden_units_  = 75
  
 adam_iters     = 3000
 lbfgs_iters    = 3000
@@ -111,7 +111,7 @@ lbfgs_iters    = 3000
 class Sine(nn.Module):
     def forward(self, x):
         return torch.sin(x)
-activation_function_ = Sine()
+activation_function_ = nn.Tanh()
 
 x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top = generate_points(
     n_Omega_P, side_length, r_i, n_Gamma_I, n_Gamma_E
