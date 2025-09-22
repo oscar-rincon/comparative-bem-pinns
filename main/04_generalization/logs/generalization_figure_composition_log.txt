@@ -1,2 +1,0 @@
-Script: generalization_figure_composition
-Execution time (s): 0.21

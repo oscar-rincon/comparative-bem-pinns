@@ -90,8 +90,13 @@ k = 3.0
 iter = 0
 side_length = 2 * l_e
 
-model_path = 'models/3_layers_75_neurons.pt'
-model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
+class Sine(nn.Module):
+    def forward(self, x):
+        return torch.sin(x)
+activation_function_ = Sine()
+
+model_path = 'models/3_layers_25_neurons_best.pt'
+model = initialize_and_load_model(model_path, 3, 25, activation_function_)
 
 #%% ======================== PINNs PREDICTION & PROCESSING ========================
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(

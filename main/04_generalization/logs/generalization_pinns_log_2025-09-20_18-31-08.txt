@@ -1,3 +1,0 @@
-Script: generalization_pinns
-Execution time (s): 84.26
-Finished at: 2025-09-20 18:31:08

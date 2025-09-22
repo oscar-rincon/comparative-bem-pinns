@@ -1,3 +1,0 @@
-Relative L2 error computation
-=============================
-Relative L2 error: 2.201450e+01

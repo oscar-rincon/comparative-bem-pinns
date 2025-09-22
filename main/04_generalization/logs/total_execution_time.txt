@@ -1,3 +1,0 @@
-Total execution time (s): 123.60
-Total execution time (min): 2.06
-Total execution time (h:m:s): 0:02:03.60
