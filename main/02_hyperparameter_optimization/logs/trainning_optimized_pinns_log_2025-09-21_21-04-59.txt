@@ -1,2 +1,0 @@
-Script: trainning_optimized_pinns
-Execution time (s): 284.54
