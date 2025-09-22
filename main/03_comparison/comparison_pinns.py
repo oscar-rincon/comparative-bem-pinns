@@ -32,6 +32,7 @@ import time
 import numpy as np
 from scipy.interpolate import griddata
 from torch import nn
+import torch
 # Set the current directory and utilities path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 utilities_dir = os.path.join(current_dir, '../../utilities')
@@ -113,8 +114,17 @@ iter = 0                 # Iteration counter
 side_length = 2 * l_e    # Side length of the square
  
 # Initialize and load the model
-model_path = 'models/3_layers_50_neurons.pt'
-model = initialize_and_load_model(model_path, 3, 50, nn.Tanh())
+# model_path = 'models/3_layers_50_neurons.pt'
+# model = initialize_and_load_model(model_path, 3, 50, nn.Tanh())
+
+class Sine(nn.Module):
+    def forward(self, x):
+        return torch.sin(x)
+activation_function_ = Sine()
+
+# Initialize and load the best model
+best_model_path = 'models/3_layers_25_neurons_best.pt'
+model = initialize_and_load_model(best_model_path, 3, 25, activation_function_)
 
 # Predict the displacement
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)

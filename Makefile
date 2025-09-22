@@ -40,8 +40,8 @@ run_03_comparison:
 	@echo "=============================================="
 	@echo ">>> START: 03 Comparison"
 	@echo "=============================================="
-	@python main/03_comparison/pinns_training.py
-	@python main/03_comparison/bem_solution_pinns_evaluation.py
+	@python main/03_comparison/pinns_training_evaluation.py
+	@python main/03_comparison/bem_solution_evaluation.py
 	@python main/03_comparison/comparison_bem.py
 	@python main/03_comparison/comparison_pinns.py
 	@python main/03_comparison/comparison_plot_top.py

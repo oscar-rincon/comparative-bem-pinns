@@ -10,13 +10,13 @@ run_03_comparison:
 	@echo ">>> START: 03_comparison Workflow"
 	@echo "=============================================="
 
-	@echo "Running pinns_training.py..."
-	@python pinns_training.py
-	@echo "Finished pinns_training.py."
+	@echo "Running pinns_training_evaluation.py..."
+	@python pinns_training_evaluation.py
+	@echo "Finished pinns_training_evaluation.py."
 
-	@echo "Running bem_solution_pinns_evaluation.py..."
-	@python bem_solution_pinns_evaluation.py
-	@echo "Finished bem_solution_pinns_evaluation.py."
+	@echo "Running bem_solution.py..."
+	@python bem_solution.py
+	@echo "Finished bem_solution.py."
 
 	@echo "Running comparison_bem.py..."
 	@python comparison_bem.py

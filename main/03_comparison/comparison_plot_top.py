@@ -62,15 +62,13 @@ os.makedirs(figures_folder, exist_ok=True)
 data_folder = os.path.join(current_dir, "data")
 os.makedirs(data_folder, exist_ok=True)
 
-
 #%% Load CSV data
 bem_df = pd.read_csv("data/bem_accuracy_vs_n.csv")
 pinn_df = pd.read_csv("data/pinn_accuracy_vs_architecture.csv")
 
-
 #%% Extract reported values
 # PINN with 3 layers and 75 neurons
-pinn_val = pinn_df[(pinn_df["layers"] == 3) & (pinn_df["neurons_per_layer"] == 75)].iloc[0]
+pinn_val = pinn_df[(pinn_df["hidden_layers"] == 3) & (pinn_df["hidden_units"] == 75)].iloc[0]
 
 # Closest BEM (n=15)
 bem_val = bem_df[bem_df["n"] == 15].iloc[0]
@@ -79,13 +77,13 @@ bem_val = bem_df[bem_df["n"] == 15].iloc[0]
 error_bem_sel = bem_val["relative_error"]
 time_bem_sel  = bem_val["time_sec"]
 
-error_pinn_sel = pinn_val["relative_error"]
+error_pinn_sel = pinn_val["mean_relative_error"]
 time_pinn_sel  = pinn_val["training_time_sec"]
-time_pinn_eval = pinn_val["evaluation_time_sec"]
+time_pinn_eval = pinn_val["mean_eval_time_sec"]
 
 # Relative speed calculations
 bem_vs_pinn_training = bem_val["time_sec"] / pinn_val["training_time_sec"]
-pinn_eval_vs_bem = bem_val["time_sec"] / pinn_val["evaluation_time_sec"]
+pinn_eval_vs_bem = bem_val["time_sec"] / pinn_val["mean_eval_time_sec"]
 
 # Express as "times faster"
 bem_times_faster = round(1 / bem_vs_pinn_training)
@@ -93,17 +91,17 @@ pinn_times_faster = round(pinn_eval_vs_bem)
 
 # Collect reported values
 reported_values = {
-    "PINN (3,75) relative_error": pinn_val["relative_error"],
-    "PINN (3,75) training_time_sec": pinn_val["training_time_sec"],
-    "PINN (3,75) evaluation_time_sec": pinn_val["evaluation_time_sec"],
-    "BEM (n=15) relative_error": bem_val["relative_error"],
-    "BEM (n=15) time_sec": bem_val["time_sec"],
+    "PINN (3,75) mean_relative_error": error_pinn_sel,
+    "PINN (3,75) training_time_sec": time_pinn_sel,
+    "PINN (3,75) mean_eval_time_sec": time_pinn_eval,
+    "BEM (n=15) relative_error": error_bem_sel,
+    "BEM (n=15) time_sec": time_bem_sel,
     "BEM ~times faster than PINN training": bem_times_faster,
     "PINN evaluation ~times faster than BEM": pinn_times_faster,
 }
 
 # Save reported values with timestamp
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 reported_file = os.path.join("data", f"reported_values_{date_str}.txt")
 reported_file_no_date = os.path.join("data", "reported_values.txt")
 
@@ -118,7 +116,6 @@ with open(reported_file_no_date, "w") as f:
     f.write("====================================\n")
     for key, val in reported_values.items():
         f.write(f"{key}: {val}\n")
-
 
 print(f"Reported values saved to: {reported_file}")
 print(f"Reported values also saved to: {reported_file_no_date}")
@@ -135,24 +132,24 @@ plt.scatter(bem_df["relative_error"], bem_df["time_sec"],
             label='BEM (solution)', s=bem_marker_sizes, zorder=3)
 
 # --- Plot PINN evaluation (gray, all points) ---
-plt.scatter(pinn_df["relative_error"], pinn_df["evaluation_time_sec"],
+plt.scatter(pinn_df["mean_relative_error"], pinn_df["mean_eval_time_sec"],
             facecolors="#5e5e5e", edgecolors="#5e5e5e",
             label='PINN (evaluation)', s=pinn_marker_sizes, zorder=3)
 
 # --- Plot PINN training (black, all points) ---
-plt.scatter(pinn_df["relative_error"], pinn_df["training_time_sec"],
+plt.scatter(pinn_df["mean_relative_error"], pinn_df["training_time_sec"],
             facecolors="#000000", edgecolors="#000000",
             label='PINN (training)', s=pinn_marker_sizes, zorder=3)
 
 # --- Highlights ---
-manual_highlights = [{"L": 3, "n": 75, "color": "#00ff0d"}]
+manual_highlights = [{"hidden_layers": 3, "hidden_units": 75, "color": "#00ff0d"}]
 for h in manual_highlights:
-    row = pinn_df[(pinn_df["layers"] == h["L"]) &
-                  (pinn_df["neurons_per_layer"] == h["n"])].iloc[0]
-    plt.scatter(row["relative_error"], row["training_time_sec"],
+    row = pinn_df[(pinn_df["hidden_layers"] == h["hidden_layers"]) &
+                  (pinn_df["hidden_units"] == h["hidden_units"])].iloc[0]
+    plt.scatter(row["mean_relative_error"], row["training_time_sec"],
                 facecolors="none", edgecolors=h["color"],
                 s=pinn_marker_sizes, linewidths=1.0, zorder=4)
-    plt.scatter(row["relative_error"], row["evaluation_time_sec"],
+    plt.scatter(row["mean_relative_error"], row["mean_eval_time_sec"],
                 facecolors="none", edgecolors=h["color"],
                 s=pinn_marker_sizes, linewidths=1.0, zorder=4)
 
@@ -166,13 +163,13 @@ for h in bem_highlights:
 # --- Shaded ranges ---
 bem_min = bem_df.loc[bem_df["time_sec"].idxmin()]
 bem_max = bem_df.loc[bem_df["time_sec"].idxmax()]
-pinn_eval_min = pinn_df.loc[pinn_df["evaluation_time_sec"].idxmin()]
-pinn_eval_max = pinn_df.loc[pinn_df["evaluation_time_sec"].idxmax()]
+pinn_eval_min = pinn_df.loc[pinn_df["mean_eval_time_sec"].idxmin()]
+pinn_eval_max = pinn_df.loc[pinn_df["mean_eval_time_sec"].idxmax()]
 pinn_train_min = pinn_df.loc[pinn_df["training_time_sec"].idxmin()]
 pinn_train_max = pinn_df.loc[pinn_df["training_time_sec"].idxmax()]
 
 plt.axhspan(bem_min["time_sec"], bem_max["time_sec"], color="#437ab0", alpha=0.1, zorder=0)
-plt.axhspan(pinn_eval_min["evaluation_time_sec"], pinn_eval_max["evaluation_time_sec"],
+plt.axhspan(pinn_eval_min["mean_eval_time_sec"], pinn_eval_max["mean_eval_time_sec"],
             color="#5e5e5e", alpha=0.1, zorder=0)
 plt.axhspan(pinn_train_min["training_time_sec"], pinn_train_max["training_time_sec"],
             color="#000000", alpha=0.07, zorder=0)
@@ -187,7 +184,7 @@ ax = plt.gca()
 x_text = ax.get_xlim()[1] * 1.05
 ax.text(x_text, (bem_min["time_sec"] * bem_max["time_sec"])**0.5,
         "BEM (solution)", va="center", ha="left", fontsize=7.5, color="#437ab0ff")
-ax.text(x_text, (pinn_eval_min["evaluation_time_sec"] * pinn_eval_max["evaluation_time_sec"])**0.5,
+ax.text(x_text, (pinn_eval_min["mean_eval_time_sec"] * pinn_eval_max["mean_eval_time_sec"])**0.5,
         "PINN (evaluation)", va="center", ha="left", fontsize=7.5, color="#5e5e5e")
 ax.text(x_text, (pinn_train_min["training_time_sec"] * pinn_train_max["training_time_sec"])**0.5,
         "PINN (training)", va="center", ha="left", fontsize=7.5, color="#000000")
@@ -202,6 +199,7 @@ plt.tight_layout()
 plt.savefig(os.path.join(figures_folder, "rel_error_time.svg"), dpi=150, bbox_inches='tight')
 plt.savefig(os.path.join(figures_folder, "rel_error_time.pdf"), dpi=150, bbox_inches='tight')
 # plt.show()
+
 
 
 #%% Record runtime and save to .txt

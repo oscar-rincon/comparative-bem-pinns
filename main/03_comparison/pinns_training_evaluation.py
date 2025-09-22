@@ -117,6 +117,10 @@ x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
+# Master CSV to store all configurations
+master_csv = os.path.join("data", "pinn_accuracy_vs_architecture.csv")
+master_results = []
+
 #%% Loop over layer and neuron values
 layer_values = [1, 2, 3]
 neuron_values = [25, 50, 75]
@@ -203,22 +207,29 @@ for hidden_layers_ in layer_values:
         torch.save(best_model_state, best_model_path)
         print(f"   Best model saved: {best_model_path}")
 
-        # ===== Save CSV of aggregated results =====
+        # ===== Save aggregated results for this configuration =====
         results_dict = {
-            "hidden_layers": [hidden_layers_],
-            "hidden_units": [hidden_units_],
-            "mean_relative_error": [float(avg_error)],
-            "std_relative_error": [float(std_error)],
-            "best_relative_error": [float(best_error)],
-            "training_time_sec": [float(avg_time)],
-            "std_training_time_sec": [float(std_time)],
-            "mean_eval_time_sec": [float(avg_eval_time)],
-            "std_eval_time_sec": [float(std_eval_time)]
+            "hidden_layers": hidden_layers_,
+            "hidden_units": hidden_units_,
+            "mean_relative_error": float(avg_error),
+            "std_relative_error": float(std_error),
+            "best_relative_error": float(best_error),
+            "training_time_sec": float(avg_time),
+            "std_training_time_sec": float(std_time),
+            "mean_eval_time_sec": float(avg_eval_time),
+            "std_eval_time_sec": float(std_eval_time)
         }
 
         csv_filename = os.path.join("data", f"{hidden_layers_}_layers_{hidden_units_}_neurons.csv")
-        pd.DataFrame(results_dict).to_csv(csv_filename, index=False)
+        pd.DataFrame([results_dict]).to_csv(csv_filename, index=False)
         print(f"   Results saved: {csv_filename}")
+
+        # Append to master CSV
+        master_results.append(results_dict)
+
+# ===== Save master CSV with all configurations =====
+pd.DataFrame(master_results).to_csv(master_csv, index=False)
+print(f"\nAll configurations saved in: {master_csv}")
 
 
 #%% Record total runtime
