@@ -101,12 +101,12 @@ u_exact = mask_displacement(R_exact, r_i, l_e, u_exact)
 results = []
 iter_train = 0
 
-adam_lr        = 1e-4
-hidden_layers_ = 3
-hidden_units_  = 50
+adam_lr        = 1e-2
+hidden_layers_ = 2
+hidden_units_  = 75
  
-adam_iters     = 500
-lbfgs_iters    = 4_500
+adam_iters     = 1_000
+lbfgs_iters    = 5_000
 
 class Sine(nn.Module):
     def forward(self, x):

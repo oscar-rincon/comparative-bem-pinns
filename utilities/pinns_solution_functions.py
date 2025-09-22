@@ -248,9 +248,9 @@ def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_rig
         optimizer.step()
         iter += 1
         results.append([iter, loss.item()])
-        if iter % 500 == 0:
+        #if iter % 500 == 0:
             #torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-            print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
+        #    print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
     return iter        
 
 def train_adam_logs(
@@ -314,8 +314,8 @@ def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left,
     # Update iteration counter in place
     iter_container[0] += 1
     results.append([iter_container[0], loss.item()])
-    if iter_container[0] % 500 == 0:
-        print(f"L-BFGS - Iter: {iter_container[0]} - Loss: {loss.item()}")
+    #if iter_container[0] % 500 == 0:
+    #    print(f"L-BFGS - Iter: {iter_container[0]} - Loss: {loss.item()}")
 
     return loss
 

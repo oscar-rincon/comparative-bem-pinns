@@ -99,10 +99,10 @@ def objective(trial):
     hidden_units_  = trial.suggest_categorical("hidden_units", [25, 50, 75])
     activation_str = trial.suggest_categorical("activation", ["Tanh", "Sigmoid", "Sine"])
 
-    adam_fraction = 0.5
-    total_iter    = 6_000
-    adam_iters    = int(total_iter * adam_fraction)
-    lbfgs_iters   = total_iter - adam_iters
+    #adam_fraction = 0.5
+    #total_iter    = 6_000
+    adam_iters    = 1_000 #int(total_iter * adam_fraction)
+    lbfgs_iters   = 5_000 #total_iter - adam_iters
 
     if activation_str == "Tanh":
         activation_function_ = nn.Tanh()

@@ -83,7 +83,7 @@ df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
 # --- Load training log from CSV (iterations, loss, rel_error) ---
-log_df = pd.read_csv("data/training_log_3_layers_50_neurons.csv")  # adapt filename pattern
+log_df = pd.read_csv("data/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
 # Columns: iteration | loss | mean_rel_error
 
 #%%
@@ -145,7 +145,8 @@ ax2 = fig.add_subplot(gs[2, 0])
 pos = ax2.get_position()  # current position
 ax2.set_position([pos.x0, pos.y0 - 0.04, pos.width, pos.height])  # move it down
 
-transition = log_df["iteration"].max() // 2
+# --- Nueva transición fija ---
+transition = 500  
 
 # --- Split the curve into Adam (0 → transition) and L-BFGS (transition → end) ---
 adam_mask = log_df["iteration"] <= transition
@@ -155,7 +156,7 @@ lbfgs_mask = log_df["iteration"] >= transition
 ax2.plot(
     log_df.loc[adam_mask, "iteration"],
     log_df.loc[adam_mask, "mean_rel_error"],
-    color="#437ab0ff", linewidth=1.2, label="Adam"
+    color="gray", linewidth=1.2, label="Adam"
 )
 
 # L-BFGS segment (gray)
@@ -165,47 +166,47 @@ ax2.plot(
     color="gray", linewidth=1.2, label="L-BFGS"
 )
 ax2.set_yscale("log")   # <<< log scale for y
-# Shaded areas
-ax2.axvspan(0, transition, color="lightblue", alpha=0.3)
-ax2.axvspan(transition, log_df["iteration"].max(), color="lightgray", alpha=0.3)
+
+# --- Shaded areas ---
+# ax2.axvspan(0, transition, color="lightblue", alpha=0.3)
+# ax2.axvspan(transition, log_df["iteration"].max(), color="lightgray", alpha=0.3)
 
 # --- Adam annotation ---
-adam_idx = len(log_df) // 4
-adam_x = log_df["iteration"].iloc[adam_idx]
-adam_y = log_df["mean_rel_error"].iloc[adam_idx]
-ax2.annotate(
-    "Adam",
-    xy=(adam_x, adam_y),
-    xytext=(adam_x, adam_y*1.15),
-    textcoords="data",
-    fontsize=8,
-    color="#02008dff",
-    ha="center"
-)
+adam_mask_idx = log_df[adam_mask].index[len(log_df[adam_mask]) // 2]
+adam_x = log_df.loc[adam_mask_idx, "iteration"]
+adam_y = log_df.loc[adam_mask_idx, "mean_rel_error"]
+# ax2.annotate(
+#     "Adam",
+#     xy=(adam_x, adam_y),
+#     xytext=(adam_x, adam_y * 0.15),
+#     textcoords="data",
+#     fontsize=8,
+#     color="#02008dff",
+#     ha="center"
+# )
 
-# --- LBFGS annotation ---
-lbfgs_idx = 3 * len(log_df) // 4
-lbfgs_x = log_df["iteration"].iloc[lbfgs_idx]
-lbfgs_y = log_df["mean_rel_error"].iloc[lbfgs_idx]
-ax2.annotate(
-    "L-BFGS",
-    xy=(lbfgs_x, lbfgs_y),
-    xytext=(lbfgs_x, lbfgs_y*2.5),
-    textcoords="data",
-    fontsize=8,
-    color="#2c2c2cff",
-    ha="center",
-)
+# --- L-BFGS annotation ---
+lbfgs_mask_idx = log_df[lbfgs_mask].index[len(log_df[lbfgs_mask]) // 2]
+lbfgs_x = log_df.loc[lbfgs_mask_idx, "iteration"]
+lbfgs_y = log_df.loc[lbfgs_mask_idx, "mean_rel_error"]
+# ax2.annotate(
+#     "L-BFGS",
+#     xy=(lbfgs_x, lbfgs_y),
+#     xytext=(lbfgs_x, lbfgs_y * 2.5),
+#     textcoords="data",
+#     fontsize=8,
+#     color="#2c2c2cff",
+#     ha="center",
+# )
 
 ax2.set_ylabel("Objective Value", fontsize=8)
 ax2.set_xlabel("Iteration", fontsize=8)
 ax2.tick_params(axis="y", labelsize=7)
 ax2.tick_params(axis="x", labelsize=7)
-
 # Guardar y mostrar
 plt.savefig("figures/05_hyperparameter_tunning.svg", dpi=300, bbox_inches="tight")
 plt.savefig("figures/05_hyperparameter_tunning.pdf", dpi=300, bbox_inches="tight")
-plt.show()
+#plt.show()
 
 #%% Record runtime and save to .txt
 end_time = time.time()
