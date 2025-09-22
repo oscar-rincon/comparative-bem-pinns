@@ -30,6 +30,7 @@ import matplotlib.colors as mcolors
 import torch
 import torch.nn as nn
 import optuna
+import pandas  
 import joblib
 
 # Set the current directory and utilities path
@@ -94,7 +95,7 @@ class Sine(nn.Module):
 def objective(trial):
     results = []
     iter_train = 0
-    adam_lr        = trial.suggest_categorical("adam_lr", [1e-2, 1e-3, 1e-4])
+    adam_lr        = trial.suggest_categorical("adam_lr", [1e-1, 1e-2, 1e-3])
     hidden_layers_ = trial.suggest_categorical("hidden_layers", [1, 2, 3])
     hidden_units_  = trial.suggest_categorical("hidden_units", [25, 50, 75])
     activation_str = trial.suggest_categorical("activation", ["Tanh", "Sigmoid", "Sine"])
@@ -154,7 +155,7 @@ def objective(trial):
 
     mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
 
-    # 👇 print trial info at the end
+    # print trial info at the end
     print(f"Trial {trial.number} finished | "
           f"adam_lr={adam_lr}, layers={hidden_layers_}, units={hidden_units_}, act={activation_str} "
           f"--> Mean Rel Error: {mean_rel_error_pinns:.6f}")
@@ -163,7 +164,9 @@ def objective(trial):
 
 #%%
 # Ejecutar Optuna
-study = optuna.create_study(direction="minimize")
+sampler = optuna.samplers.TPESampler(seed=42)  # Make the sampler behave in a deterministic way.
+
+study = optuna.create_study(direction="minimize", sampler=sampler)
 study.optimize(objective, n_trials=50)
 print("Best trial:")
 best_trial = study.best_trial
@@ -182,6 +185,21 @@ date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 # Save study with date in filename
 joblib.dump(study, f"data/study_{date_str}.pkl")
 joblib.dump(study, "data/study.pkl")  # also save without date for easy access
+
+df = study.trials_dataframe()
+
+# Guardar el DataFrame en un archivo CSV
+df.to_csv("data/study.csv", index=False)
+
+# Filter by the parameters of interest
+df_filtered = df[(df["params_hidden_layers"] == 3) & (df["params_hidden_units"] == 25)]
+
+# Sort by objective value (ascending = best first)
+df_filtered_sorted = df_filtered.sort_values(by="value", ascending=True)
+
+# Save the filtered and sorted DataFrame to a new CSV file
+df_filtered_sorted.to_csv("data/study_filtered_sorted.csv", index=False)
+
 #%% Record runtime and save to .txt
 end_time = time.time()
 elapsed_time = end_time - start_time

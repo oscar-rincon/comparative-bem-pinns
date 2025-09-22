@@ -83,7 +83,7 @@ df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
 # --- Load training log from CSV (iterations, loss, rel_error) ---
-log_df = pd.read_csv("data/training_log_3_layers_75_neurons.csv")  # adapt filename pattern
+log_df = pd.read_csv("data/training_log_3_layers_25_neurons.csv")  # adapt filename pattern
 # Columns: iteration | loss | mean_rel_error
 
 #%%

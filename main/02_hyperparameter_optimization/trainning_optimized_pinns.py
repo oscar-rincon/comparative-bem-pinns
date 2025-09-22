@@ -102,8 +102,8 @@ results = []
 iter_train = 0
 
 adam_lr        = 1e-2
-hidden_layers_ = 2
-hidden_units_  = 75
+hidden_layers_ = 3
+hidden_units_  = 25
  
 adam_iters     = 1_000
 lbfgs_iters    = 5_000

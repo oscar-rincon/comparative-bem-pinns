@@ -1,2 +1,2 @@
 Script: plot_optuna_results
-Execution time (s): 0.92
+Execution time (s): 1.15
