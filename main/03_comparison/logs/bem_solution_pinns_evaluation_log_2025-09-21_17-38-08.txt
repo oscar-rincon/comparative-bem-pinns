@@ -1,2 +1,0 @@
-Script: bem_solution_pinns_evaluation
-Execution time (s): 3032.17

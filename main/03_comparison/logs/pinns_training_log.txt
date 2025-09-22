@@ -1,2 +1,0 @@
-Script: pinns_training
-Total execution time (s): 2123.33

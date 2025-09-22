@@ -12,4 +12,4 @@ make run_02_hyperparameter_optimization
 
 ## Estimated time
 
-~ 1 hour 33 minutes
+~ 3 hour 38 minutes

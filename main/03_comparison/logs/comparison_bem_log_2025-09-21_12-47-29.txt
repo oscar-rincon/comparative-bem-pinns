@@ -1,2 +1,0 @@
-Script: comparison_bem
-Execution time (s): 10.43

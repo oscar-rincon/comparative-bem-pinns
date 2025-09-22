@@ -102,10 +102,10 @@ u_exact = mask_displacement(R_exact, r_i, l_e, u_exact)
 results_all = []
 iter_train = 0
 
-adam_lr        = 1e-4
-adam_fraction  = 0.5
-adam_iters     = 500
-lbfgs_iters    = 4500
+adam_lr        = 1e-2
+ 
+adam_iters     = 1000
+lbfgs_iters    = 5000
 class Sine(nn.Module):
     def forward(self, x):
         return torch.sin(x)
@@ -121,87 +121,104 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 layer_values = [1, 2, 3]
 neuron_values = [25, 50, 75]
 
+num_repeats = 10
+
 for hidden_layers_ in layer_values:
     for hidden_units_ in neuron_values:
 
         print(f"\n--- Training model with {hidden_layers_} layers and {hidden_units_} neurons ---")
 
-        # Build model
-        model = MLP(
-            input_size=2,
-            output_size=2,
-            hidden_layers=hidden_layers_,
-            hidden_units=hidden_units_,
-            activation_function=activation_function_,
-        ).to(device)
-        
-        model.apply(init_weights)
+        training_times = []
+        eval_times = []
+        errors = []
 
-        # Training time measurement
-        train_start_time = time.time()
+        for run in range(num_repeats):
+            print(f"   Run {run+1}/{num_repeats}")
 
-        iter_train=train_adam(
-            model, x_f, y_f, x_inner, y_inner, x_left, y_left,
-            x_right, y_right, x_bottom, y_bottom, x_top, y_top,
-            k, iter_train, results_all, adam_lr, num_iter=adam_iters
-        )
-        
-        train_lbfgs(
-            model, x_f, y_f, x_inner, y_inner, x_left, y_left,
-            x_right, y_right, x_bottom, y_bottom, x_top, y_top,
-            k, iter_train, results_all, lbfgs_lr=1, num_iter=lbfgs_iters
-        )
+            # Build model
+            model = MLP(
+                input_size=2,
+                output_size=2,
+                hidden_layers=hidden_layers_,
+                hidden_units=hidden_units_,
+                activation_function=activation_function_,
+            ).to(device)
+            model.apply(init_weights)
 
-        training_time = time.time() - train_start_time
+            # ===== Training =====
+            train_start_time = time.time()
+            iter_train = train_adam(
+                model, x_f, y_f, x_inner, y_inner, x_left, y_left,
+                x_right, y_right, x_bottom, y_bottom, x_top, y_top,
+                k, iter_train, results_all, adam_lr, num_iter=adam_iters
+            )
+            train_lbfgs(
+                model, x_f, y_f, x_inner, y_inner, x_left, y_left,
+                x_right, y_right, x_bottom, y_bottom, x_top, y_top,
+                k, iter_train, results_all, lbfgs_lr=1, num_iter=lbfgs_iters
+            )
+            training_time = time.time() - train_start_time
+            training_times.append(training_time)
 
-        # Prediction and error calculation
-        u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(
-            model, l_e, r_i, k, n_grid
-        )
-        u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
-            model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
-        )
-        rel_error_uscn_amp_pinns, rel_error_uscn_phase_pinns, max_diff_uscn_amp_pinns, min_diff_uscn_amp_pinns, max_diff_u_phase_pinns, min_diff_u_phase_pinns = calculate_relative_errors(
-            u_scn_exact, u_exact, diff_uscn_amp_pinns,
-            diff_u_scn_phase_pinns, R_exact, r_i
-        )
+            # ===== Evaluation =====
+            eval_start_time = time.time()
+            _, _, _, _ = predict_displacement_pinns(model, l_e, r_i, k, n_grid)
+            _, _, _, _, diff_uscn_amp_pinns, diff_u_scn_phase_pinns = process_displacement_pinns(
+                model, l_e, r_i, k, n_grid, X, Y, R_exact, u_scn_exact
+            )
+            eval_time = time.time() - eval_start_time
+            eval_times.append(eval_time)
 
-        mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
+            rel_error_uscn_amp_pinns, rel_error_uscn_phase_pinns, *_ = calculate_relative_errors(
+                u_scn_exact, u_exact, diff_uscn_amp_pinns, diff_u_scn_phase_pinns, R_exact, r_i
+            )
+            mean_rel_error_pinns = (rel_error_uscn_amp_pinns + rel_error_uscn_phase_pinns) / 2
+            errors.append(mean_rel_error_pinns)
 
-        # ===== Save model =====
-        # With timestamp
-        model_name_ts = f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.pt"
-        model_path_ts = os.path.join("models", model_name_ts)
-        torch.save(model.state_dict(), model_path_ts)
-        print(f"Model saved to: {model_path_ts}")
+            # ===== Save this run's model =====
+            model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons_run{run+1}.pt"
+            model_path = os.path.join("models", model_name)
+            torch.save(model.state_dict(), model_path)
+            print(f"   Model saved: {model_path}")
 
-        # Without timestamp
-        model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons.pt"
-        model_path = os.path.join("models", model_name)
-        torch.save(model.state_dict(), model_path)
-        print(f"Model also saved without timestamp: {model_path}")
+        # ===== Aggregate statistics =====
+        avg_time = np.mean(training_times)
+        std_time = np.std(training_times)
+        avg_eval_time = np.mean(eval_times)
+        std_eval_time = np.std(eval_times)
+        avg_error = np.mean(errors)
+        std_error = np.std(errors)
+        best_idx = int(np.argmin(errors))
+        best_error = errors[best_idx]
 
-        # ===== Save CSV results =====
+        print(f"   >> Best Error: {best_error:.4e} (Run {best_idx+1})")
+        print(f"   >> Avg Training Time: {avg_time:.2f} ± {std_time:.2f} s")
+        print(f"   >> Avg Evaluation Time: {avg_eval_time:.2f} ± {std_eval_time:.2f} s")
+        print(f"   >> Avg Error: {avg_error:.4e} ± {std_error:.4e}")
+
+        # ===== Save best model separately =====
+        best_model_state = torch.load(os.path.join("models", f"{hidden_layers_}_layers_{hidden_units_}_neurons_run{best_idx+1}.pt"))
+        best_model_name = f"{hidden_layers_}_layers_{hidden_units_}_neurons_best.pt"
+        best_model_path = os.path.join("models", best_model_name)
+        torch.save(best_model_state, best_model_path)
+        print(f"   Best model saved: {best_model_path}")
+
+        # ===== Save CSV of aggregated results =====
         results_dict = {
             "hidden_layers": [hidden_layers_],
             "hidden_units": [hidden_units_],
-            "mean_relative_error": [float(mean_rel_error_pinns)],
-            "training_time_sec": [training_time],
+            "mean_relative_error": [float(avg_error)],
+            "std_relative_error": [float(std_error)],
+            "best_relative_error": [float(best_error)],
+            "training_time_sec": [float(avg_time)],
+            "std_training_time_sec": [float(std_time)],
+            "mean_eval_time_sec": [float(avg_eval_time)],
+            "std_eval_time_sec": [float(std_eval_time)]
         }
 
-        # With timestamp
-        csv_filename_ts = os.path.join(
-            "data", f"{hidden_layers_}_layers_{hidden_units_}_neurons_{date_str}.csv"
-        )
-        pd.DataFrame(results_dict).to_csv(csv_filename_ts, index=False)
-        print(f"Results saved to: {csv_filename_ts}")
-
-        # Without timestamp
-        csv_filename = os.path.join(
-            "data", f"{hidden_layers_}_layers_{hidden_units_}_neurons.csv"
-        )
+        csv_filename = os.path.join("data", f"{hidden_layers_}_layers_{hidden_units_}_neurons.csv")
         pd.DataFrame(results_dict).to_csv(csv_filename, index=False)
-        print(f"Results also saved without timestamp: {csv_filename}")
+        print(f"   Results saved: {csv_filename}")
 
 
 #%% Record total runtime

@@ -1,2 +1,0 @@
-Script: comparison_pinns
-Execution time (s): 8.95

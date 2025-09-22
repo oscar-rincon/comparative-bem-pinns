@@ -1,2 +1,0 @@
-Script: comparison_plot_top
-Execution time (s): 0.53
