@@ -251,6 +251,7 @@ def train_adam(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_rig
         if iter % 500 == 0:
             #torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
             print(f"Adam - Iter: {iter} - Loss: {loss.item()}")
+    return iter        
 
 def train_adam_logs(
     model, x_f, y_f, x_inner, y_inner, x_left, y_left,
@@ -295,43 +296,51 @@ def train_adam_logs(
     df.to_csv(save_csv_path, index=False)
     df.to_csv(save_csv_path_no_datetime, index=False)
 
-def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results):
+def closure(model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, 
+            x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter_container, results):
     
     # Reset gradients
     optimizer.zero_grad()
     
     # Calculate the loss
     loss_f = mse_f(model, x_f, y_f, k)
-    loss_b = mse_b(model, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k)
+    loss_b = mse_b(model, x_inner, y_inner, x_left, y_left, x_right, y_right, 
+                   x_bottom, y_bottom, x_top, y_top, k)
     loss = loss_b + loss_f
     
-    # Backpropagate the loss
+    # Backpropagate
     loss.backward(retain_graph=True)
     
-    # Update iteration counter and print loss every 100 iterations
-    #global iter
-    iter += 1
-    results.append([iter, loss.item()])
-    if iter % 500 == 0:
-        #torch.save(model.state_dict(), f'models_iters/scattering_{iter}.pt')
-        print(f"Iteration {iter}, Loss: {loss.item()}")
+    # Update iteration counter in place
+    iter_container[0] += 1
+    results.append([iter_container[0], loss.item()])
+    if iter_container[0] % 500 == 0:
+        print(f"L-BFGS - Iter: {iter_container[0]} - Loss: {loss.item()}")
 
     return loss
 
 
 # Function for L-BFGS training
-def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results, lbfgs_lr, num_iter=500):
+def train_lbfgs(model, x_f, y_f, x_inner, y_inner, x_left, y_left, 
+                x_right, y_right, x_bottom, y_bottom, x_top, y_top, 
+                k, iter_train, results, lbfgs_lr, num_iter=500):
 
     optimizer = torch.optim.LBFGS(model.parameters(),
-                                    lr=lbfgs_lr,
-                                    max_iter=num_iter,
-                                    max_eval=num_iter,
-                                    tolerance_grad=1e-7,
-                                    history_size=100,
-                                    tolerance_change=1.0 * np.finfo(float).eps,
-                                    line_search_fn="strong_wolfe")
- 
-    closure_fn = partial(closure, model, optimizer, x_f, y_f, x_inner, y_inner, x_left, y_left, x_right, y_right, x_bottom, y_bottom, x_top, y_top, k, iter, results)
+                                  lr=lbfgs_lr,
+                                  max_iter=num_iter,
+                                  max_eval=num_iter,
+                                  tolerance_grad=1e-7,
+                                  history_size=100,
+                                  tolerance_change=1.0 * np.finfo(float).eps,
+                                  line_search_fn="strong_wolfe")
+
+    # ✅ Wrap the counter in a list so it's mutable
+    iter_container = [iter_train]
+
+    closure_fn = partial(closure, model, optimizer, x_f, y_f, x_inner, y_inner,
+                         x_left, y_left, x_right, y_right, x_bottom, y_bottom, 
+                         x_top, y_top, k, iter_container, results)
+    
     optimizer.step(closure_fn)
 
 

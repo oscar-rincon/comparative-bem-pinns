@@ -83,7 +83,7 @@ df_params = df_params[df_params["state"] == "COMPLETE"]
 params = ["activation", "hidden_layers", "hidden_units", "adam_lr"]
 
 # --- Load training log from CSV (iterations, loss, rel_error) ---
-log_df = pd.read_csv("data/training_log_3_layers_25_neurons.csv")  # adapt filename pattern
+log_df = pd.read_csv("data/training_log_3_layers_50_neurons.csv")  # adapt filename pattern
 # Columns: iteration | loss | mean_rel_error
 
 #%%
@@ -98,15 +98,15 @@ ax0.plot(df["number"], best_values, color="#c7c8c8ff", linewidth=1, label="Best 
 ax0.scatter(df["number"], df["value"], color="#437ab0ff", s=10, label="Objective Value", zorder=2)
 ax0.set_ylabel("Objective Value", fontsize=8)
 ax0.set_xlabel("Trial number", fontsize=8)
-#ax0.set_xticks([0, 5, 10, 15, 20])
-#ax0.set_yticks([0.0,0.5, 0.75, 1, 1.25])
 ax0.tick_params(axis="y", labelsize=7)
 ax0.tick_params(axis="x", labelsize=7)
-ax0.set_ylim(-0.1, 1.1)
+ax0.set_yscale("log")   # <<< log scale for y
+#ax0.set_ylim(-0.1, 1.1)
+
 # Panel intermedio (slice plots)
 gs2 = gs[1].subgridspec(1, len(params), wspace=0.4)
 axes = [fig.add_subplot(gs2[0, i]) for i in range(len(params))]
-norm = mcolors.Normalize(vmin=0, vmax=20)
+norm = mcolors.Normalize(vmin=0, vmax=50)
 for i, p in enumerate(params):
     sc = axes[i].scatter(
         df_params[f"params_{p}"],
@@ -130,12 +130,13 @@ for i, p in enumerate(params):
         axes[i].set_xlabel(r"Activation $\sigma$", fontsize=8)
     if i == 0:
         axes[i].set_ylabel("Objective Value", fontsize=8)
+    axes[i].set_yscale("log")   # <<< log scale for y
     axes[i].tick_params(axis="x", rotation=45, labelsize=7)
     axes[i].tick_params(axis="y", labelsize=7)
 
 # Colorbar compartida
 cbar = fig.colorbar(sc, ax=axes, orientation="vertical", fraction=0.05, pad=0.02)
-cbar.set_ticks(np.arange(0, 20 + 1, 5))
+cbar.set_ticks(np.arange(0, 50 + 1, 10))
 cbar.set_label("Trial number", fontsize=8)
 cbar.ax.tick_params(labelsize=7)
 
@@ -163,7 +164,7 @@ ax2.plot(
     log_df.loc[lbfgs_mask, "mean_rel_error"],
     color="gray", linewidth=1.2, label="L-BFGS"
 )
-
+ax2.set_yscale("log")   # <<< log scale for y
 # Shaded areas
 ax2.axvspan(0, transition, color="lightblue", alpha=0.3)
 ax2.axvspan(transition, log_df["iteration"].max(), color="lightgray", alpha=0.3)

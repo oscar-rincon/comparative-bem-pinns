@@ -69,8 +69,8 @@ os.makedirs(output_folder, exist_ok=True)
 n_values = [5, 10, 15, 20, 25, 30, 35, 40, 45]
 
 # Parameters for reproducible timing
-warmup_runs = 2
-timed_repeats = 5
+warmup_runs = 0
+timed_repeats = 1
 
 results = []
 for n in n_values:
@@ -94,9 +94,9 @@ for n in n_values:
 
     results.append({
         "n": n,
-        "time_sec_mean": avg_time,
+        "time_sec": avg_time,
         "time_sec_std": std_time,
-        "relative_error_mean": avg_error,
+        "relative_error": avg_error,
         "relative_error_std": std_error
     })
 
@@ -116,8 +116,8 @@ neuron_values = [25, 50, 75]
 pinn_logs_dir = os.path.join(current_dir, "data")
 
 # Parameters for reproducible timing
-warmup_runs = 3
-timed_repeats = 10
+warmup_runs = 0
+timed_repeats = 1
 
 results = []
 for layers in layer_values:
@@ -151,7 +151,7 @@ for layers in layer_values:
         results.append({
             "layers": layers,
             "neurons_per_layer": neurons,
-            "evaluation_time_mean": avg_eval_time,
+            "evaluation_time_sec": avg_eval_time,
             "evaluation_time_std": std_eval_time,
             "relative_error": rel_error,
             "training_time_sec": training_time_sec,

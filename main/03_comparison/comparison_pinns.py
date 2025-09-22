@@ -113,8 +113,8 @@ iter = 0                 # Iteration counter
 side_length = 2 * l_e    # Side length of the square
  
 # Initialize and load the model
-model_path = 'models/3_layers_75_neurons.pt'
-model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
+model_path = 'models/3_layers_50_neurons.pt'
+model = initialize_and_load_model(model_path, 3, 50, nn.Tanh())
 
 # Predict the displacement
 u_sc_amp_pinns, u_sc_phase_pinns, u_amp_pinns, u_phase_pinns = predict_displacement_pinns(model, l_e, r_i, k, n_grid)

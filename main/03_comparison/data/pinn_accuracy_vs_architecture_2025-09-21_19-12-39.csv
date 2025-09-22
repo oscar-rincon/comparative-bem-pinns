@@ -1,4 +1,4 @@
-layers,neurons_per_layer,evaluation_time_sec,evaluation_time_std,relative_error,training_time_sec
+layers,neurons_per_layer,evaluation_time_mean,evaluation_time_std,relative_error,training_time_sec
 1,25,0.4846310615539551,,0.9114967313295682,184.65066266059875
 1,50,0.07658123970031738,,1.195241853139534,190.41237425804135
 1,75,0.1041407585144043,,0.9756525916767136,192.7622847557068
