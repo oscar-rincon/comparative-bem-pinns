@@ -13,4 +13,4 @@ make run_03_comparison
 
 ## Estimated time
 
-~ 6 minutes 
+~ 6 hours and 12 minutes 

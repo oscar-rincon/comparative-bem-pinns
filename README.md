@@ -81,8 +81,8 @@ make run_04_generalization
 Approximated execution times of the scripts measured on GPU: NVIDIA GeForce RTX 4060 Laptop.
 
 - `01_analytical_solution/`: less than 1 minute
-- `02_hyperparameter_optimization/`: ~ 3 hour and 38 minutes 
-- `03_comparison/`: ~ 6 minutes  
-- `04_generalization/`: ~ 3 minutes  
+- `02_hyperparameter_optimization/`: ~ 3 hour and 38 minutes
+- `03_comparison/`: ~ 6 hours and 12 minutes
+- `04_generalization/`: ~ less than 1 minute
 
-**Total execution time:** ~ 1 hour and 39 minutes
+**Total execution time:** ~ 9 hour and 50 minutes
