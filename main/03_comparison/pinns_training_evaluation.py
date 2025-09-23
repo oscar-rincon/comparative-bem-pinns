@@ -50,16 +50,16 @@ import matplotlib.colors as mcolors
 import torch 
 import torch.nn as nn
 import importlib
-import analytical_solution_functions
-import bem_solution_functions
-import pinns_solution_functions
-import plotting_functions
+# import analytical_solution_functions
+# import bem_solution_functions
+# import pinns_solution_functions
+# import plotting_functions
 
 # Reload custom modules each run
-importlib.reload(analytical_solution_functions)
-importlib.reload(bem_solution_functions)
-importlib.reload(pinns_solution_functions)
-importlib.reload(plotting_functions)
+# importlib.reload(analytical_solution_functions)
+# importlib.reload(bem_solution_functions)
+# importlib.reload(pinns_solution_functions)
+# importlib.reload(plotting_functions)
 
 # Import custom functions
 from analytical_solution_functions import sound_hard_circle_calc, mask_displacement, calculate_relative_errors
