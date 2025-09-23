@@ -37,11 +37,9 @@ conda list -n comparative-pinns-bem-env
 
 ![generalization](main/04_generalization/figures/07_generalization.svg)
 
-
 ## How to run
 
 To execute the full workflow (**1. Analytical Solution → 2. Hyperparameter Optimization → 3. Comparison → 4. Generalization**), open a terminal in the project root directory and run:
-
 
 ```bash
 make all
@@ -74,7 +72,7 @@ Run the Section 4 **Generalization**:
 
 ```bash
 make run_04_generalization
-``` 
+```
 
 ## Execution Times
 
