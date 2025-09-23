@@ -56,6 +56,9 @@ from plotting_functions import plot_bem_displacements_errors
 start_time = time.time()
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 
+# Get current date and time
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
 # Define output folder for logs
 output_folder = os.path.join(current_dir, "logs")
 os.makedirs(output_folder, exist_ok=True)
@@ -140,6 +143,20 @@ u_scn_amp_masked[R_grid < r_exclude] = 0
 relative_error = np.linalg.norm(
     u_scn_exact_masked.real - u_scn_amp_masked.real, 2
 ) / np.linalg.norm(u_scn_exact_masked.real, 2)
+
+# Ensure folder exists
+error_folder = os.path.join(os.path.dirname(__file__), "data")
+os.makedirs(error_folder, exist_ok=True)
+
+error_file = os.path.join(error_folder, f"bem_relative_error_{date_str}.txt")
+error_file_no_date = os.path.join(error_folder, "bem_relative_error.txt")
+
+with open(error_file, "w") as f:
+    f.write(f"Relative L2 error: {relative_error:.6e}\n")
+
+with open(error_file_no_date, "w") as f:
+    f.write(f"Relative L2 error: {relative_error:.6e}\n")
+
 print(f"Relative L2 error: {relative_error:.2e}")
 
 #%% ======================= RADIAL LINE PROFILE =======================
@@ -191,9 +208,6 @@ elapsed_time = end_time - start_time
 
 # Build log text
 log_text = f"Script: {script_name}\nExecution time (s): {elapsed_time:.2f}\n"
-
-# Get current date and time
-date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Define log filenames inside the logs folder
 log_filename_with_date = os.path.join(output_folder, f"{script_name}_log_{date_str}.txt")

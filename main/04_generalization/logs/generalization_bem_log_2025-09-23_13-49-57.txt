@@ -1,2 +1,2 @@
 Script: generalization_bem
-Execution time (s): 15.47
+Execution time (s): 15.78

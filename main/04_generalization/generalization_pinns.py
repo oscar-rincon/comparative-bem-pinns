@@ -124,8 +124,8 @@ date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 os.makedirs("data", exist_ok=True)
 
 # File paths
-file_no_date = os.path.join("data", "error_results.txt")
-file_with_date = os.path.join("data", f"error_results_{date_str}.txt")
+file_no_date = os.path.join("data", "pinns_error_results.txt")
+file_with_date = os.path.join("data", f"pinns_error_results_{date_str}.txt")
 
 # Save result (no date, always overwritten)
 with open(file_no_date, "w") as f:
