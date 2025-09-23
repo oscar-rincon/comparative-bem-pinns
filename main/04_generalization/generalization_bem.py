@@ -172,11 +172,6 @@ rel_error_line = error_line / np.max(np.real(u_scn_exact_line))
 
 #%% ======================= PLOTTING =======================
  
-
-
-
-
-
 plot_bem_displacements_errors(
     X, Y,
     u_scn_amp,

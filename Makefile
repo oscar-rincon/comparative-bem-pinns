@@ -44,7 +44,7 @@ run_03_comparison:
 	@python main/03_comparison/bem_solution_evaluation.py
 	@python main/03_comparison/comparison_bem.py
 	@python main/03_comparison/comparison_pinns.py
-	@python main/03_comparison/comparison_plot_top.py
+	@python main/03_comparison/comparison_plot_time_error.py
 	@python main/03_comparison/comparison_figure_compose.py
 	@python sum_times.py
 	@echo "=============================================="

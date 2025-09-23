@@ -1,0 +1,2 @@
+hidden_layers,hidden_units,mean_relative_error,std_relative_error,best_relative_error,training_time_sec,std_training_time_sec,mean_eval_time_sec,std_eval_time_sec
+3,50,0.07452482758243259,1.3877787807814457e-17,0.07452482758243258,293.16639091968534,1.8150619210589598,0.0573275089263916,0.010662212865734558

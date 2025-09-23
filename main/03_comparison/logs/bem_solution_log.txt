@@ -1,0 +1,2 @@
+Script: bem_solution
+Execution time (s): 1071.40

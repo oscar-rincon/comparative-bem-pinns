@@ -67,8 +67,8 @@ bem_df = pd.read_csv("data/bem_accuracy_vs_n.csv")
 pinn_df = pd.read_csv("data/pinn_accuracy_vs_architecture.csv")
 
 #%% Extract reported values
-# PINN with 3 layers and 75 neurons
-pinn_val = pinn_df[(pinn_df["hidden_layers"] == 3) & (pinn_df["hidden_units"] == 75)].iloc[0]
+# PINN with 3 layers and 25 neurons
+pinn_val = pinn_df[(pinn_df["hidden_layers"] == 3) & (pinn_df["hidden_units"] == 25)].iloc[0]
 
 # Closest BEM (n=15)
 bem_val = bem_df[bem_df["n"] == 15].iloc[0]
@@ -91,9 +91,9 @@ pinn_times_faster = round(pinn_eval_vs_bem)
 
 # Collect reported values
 reported_values = {
-    "PINN (3,75) mean_relative_error": error_pinn_sel,
-    "PINN (3,75) training_time_sec": time_pinn_sel,
-    "PINN (3,75) mean_eval_time_sec": time_pinn_eval,
+    "PINN (3,25) mean_relative_error": error_pinn_sel,
+    "PINN (3,25) training_time_sec": time_pinn_sel,
+    "PINN (3,25) mean_eval_time_sec": time_pinn_eval,
     "BEM (n=15) relative_error": error_bem_sel,
     "BEM (n=15) time_sec": time_bem_sel,
     "BEM ~times faster than PINN training": bem_times_faster,
@@ -101,7 +101,7 @@ reported_values = {
 }
 
 # Save reported values with timestamp
-date_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+date_str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 reported_file = os.path.join("data", f"reported_values_{date_str}.txt")
 reported_file_no_date = os.path.join("data", "reported_values.txt")
 
@@ -142,7 +142,7 @@ plt.scatter(pinn_df["mean_relative_error"], pinn_df["training_time_sec"],
             label='PINN (training)', s=pinn_marker_sizes, zorder=3)
 
 # --- Highlights ---
-manual_highlights = [{"hidden_layers": 3, "hidden_units": 75, "color": "#00ff0d"}]
+manual_highlights = [{"hidden_layers": 3, "hidden_units": 25, "color": "#00ff0d"}]
 for h in manual_highlights:
     row = pinn_df[(pinn_df["hidden_layers"] == h["hidden_layers"]) &
                   (pinn_df["hidden_units"] == h["hidden_units"])].iloc[0]

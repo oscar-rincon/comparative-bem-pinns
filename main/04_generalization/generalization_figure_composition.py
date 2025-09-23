@@ -70,7 +70,7 @@ Figure(
     SVG("figures/base.svg").scale(4.0),
     Panel(svg1).scale(1.30),
     Panel(svg2).move(255, 0).scale(1.30)
-).save("figures/06_generalization.svg")
+).save("figures/07_generalization.svg")
 
 # Convert to PDF
 cairosvg.svg2pdf(

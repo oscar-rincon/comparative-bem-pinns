@@ -13,4 +13,4 @@ make run_04_generalization
 
 ## Estimated time
 
-~ 3 minutes
+less than 1 minute

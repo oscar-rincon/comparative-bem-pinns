@@ -151,7 +151,7 @@ y_line = np.zeros_like(x_line)
 X_ten = torch.tensor(x_line).float().reshape(-1, 1).to(device)
 Y_ten = torch.tensor(y_line).float().reshape(-1, 1).to(device)
 
-model = initialize_and_load_model(model_path, 3, 75, nn.Tanh())
+model = initialize_and_load_model(model_path, 3, 25, Sine()).to(device)
 domain_ten = torch.cat([X_ten, Y_ten], dim=1)
 
 u_sc_pred = model(domain_ten)

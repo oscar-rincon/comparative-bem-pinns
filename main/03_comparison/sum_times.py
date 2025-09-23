@@ -1,10 +1,12 @@
 #%%
+import re
+
 # List your specific txt files here
-files = ["logs/pinns_training_log.txt",
-         "logs/bem_solution_pinns_evaluation_log.txt",
+files = ["logs/pinns_training_evaluation_log.txt",
+         "logs/bem_solution_log.txt",
          "logs/comparison_bem_log.txt",
          "logs/comparison_pinns_log.txt",
-         "logs/comparison_plot_top_log.txt",
+         "logs/comparison_plot_time_error_log.txt",
          "logs/comparison_figure_compose_log.txt"]
 
 total_time = 0.0
@@ -12,10 +14,12 @@ total_time = 0.0
 for file in files:
     with open(file, 'r') as f:
         for line in f:
-            if line.startswith("Execution time (s):"):
-                # Extract the number after the colon and convert to float
-                time_sec = float(line.split(":")[1].strip())
+            # Match either "Execution time (s):" or "Total execution time (s):"
+            match = re.search(r"(Execution time|Total execution time).*?:\s*([\d.]+)", line)
+            if match:
+                time_sec = float(match.group(2))
                 total_time += time_sec
+                print(f"Added {time_sec:.2f} sec from {file}")
 
 total_time_min = total_time / 60  # convert seconds to minutes
 total_hours = int(total_time // 3600)
