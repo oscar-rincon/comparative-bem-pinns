@@ -12,4 +12,4 @@ make run_01_analytical_solution
 
 ## Estimated time
 
-less than 1 minute
+~ 1 minute
