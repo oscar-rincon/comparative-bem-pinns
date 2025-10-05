@@ -2,6 +2,9 @@
 
 This repository contains the scripts used to generate the figures presented in the paper. Our purpose is to ensure full reproducibility of the results. The structure of the repository reflects the logical flow of the paper: from analytical validation to numerical experiments and generalization tests.
 
+[Preprint: arXiv:2509.12483](https://arxiv.org/abs/2509.12483)
+
+
 ## Installation or required Python packages
 
 We recommend setting up a new Python environment with conda. You can do this by running the following commands:
