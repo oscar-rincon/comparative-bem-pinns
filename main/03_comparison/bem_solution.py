@@ -30,6 +30,7 @@ import sys
 import os
 import time
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator
 
@@ -73,6 +74,7 @@ warmup_runs = 0
 timed_repeats = 10
 
 results = []
+
 for n in n_values:
     print(f"Evaluating for n = {n}...")
 
@@ -81,23 +83,31 @@ for n in n_values:
     #     _ = evaluate_bem_accuracy(n=n)
 
     # --- Timed evaluation (averaged) ---
-    times, errors = [], []
-    for _ in range(timed_repeats):
-        t, err = evaluate_bem_accuracy(n=n)
-        times.append(t)
-        errors.append(err)
+    assembly_times = []
+    evaluation_times = []
+    errors = []
 
-    avg_time = sum(times) / len(times)
-    avg_error = sum(errors) / len(errors)
-    std_time = pd.Series(times).std()
-    std_error = pd.Series(errors).std()
+    for _ in range(timed_repeats):
+        t_asm_sol, t_eval, err = evaluate_bem_accuracy(n=n)
+
+        assembly_times.append(t_asm_sol)
+        evaluation_times.append(t_eval)
+        errors.append(err)
 
     results.append({
         "n": n,
-        "time_sec": avg_time,
-        "time_sec_std": std_time,
-        "relative_error": avg_error,
-        "relative_error_std": std_error
+
+        # Assembly + solution
+        "assembly_solution_time_sec": np.mean(assembly_times),
+        "assembly_solution_time_sec_std": np.std(assembly_times, ddof=1),
+
+        # Evaluation
+        "evaluation_time_sec": np.mean(evaluation_times),
+        "evaluation_time_sec_std": np.std(evaluation_times, ddof=1),
+
+        # Error
+        "relative_error": np.mean(errors),
+        "relative_error_std": np.std(errors, ddof=1),
     })
 
 df = pd.DataFrame(results)
@@ -105,8 +115,10 @@ df = pd.DataFrame(results)
 # Save with date
 bem_csv = os.path.join("data", f"bem_accuracy_vs_n_{date_str}.csv")
 bem_csv_no_date = os.path.join("data", f"bem_accuracy_vs_n.csv")
+
 df.to_csv(bem_csv, index=False)
 df.to_csv(bem_csv_no_date, index=False)
+
 print(f"Results saved to '{bem_csv}'")
 print(f"Results also saved to '{bem_csv_no_date}'")
 

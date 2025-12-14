@@ -583,37 +583,35 @@ def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn
     plt.savefig("generalization_bem.svg", dpi=300, bbox_inches='tight')
    
 
-def evaluate_bem_accuracy(n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_grid=501):
+def evaluate_bem_accuracy(
+    n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_grid=501
+):
     """
-    Solves the BEM problem for a circular obstacle with given boundary discretization `n`,
-    and returns the computational time and relative L2 error compared to the analytical solution.
-    
-    Parameters:
-        n (int): Number of boundary elements.
-        k (float): Wave number.
-        n_dom (int): Number of domain sampling points (per axis).
-        r_exclude (float): Radius of the circular obstacle.
-        l_se (float): Half-length of the computational domain.
-        n_grid (int): Number of grid points along each axis for interpolation.
-    
+    Solves the BEM problem for a circular obstacle with given boundary discretization `n`.
+
     Returns:
-        float: Computational time in seconds.
-        float: Relative L2 error.
+        assembly_solution_time : float
+        evaluation_time        : float
+        relative_L2_error      : float
     """
 
-    start_time = time.time()
+    # ======================================================
+    # Assembly + Solution
+    # ======================================================
+    t0 = time.time()
 
     # Generate circular boundary mesh
     aVertex, aElement = Circle_n(n=n, radius=r_exclude)
     num_elements = aElement.shape[0]
     aCenters = 0.5 * (aVertex[aElement[:, 0]] + aVertex[aElement[:, 1]])
-    theta = np.arctan2(aCenters[:, 1], aCenters[:, 0])  # Normal angle at each element center
+    theta = np.arctan2(aCenters[:, 1], aCenters[:, 0])
 
     # Neumann boundary conditions
     alpha = np.zeros(num_elements, dtype=complex)
     beta  = np.ones(num_elements, dtype=complex)
     phi   = np.zeros(num_elements, dtype=complex)
     v     = np.zeros(num_elements, dtype=complex)
+
     kx = k * aCenters[:, 0]
     phi_inc = np.exp(1j * kx)
     f = -1j * k * np.cos(theta) * phi_inc
@@ -627,7 +625,7 @@ def evaluate_bem_accuracy(n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_g
     )
     interiorIncidentPhi = np.zeros(points_outside.shape[0], dtype=complex)
 
-    # Solve BIE
+    # Solve BEM system (assembly + solve inside)
     _, density = None, None
     v, phi = solveExteriorBoundary(
         k, alpha, beta, f, phi, v,
@@ -636,7 +634,14 @@ def evaluate_bem_accuracy(n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_g
         'exterior'
     )
 
-    # Evaluate solution
+    t1 = time.time()
+    assembly_solution_time = t1 - t0
+
+    # ======================================================
+    # Evaluation
+    # ======================================================
+    t2 = time.time()
+
     interiorPhi = solveExterior(
         k, v, phi,
         interiorIncidentPhi,
@@ -645,26 +650,32 @@ def evaluate_bem_accuracy(n, k=3.0, n_dom=40, r_exclude=np.pi/4, l_se=np.pi, n_g
         'exterior'
     )
 
-    # Interpolate on uniform grid
+    # Interpolation on uniform grid
     Y, X = np.mgrid[-l_se:l_se:n_grid*1j, -l_se:l_se:n_grid*1j]
     grid_z = griddata(points_outside, interiorPhi, (X, Y), method='cubic')
     grid_z = np.ma.masked_where(np.sqrt(X**2 + Y**2) < r_exclude, grid_z)
 
     u_scn_amp = grid_z.real
     R_exact = np.sqrt(X**2 + Y**2)
-    _, u_scn_exact, _ = sound_hard_circle_calc(k, r_exclude, X, Y, n_terms=None)
+
+    _, u_scn_exact, _ = sound_hard_circle_calc(
+        k, r_exclude, X, Y, n_terms=None
+    )
     u_scn_exact = mask_displacement(R_exact, r_exclude, l_se, u_scn_exact)
 
-    # Compute relative L2 error
+    # Relative L2 error
     u_scn_exact_masked = np.copy(u_scn_exact.real)
     u_scn_amp_masked   = np.copy(u_scn_amp)
+
     u_scn_exact_masked[R_exact < r_exclude] = 0
     u_scn_amp_masked[R_exact < r_exclude] = 0
 
-    relative_error = np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) / \
-                     np.linalg.norm(u_scn_exact_masked, 2)
+    relative_error = (
+        np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) /
+        np.linalg.norm(u_scn_exact_masked, 2)
+    )
 
-    end_time = time.time()
-    computation_time = end_time - start_time
+    t3 = time.time()
+    evaluation_time = t3 - t2
 
-    return computation_time, relative_error   
+    return assembly_solution_time, evaluation_time, relative_error

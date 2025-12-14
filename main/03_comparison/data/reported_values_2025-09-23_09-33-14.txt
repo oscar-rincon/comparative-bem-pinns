@@ -1,9 +1,0 @@
-Reported values generated on 2025-09-23_09-33-14
-====================================
-PINN (3,25) mean_relative_error: 0.074360876242136
-PINN (3,25) training_time_sec: 289.87279930114744
-PINN (3,25) mean_eval_time_sec: 0.0469920635223388
-BEM (n=15) relative_error: 0.0724943292910049
-BEM (n=15) time_sec: 10.50286545753479
-BEM ~times faster than PINN training: 28
-PINN evaluation ~times faster than BEM: 224
