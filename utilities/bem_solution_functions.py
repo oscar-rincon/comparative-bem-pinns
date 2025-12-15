@@ -658,6 +658,9 @@ def evaluate_bem_accuracy(
     u_scn_amp = grid_z.real
     R_exact = np.sqrt(X**2 + Y**2)
 
+    t3 = time.time()
+    evaluation_time = t3 - t2
+
     _, u_scn_exact, _ = sound_hard_circle_calc(
         k, r_exclude, X, Y, n_terms=None
     )
@@ -674,8 +677,5 @@ def evaluate_bem_accuracy(
         np.linalg.norm(u_scn_exact_masked - u_scn_amp_masked, 2) /
         np.linalg.norm(u_scn_exact_masked, 2)
     )
-
-    t3 = time.time()
-    evaluation_time = t3 - t2
 
     return assembly_solution_time, evaluation_time, relative_error
