@@ -112,8 +112,8 @@ def plot_exact_displacement(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_sc
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig("figures/04_displacement_exact.svg", dpi=300, bbox_inches='tight')
-    plt.savefig("figures/04_displacement_exact.pdf", dpi=300, bbox_inches='tight')
+    plt.savefig("figures/displacement_exact.svg", dpi=300, bbox_inches='tight')
+    plt.savefig("figures/displacement_exact.pdf", dpi=300, bbox_inches='tight')
 
 
 def plot_bem_displacements(X, Y, u_inc_amp, u_scn_amp, u_amp, u_inc_phase, u_scn_phase, u_phase):

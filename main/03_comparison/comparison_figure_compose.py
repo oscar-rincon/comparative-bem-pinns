@@ -80,12 +80,12 @@ Figure(
     SVG(os.path.join(figures_folder, "comparison_base.svg")).scale(3.79),
     Panel(svg1).move(0, 0).scale(1.3),
     Panel(svg2).move(25, 175)
-).save(os.path.join(figures_folder, "06_accuracy_time_error_bem_pinns.svg"))
+).save(os.path.join(figures_folder, "accuracy_time_error_bem_pinns.svg"))
 
 # Convert to PDF
 cairosvg.svg2pdf(
-    url=os.path.join(figures_folder, "06_accuracy_time_error_bem_pinns.svg"),
-    write_to=os.path.join(figures_folder, "06_accuracy_time_error_bem_pinns.pdf")
+    url=os.path.join(figures_folder, "accuracy_time_error_bem_pinns.svg"),
+    write_to=os.path.join(figures_folder, "accuracy_time_error_bem_pinns.pdf")
 )
 
 #%% Record runtime and save to .txt
