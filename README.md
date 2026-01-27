@@ -2,7 +2,9 @@
 
 This repository contains the scripts used to generate the figures presented in the paper. Our purpose is to ensure full reproducibility of the results. The structure of the repository reflects the logical flow of the paper: from analytical validation to numerical experiments and generalization tests.
 
-[Preprint: arXiv:2509.12483](https://arxiv.org/abs/2509.12483)
+[![arXiv](https://img.shields.io/badge/arXiv-2509.12483-b31b1b.svg)](https://arxiv.org/abs/2509.12483)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18394518.svg)](https://doi.org/10.5281/zenodo.18394518)
 
 
 ## Installation or required Python packages
