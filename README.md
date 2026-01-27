@@ -24,21 +24,21 @@ conda list -n comparative-pinns-bem-env
 
 `main/`:
 
-- `01_analytical_solution/`: Results in Figure 4. Analytical estimation of scattering.
+- `01_analytical_solution/`: Results in analytical estimation of scattering.
 
-![displacement_exact](main/01_analytical_solution/figures/04_displacement_exact.svg)
+![displacement_exact](main/01_analytical_solution/figures/displacement_exact.svg)
 
-- `02_hyperparameter_optimization/`: Results in Figure 5.
+- `02_hyperparameter_optimization/`: Results in hyperparameter optimization.
 
 ![hyperparameter_tunning](main/02_hyperparameter_optimization/figures/05_hyperparameter_tunning.svg)
 
-- `03_comparison/`: Results in Figure 6. Performance evaluation of BEM and PINNs.
+- `03_comparison/`: Results in performance evaluation of BEM and PINNs.
 
-![comparison](main/03_comparison/figures/06_accuracy_time_error_bem_pinns.svg)
+![comparison](main/03_comparison/figures/accuracy_time_error_bem_pinns.svg)
 
-- `04_generalization/`: Results in Figure 7. Scattered field computed by BEM and PINNs outside the training region.
+- `04_generalization/`: Results in scattered field computed by BEM and PINNs outside the training region.
 
-![generalization](main/04_generalization/figures/07_generalization.svg)
+![generalization](main/04_generalization/figures/generalization.svg)
 
 ## How to run
 
